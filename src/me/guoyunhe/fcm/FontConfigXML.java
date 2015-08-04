@@ -122,6 +122,11 @@ public class FontConfigXML {
         }
     }
     
+    /**
+     * Paser the boolean value inside of "test" or "edit" tags.
+     * @param node An edit or test node that contains boolean value.
+     * @return Boolean value of fontconfig XML tag.
+     */
     private boolean parseBool(Node node) {
         NodeList children = node.getChildNodes();
         boolean value = false;
