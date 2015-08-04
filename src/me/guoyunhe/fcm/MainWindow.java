@@ -16,6 +16,8 @@
  */
 package me.guoyunhe.fcm;
 
+import org.xml.sax.SAXException;
+
 /**
  *
  * @author Guo Yunhe <guoyunhebrave@gmail.com>
@@ -289,6 +291,8 @@ public class MainWindow extends javax.swing.JFrame {
                 new MainWindow().setVisible(true);
             }
         });
+        
+        FontConfigXML fcxml = new FontConfigXML();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
