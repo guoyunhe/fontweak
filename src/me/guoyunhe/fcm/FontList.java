@@ -30,4 +30,8 @@ public class FontList {
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         this.list = env.getAvailableFontFamilyNames();
     }
+    
+    public String[] getList() {
+        return this.list;
+    }
 }
