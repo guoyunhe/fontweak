@@ -293,6 +293,8 @@ public class MainWindow extends javax.swing.JFrame {
         });
         
         FontConfigXML fcxml = new FontConfigXML();
+        
+        FontList fontlist = new FontList();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
