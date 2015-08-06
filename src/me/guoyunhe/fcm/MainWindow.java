@@ -90,7 +90,7 @@ public class MainWindow extends javax.swing.JFrame {
         subpixelTestDialog.getContentPane().setLayout(new javax.swing.BoxLayout(subpixelTestDialog.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/me/guoyunhe/fcm/subpixel.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/me/guoyunhe/fcm/img/subpixel.png"))); // NOI18N
         subpixelTestDialog.getContentPane().add(jLabel1);
 
         jLabel2.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
