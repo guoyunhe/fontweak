@@ -99,6 +99,7 @@ public class MainWindow extends javax.swing.JFrame {
         subpixelTestDialog.getContentPane().add(jLabel2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Font Config Master");
         setBackground(new java.awt.Color(255, 255, 255));
         setMinimumSize(new java.awt.Dimension(800, 400));
         setPreferredSize(new java.awt.Dimension(800, 400));
