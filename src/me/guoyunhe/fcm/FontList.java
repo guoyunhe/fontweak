@@ -30,7 +30,7 @@ public class FontList {
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] originalList = env.getAvailableFontFamilyNames();
         this.list = new String[originalList.length + 1];
-        this.list[0] = "<not set>";
+        this.list[0] = "";
         System.arraycopy(originalList, 0, this.list, 1, originalList.length);
     }
     

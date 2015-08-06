@@ -395,11 +395,12 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        // TODO add your handling code here:
+        System.exit(0);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         this.saveConfig();
+        System.exit(0);
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void sansComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sansComboBoxActionPerformed
@@ -478,9 +479,32 @@ public class MainWindow extends javax.swing.JFrame {
         this.sansComboBox.setSelectedItem(this.fontconfig.getSans());
         this.serifComboBox.setSelectedItem(this.fontconfig.getSerif());
         this.monoComboBox.setSelectedItem(this.fontconfig.getMono());
+        this.zhSansComboBox.setSelectedItem(this.fontconfig.getZhSans());
+        this.zhSerifComboBox.setSelectedItem(this.fontconfig.getZhSerif());
+        this.zhMonoComboBox.setSelectedItem(this.fontconfig.getZhMono());
+        this.jaSansComboBox.setSelectedItem(this.fontconfig.getJaSans());
+        this.jaSerifComboBox.setSelectedItem(this.fontconfig.getJaSerif());
+        this.jaMonoComboBox.setSelectedItem(this.fontconfig.getJaMono());
+        this.koSansComboBox.setSelectedItem(this.fontconfig.getKoSans());
+        this.koSerifComboBox.setSelectedItem(this.fontconfig.getKoSerif());
+        this.koMonoComboBox.setSelectedItem(this.fontconfig.getKoMono());
     }
     
     public void saveConfig() {
+        // TODO: write configuration from UI components
+        this.fontconfig.setSans((String)sansComboBox.getSelectedItem());
+        this.fontconfig.setSerif((String)serifComboBox.getSelectedItem());
+        this.fontconfig.setMono((String)monoComboBox.getSelectedItem());
+        this.fontconfig.setZhSans((String)zhSansComboBox.getSelectedItem());
+        this.fontconfig.setZhSerif((String)zhSerifComboBox.getSelectedItem());
+        this.fontconfig.setZhMono((String)zhMonoComboBox.getSelectedItem());
+        this.fontconfig.setJaSans((String)jaSansComboBox.getSelectedItem());
+        this.fontconfig.setJaSerif((String)jaSerifComboBox.getSelectedItem());
+        this.fontconfig.setJaMono((String)jaMonoComboBox.getSelectedItem());
+        this.fontconfig.setKoSans((String)koSansComboBox.getSelectedItem());
+        this.fontconfig.setKoSerif((String)koSerifComboBox.getSelectedItem());
+        this.fontconfig.setKoMono((String)koMonoComboBox.getSelectedItem());
+        
         fontconfig.writeConfig();
     }
     

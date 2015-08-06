@@ -325,9 +325,20 @@ public class FontConfigXML {
         }
 
         // Save option values to document elements
-        root.appendChild(makeFontFamilyMatch("sans-serif", null, sans));
+        if (validFont(sans)) {
+            root.appendChild(makeFontFamilyMatch("sans-serif", null, sans));
+        }
         root.appendChild(makeFontFamilyMatch("serif", null, serif));
         root.appendChild(makeFontFamilyMatch("monospace", null, mono));
+        root.appendChild(makeFontFamilyMatch("sans-serif", "zh", zhSans));
+        root.appendChild(makeFontFamilyMatch("serif", "zh", zhSerif));
+        root.appendChild(makeFontFamilyMatch("monospace", "zh", zhMono));
+        root.appendChild(makeFontFamilyMatch("sans-serif", "ja", jaSans));
+        root.appendChild(makeFontFamilyMatch("serif", "ja", jaSerif));
+        root.appendChild(makeFontFamilyMatch("monospace", "ja", jaMono));
+        root.appendChild(makeFontFamilyMatch("sans-serif", "ko", koSans));
+        root.appendChild(makeFontFamilyMatch("serif", "ko", koSerif));
+        root.appendChild(makeFontFamilyMatch("monospace", "ko", koMono));
         
         // Write document object to XML file.
         try {
@@ -378,6 +389,14 @@ public class FontConfigXML {
         valueElement.setTextContent(value);
         testElement.appendChild(valueElement);
         return testElement;
+    }
+    
+    private boolean validFont(String font) {
+        if(font == null || font.isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
     }
     
     public void setSans(String font) {
