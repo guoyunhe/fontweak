@@ -81,6 +81,11 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox();
         subpixelTestButton = new javax.swing.JButton();
+        historyPanel = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
+        recoverButton = new javax.swing.JButton();
         saveButtonPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -391,6 +396,26 @@ public class MainWindow extends javax.swing.JFrame {
 
         tabbedPanel.addTab("Font Render", fontRenderPane);
 
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.X_AXIS));
+
+        jList1.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        jList1.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jList1);
+
+        jPanel1.add(jScrollPane1);
+
+        recoverButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        recoverButton.setText("Recover");
+        jPanel1.add(recoverButton);
+
+        historyPanel.setViewportView(jPanel1);
+
+        tabbedPanel.addTab("History Backup", historyPanel);
+
         getContentPane().add(tabbedPanel);
 
         saveButtonPanel.setMaximumSize(new java.awt.Dimension(32767, 35));
@@ -546,6 +571,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel fontRenderContentPanel;
     private javax.swing.JScrollPane fontRenderPane;
     private javax.swing.JPanel fontTypeContentPanel;
+    private javax.swing.JScrollPane historyPanel;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
@@ -556,6 +582,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JList jList1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jaLabel;
     private javax.swing.JComboBox jaMonoComboBox;
     private javax.swing.JComboBox jaSansComboBox;
@@ -568,6 +597,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox monoComboBox;
     private javax.swing.JLabel monoLabel;
     private javax.swing.JButton okButton;
+    private javax.swing.JButton recoverButton;
     private javax.swing.JComboBox sansComboBox;
     private javax.swing.JLabel sansLabel;
     private javax.swing.JPanel saveButtonPanel;
