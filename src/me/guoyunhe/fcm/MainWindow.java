@@ -399,7 +399,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        // TODO add your handling code here:
+        this.saveConfig();
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void sansComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sansComboBoxActionPerformed
@@ -447,18 +447,17 @@ public class MainWindow extends javax.swing.JFrame {
             public void run() {
                 MainWindow mw = new MainWindow();
                 mw.setVisible(true);
-                FontConfigXML fcxml = new FontConfigXML();
-
-                FontList fontlist = new FontList();
-
-                mw.refreshFontList(fontlist.getList());
+                mw.refreshFontList();
+                mw.openConfig();
             }
         });
         
         
     }
     
-    public void refreshFontList(String[] list) {
+    public void refreshFontList() {
+        FontList fontlist = new FontList();
+        String[] list = fontlist.getList();
         this.sansComboBox.setModel(new DefaultComboBoxModel(list));
         this.serifComboBox.setModel(new DefaultComboBoxModel(list));
         this.monoComboBox.setModel(new DefaultComboBoxModel(list));
@@ -472,6 +471,20 @@ public class MainWindow extends javax.swing.JFrame {
         this.koSerifComboBox.setModel(new DefaultComboBoxModel(list));
         this.koMonoComboBox.setModel(new DefaultComboBoxModel(list));
     }
+    
+    public void openConfig() {
+        this.fontconfig = new FontConfigXML();
+        // TODO: set UI components to configuration data
+        this.sansComboBox.setSelectedItem(this.fontconfig.getSans());
+        this.serifComboBox.setSelectedItem(this.fontconfig.getSerif());
+        this.monoComboBox.setSelectedItem(this.fontconfig.getMono());
+    }
+    
+    public void saveConfig() {
+        fontconfig.writeConfig();
+    }
+    
+    private FontConfigXML fontconfig;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox antialiasCheckBox;

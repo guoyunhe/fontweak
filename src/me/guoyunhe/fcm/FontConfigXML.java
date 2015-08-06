@@ -24,6 +24,19 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -40,6 +53,7 @@ public class FontConfigXML {
     private DocumentBuilder builder;
     private File configFile;
     private Document doc;
+    private Node root;
     
     private boolean antialias;
     private boolean hinting;
@@ -112,15 +126,10 @@ public class FontConfigXML {
         }
 
         // Read elements
+        root = doc.getElementsByTagName("fontconfig").item(0);
         NodeList list = doc.getElementsByTagName("match");
         
-        // Debug information
-        System.out.println(list.getLength());
-        
         for (int i = 0; i < list.getLength(); i++) {
-            // Debug information
-            System.out.println(i);
-            
             Element element = (Element) list.item(i);
             if (element.hasAttribute("target")) {
                 this.findOption(element);
@@ -128,6 +137,7 @@ public class FontConfigXML {
                 this.findPattern(element);
             }
         }
+        
     }
     
     private void findOption(Node node) {
@@ -292,5 +302,177 @@ public class FontConfigXML {
             }
         }
         return value;
+    }
+    
+    /**
+     * Write changes to `.config/fontconfig/fonts.conf` XML file.
+     */
+    public void writeConfig() {
+        // Clean old nodes
+        NodeList list = doc.getElementsByTagName("match");
+        while (list.getLength() > 0) {
+            Node n = list.item(0);
+            n.getParentNode().removeChild(n);
+        }
+        // Clean empty text nodes
+        NodeList childList = root.getChildNodes();
+        for (int i = 0; i < childList.getLength(); i++) {
+            Node n = childList.item(i);
+            if (n.getNodeType() == Node.TEXT_NODE) {
+                n.getParentNode().removeChild(n);
+                i--;
+            }
+        }
+
+        // Save option values to document elements
+        root.appendChild(makeFontFamilyMatch("sans-serif", null, sans));
+        root.appendChild(makeFontFamilyMatch("serif", null, serif));
+        root.appendChild(makeFontFamilyMatch("monospace", null, mono));
+        
+        // Write document object to XML file.
+        try {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            Result output = new StreamResult(configFile);
+            Source input = new DOMSource(doc);
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.transform(input, output);
+        } catch (TransformerConfigurationException ex) {
+            Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TransformerException ex) {
+            Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private Element makeFontFamilyMatch(String family, String lang, String font) {
+        Element match = doc.createElement("match");
+        match.appendChild(makeTestElement("family", "string", family, null));
+        if (lang != null && !lang.isEmpty()) {
+            match.appendChild(makeTestElement("lang", "string", lang, "contains"));
+        }
+        match.appendChild(makeEditElement("family", "string", font, "prepend"));
+        return match;
+    }
+    
+    private Element makeEditElement(String name, String type, String value,
+            String mode) {
+        Element editElement = doc.createElement("edit");
+        editElement.setAttribute("name", name);
+        if (mode != null && !mode.isEmpty()) {
+            editElement.setAttribute("mode", mode);
+        }
+        Element valueElement = doc.createElement(type);
+        valueElement.setTextContent(value);
+        editElement.appendChild(valueElement);
+        return editElement;
+    }
+    
+    private Element makeTestElement(String name, String type, String value,
+            String compare) {
+        Element testElement = doc.createElement("test");
+        testElement.setAttribute("name", name);
+        if (compare != null && !compare.isEmpty()) {
+            testElement.setAttribute("compare", compare);
+        }
+        Element valueElement = doc.createElement(type);
+        valueElement.setTextContent(value);
+        testElement.appendChild(valueElement);
+        return testElement;
+    }
+    
+    public void setSans(String font) {
+        this.sans = font;
+    }
+    
+    public void setSerif(String font) {
+        this.serif = font;
+    }
+    
+    public void setMono(String font) {
+        this.mono = font;
+    }
+    
+    public void setZhSans(String font) {
+        this.zhSans = font;
+    }
+    
+    public void setZhSerif(String font) {
+        this.zhSerif = font;
+    }
+    
+    public void setZhMono(String font) {
+        this.zhMono = font;
+    }
+    
+    public void setJaSans(String font) {
+        this.jaSans = font;
+    }
+    
+    public void setJaSerif(String font) {
+        this.jaSerif = font;
+    }
+    
+    public void setJaMono(String font) {
+        this.jaMono = font;
+    }
+    
+    public void setKoSans(String font) {
+        this.koSans = font;
+    }
+    
+    public void setKoSerif(String font) {
+        this.koSerif = font;
+    }
+    
+    public void setKoMono(String font) {
+        this.koMono = font;
+    }
+    
+    public String getSans() {
+        return this.sans;
+    }
+    
+    public String getSerif() {
+        return this.serif;
+    }
+    
+    public String getMono() {
+        return this.mono;
+    }
+    
+    public String getZhSans() {
+        return this.zhSans;
+    }
+    
+    public String getZhSerif() {
+        return this.zhSerif;
+    }
+    
+    public String getZhMono() {
+        return this.zhMono;
+    }
+    
+    public String getJaSans() {
+        return this.jaSans;
+    }
+    
+    public String getJaSerif() {
+        return this.jaSerif;
+    }
+    
+    public String getJaMono() {
+        return this.jaMono;
+    }
+    
+    public String getKoSans() {
+        return this.koSans;
+    }
+    
+    public String getKoSerif() {
+        return this.koSerif;
+    }
+    
+    public String getKoMono() {
+        return this.koMono;
     }
 }
