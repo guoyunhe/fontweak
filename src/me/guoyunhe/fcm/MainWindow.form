@@ -1765,17 +1765,18 @@
                     </Constraint>
                   </Constraints>
                 </Component>
-                <Component class="javax.swing.JComboBox" name="jComboBox1">
+                <Component class="javax.swing.JComboBox" name="subpixelComboBox">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="SansSerif" size="12" style="0"/>
                     </Property>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="4">
-                        <StringItem index="0" value="RGB"/>
-                        <StringItem index="1" value="BGR"/>
-                        <StringItem index="2" value="V-RGB"/>
-                        <StringItem index="3" value="V-BGR"/>
+                      <StringArray count="5">
+                        <StringItem index="0" value="None"/>
+                        <StringItem index="1" value="RGB"/>
+                        <StringItem index="2" value="BGR"/>
+                        <StringItem index="3" value="Vertical RGB"/>
+                        <StringItem index="4" value="Vertical BGR"/>
                       </StringArray>
                     </Property>
                   </Properties>
@@ -1798,7 +1799,7 @@
                     </Constraint>
                   </Constraints>
                 </Component>
-                <Component class="javax.swing.JCheckBox" name="jCheckBox1">
+                <Component class="javax.swing.JCheckBox" name="hintingCheckBox">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="SansSerif" size="12" style="0"/>
@@ -1823,7 +1824,7 @@
                     </Constraint>
                   </Constraints>
                 </Component>
-                <Component class="javax.swing.JComboBox" name="jComboBox2">
+                <Component class="javax.swing.JComboBox" name="hintStyleComboBox">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="SansSerif" size="12" style="0"/>
@@ -1831,7 +1832,7 @@
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="4">
                         <StringItem index="0" value="None"/>
-                        <StringItem index="1" value="Low"/>
+                        <StringItem index="1" value="Slight"/>
                         <StringItem index="2" value="Medium"/>
                         <StringItem index="3" value="Full"/>
                       </StringArray>
@@ -2185,11 +2186,11 @@
                     <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component, java.lang.Object"/>
                   </StatementProvider>
                   <Parameters>
-                    <CodeExpression id="108_jComboBox1">
-                      <CodeVariable name="jComboBox1" type="8194" declaredType="javax.swing.JComboBox"/>
+                    <CodeExpression id="108_subpixelComboBox">
+                      <CodeVariable name="subpixelComboBox" type="8194" declaredType="javax.swing.JComboBox"/>
                       <ExpressionOrigin>
                         <ExpressionProvider type="ComponentRef">
-                          <ComponentRef name="jComboBox1"/>
+                          <ComponentRef name="subpixelComboBox"/>
                         </ExpressionProvider>
                       </ExpressionOrigin>
                     </CodeExpression>
@@ -2323,11 +2324,11 @@
                     <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component, java.lang.Object"/>
                   </StatementProvider>
                   <Parameters>
-                    <CodeExpression id="118_jCheckBox1">
-                      <CodeVariable name="jCheckBox1" type="8194" declaredType="javax.swing.JCheckBox"/>
+                    <CodeExpression id="118_hintingCheckBox">
+                      <CodeVariable name="hintingCheckBox" type="8194" declaredType="javax.swing.JCheckBox"/>
                       <ExpressionOrigin>
                         <ExpressionProvider type="ComponentRef">
-                          <ComponentRef name="jCheckBox1"/>
+                          <ComponentRef name="hintingCheckBox"/>
                         </ExpressionProvider>
                       </ExpressionOrigin>
                     </CodeExpression>
@@ -2461,11 +2462,11 @@
                     <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component, java.lang.Object"/>
                   </StatementProvider>
                   <Parameters>
-                    <CodeExpression id="128_jComboBox2">
-                      <CodeVariable name="jComboBox2" type="8194" declaredType="javax.swing.JComboBox"/>
+                    <CodeExpression id="128_hintStyleComboBox">
+                      <CodeVariable name="hintStyleComboBox" type="8194" declaredType="javax.swing.JComboBox"/>
                       <ExpressionOrigin>
                         <ExpressionProvider type="ComponentRef">
-                          <ComponentRef name="jComboBox2"/>
+                          <ComponentRef name="hintStyleComboBox"/>
                         </ExpressionProvider>
                       </ExpressionOrigin>
                     </CodeExpression>

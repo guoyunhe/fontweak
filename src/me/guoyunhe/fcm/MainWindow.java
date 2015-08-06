@@ -75,11 +75,11 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         antialiasCheckBox = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        subpixelComboBox = new javax.swing.JComboBox();
         jLabel10 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        hintingCheckBox = new javax.swing.JCheckBox();
         jLabel11 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox();
+        hintStyleComboBox = new javax.swing.JComboBox();
         subpixelTestButton = new javax.swing.JButton();
         historyPanel = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
@@ -341,13 +341,13 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontRenderContentPanel.add(jLabel9, gridBagConstraints);
 
-        jComboBox1.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "RGB", "BGR", "V-RGB", "V-BGR" }));
+        subpixelComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        subpixelComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "None", "RGB", "BGR", "Vertical RGB", "Vertical BGR" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontRenderContentPanel.add(jComboBox1, gridBagConstraints);
+        fontRenderContentPanel.add(subpixelComboBox, gridBagConstraints);
 
         jLabel10.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         jLabel10.setText("Subpixel render");
@@ -357,12 +357,12 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontRenderContentPanel.add(jLabel10, gridBagConstraints);
 
-        jCheckBox1.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        hintingCheckBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontRenderContentPanel.add(jCheckBox1, gridBagConstraints);
+        fontRenderContentPanel.add(hintingCheckBox, gridBagConstraints);
 
         jLabel11.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         jLabel11.setText("Hint style");
@@ -372,13 +372,13 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontRenderContentPanel.add(jLabel11, gridBagConstraints);
 
-        jComboBox2.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "None", "Low", "Medium", "Full" }));
+        hintStyleComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        hintStyleComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "None", "Slight", "Medium", "Full" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontRenderContentPanel.add(jComboBox2, gridBagConstraints);
+        fontRenderContentPanel.add(hintStyleComboBox, gridBagConstraints);
 
         subpixelTestButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         subpixelTestButton.setText("Test");
@@ -529,34 +529,44 @@ public class MainWindow extends javax.swing.JFrame {
     public void openConfig() {
         this.fontconfig = new FontConfigXML();
         // TODO: set UI components to configuration data
-        this.sansComboBox.setSelectedItem(this.fontconfig.getSans());
-        this.serifComboBox.setSelectedItem(this.fontconfig.getSerif());
-        this.monoComboBox.setSelectedItem(this.fontconfig.getMono());
-        this.zhSansComboBox.setSelectedItem(this.fontconfig.getZhSans());
-        this.zhSerifComboBox.setSelectedItem(this.fontconfig.getZhSerif());
-        this.zhMonoComboBox.setSelectedItem(this.fontconfig.getZhMono());
-        this.jaSansComboBox.setSelectedItem(this.fontconfig.getJaSans());
-        this.jaSerifComboBox.setSelectedItem(this.fontconfig.getJaSerif());
-        this.jaMonoComboBox.setSelectedItem(this.fontconfig.getJaMono());
-        this.koSansComboBox.setSelectedItem(this.fontconfig.getKoSans());
-        this.koSerifComboBox.setSelectedItem(this.fontconfig.getKoSerif());
-        this.koMonoComboBox.setSelectedItem(this.fontconfig.getKoMono());
+        sansComboBox.setSelectedItem(fontconfig.getSans());
+        serifComboBox.setSelectedItem(fontconfig.getSerif());
+        monoComboBox.setSelectedItem(fontconfig.getMono());
+        zhSansComboBox.setSelectedItem(fontconfig.getZhSans());
+        zhSerifComboBox.setSelectedItem(fontconfig.getZhSerif());
+        zhMonoComboBox.setSelectedItem(fontconfig.getZhMono());
+        jaSansComboBox.setSelectedItem(fontconfig.getJaSans());
+        jaSerifComboBox.setSelectedItem(fontconfig.getJaSerif());
+        jaMonoComboBox.setSelectedItem(fontconfig.getJaMono());
+        koSansComboBox.setSelectedItem(fontconfig.getKoSans());
+        koSerifComboBox.setSelectedItem(fontconfig.getKoSerif());
+        koMonoComboBox.setSelectedItem(fontconfig.getKoMono());
+
+        antialiasCheckBox.setSelected(fontconfig.getAntiAlias());
+        hintingCheckBox.setSelected(fontconfig.getHinting());
+        hintStyleComboBox.setSelectedIndex(fontconfig.getHintStyle());
+        subpixelComboBox.setSelectedIndex(fontconfig.getSubpixel());
     }
     
     public void saveConfig() {
         // TODO: write configuration from UI components
-        this.fontconfig.setSans((String)sansComboBox.getSelectedItem());
-        this.fontconfig.setSerif((String)serifComboBox.getSelectedItem());
-        this.fontconfig.setMono((String)monoComboBox.getSelectedItem());
-        this.fontconfig.setZhSans((String)zhSansComboBox.getSelectedItem());
-        this.fontconfig.setZhSerif((String)zhSerifComboBox.getSelectedItem());
-        this.fontconfig.setZhMono((String)zhMonoComboBox.getSelectedItem());
-        this.fontconfig.setJaSans((String)jaSansComboBox.getSelectedItem());
-        this.fontconfig.setJaSerif((String)jaSerifComboBox.getSelectedItem());
-        this.fontconfig.setJaMono((String)jaMonoComboBox.getSelectedItem());
-        this.fontconfig.setKoSans((String)koSansComboBox.getSelectedItem());
-        this.fontconfig.setKoSerif((String)koSerifComboBox.getSelectedItem());
-        this.fontconfig.setKoMono((String)koMonoComboBox.getSelectedItem());
+        fontconfig.setSans((String)sansComboBox.getSelectedItem());
+        fontconfig.setSerif((String)serifComboBox.getSelectedItem());
+        fontconfig.setMono((String)monoComboBox.getSelectedItem());
+        fontconfig.setZhSans((String)zhSansComboBox.getSelectedItem());
+        fontconfig.setZhSerif((String)zhSerifComboBox.getSelectedItem());
+        fontconfig.setZhMono((String)zhMonoComboBox.getSelectedItem());
+        fontconfig.setJaSans((String)jaSansComboBox.getSelectedItem());
+        fontconfig.setJaSerif((String)jaSerifComboBox.getSelectedItem());
+        fontconfig.setJaMono((String)jaMonoComboBox.getSelectedItem());
+        fontconfig.setKoSans((String)koSansComboBox.getSelectedItem());
+        fontconfig.setKoSerif((String)koSerifComboBox.getSelectedItem());
+        fontconfig.setKoMono((String)koMonoComboBox.getSelectedItem());
+        
+        fontconfig.setAntiAlias(antialiasCheckBox.isSelected());
+        fontconfig.setHinting(hintingCheckBox.isSelected());
+        fontconfig.setHintStyle(hintStyleComboBox.getSelectedIndex());
+        fontconfig.setSubpixel(subpixelComboBox.getSelectedIndex());
         
         fontconfig.writeConfig();
     }
@@ -571,10 +581,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel fontRenderContentPanel;
     private javax.swing.JScrollPane fontRenderPane;
     private javax.swing.JPanel fontTypeContentPanel;
+    private javax.swing.JComboBox hintStyleComboBox;
+    private javax.swing.JCheckBox hintingCheckBox;
     private javax.swing.JScrollPane historyPanel;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -603,6 +612,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel saveButtonPanel;
     private javax.swing.JComboBox serifComboBox;
     private javax.swing.JLabel serifLabel;
+    private javax.swing.JComboBox subpixelComboBox;
     private javax.swing.JButton subpixelTestButton;
     private javax.swing.JDialog subpixelTestDialog;
     private javax.swing.JTabbedPane tabbedPanel;

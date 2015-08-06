@@ -33,10 +33,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -55,10 +51,10 @@ public class FontConfigXML {
     private Document doc;
     private Node root;
     
-    private boolean antialias;
-    private boolean hinting;
-    private String hintstyle;
-    private String rgba;
+    private boolean antialias = false;
+    private boolean hinting = false;
+    private String hintstyle = "hintnone";
+    private String rgba = "none";
     
     private String sans;
     private String serif;
@@ -72,6 +68,17 @@ public class FontConfigXML {
     private String koSans;
     private String koSerif;
     private String koMono;
+    
+    public static final int HINT_NONE = 0;
+    public static final int HINT_SLIGHT = 1;
+    public static final int HINT_MEDIUM = 2;
+    public static final int HINT_FULL = 3;
+
+    public static final int RGBA_NONE = 0;
+    public static final int RGBA_RGB = 1;
+    public static final int RGBA_BGR = 2;
+    public static final int RGBA_VRGB = 3;
+    public static final int RGBA_VBGR = 4;
 
     public FontConfigXML() {
         factory = DocumentBuilderFactory.newInstance();
@@ -328,17 +335,44 @@ public class FontConfigXML {
         if (validFont(sans)) {
             root.appendChild(makeFontFamilyMatch("sans-serif", null, sans));
         }
-        root.appendChild(makeFontFamilyMatch("serif", null, serif));
-        root.appendChild(makeFontFamilyMatch("monospace", null, mono));
-        root.appendChild(makeFontFamilyMatch("sans-serif", "zh", zhSans));
-        root.appendChild(makeFontFamilyMatch("serif", "zh", zhSerif));
-        root.appendChild(makeFontFamilyMatch("monospace", "zh", zhMono));
-        root.appendChild(makeFontFamilyMatch("sans-serif", "ja", jaSans));
-        root.appendChild(makeFontFamilyMatch("serif", "ja", jaSerif));
-        root.appendChild(makeFontFamilyMatch("monospace", "ja", jaMono));
-        root.appendChild(makeFontFamilyMatch("sans-serif", "ko", koSans));
-        root.appendChild(makeFontFamilyMatch("serif", "ko", koSerif));
-        root.appendChild(makeFontFamilyMatch("monospace", "ko", koMono));
+        if (validFont(serif)) {
+            root.appendChild(makeFontFamilyMatch("serif", null, serif));
+        }
+        if (validFont(mono)) {
+            root.appendChild(makeFontFamilyMatch("monospace", null, mono));
+        }
+        if (validFont(zhSans)) {
+            root.appendChild(makeFontFamilyMatch("sans-serif", "zh", zhSans));
+        }
+        if (validFont(zhSerif)) {
+            root.appendChild(makeFontFamilyMatch("serif", "zh", zhSerif));
+        }
+        if (validFont(zhMono)) {
+            root.appendChild(makeFontFamilyMatch("monospace", "zh", zhMono));
+        }
+        if (validFont(jaSans)) {
+            root.appendChild(makeFontFamilyMatch("sans-serif", "ja", jaSans));
+        }
+        if (validFont(jaSerif)) {
+            root.appendChild(makeFontFamilyMatch("serif", "ja", jaSerif));
+        }
+        if (validFont(jaMono)) {
+            root.appendChild(makeFontFamilyMatch("monospace", "ja", jaMono));
+        }
+        if (validFont(koSans)) {
+            root.appendChild(makeFontFamilyMatch("sans-serif", "ko", koSans));
+        }
+        if (validFont(koSerif)) {
+            root.appendChild(makeFontFamilyMatch("serif", "ko", koSerif));
+        }
+        if (validFont(koMono)) {
+            root.appendChild(makeFontFamilyMatch("monospace", "ko", koMono));
+        }
+        
+        root.appendChild(makeFontRenderMatch("antialias", "bool", Boolean.toString(this.antialias)));
+        root.appendChild(makeFontRenderMatch("hinting", "bool", Boolean.toString(this.hinting)));
+        root.appendChild(makeFontRenderMatch("hintstyle", "const", this.hintstyle));
+        root.appendChild(makeFontRenderMatch("rgba", "const", this.rgba));
         
         // Write document object to XML file.
         try {
@@ -362,6 +396,13 @@ public class FontConfigXML {
             match.appendChild(makeTestElement("lang", "string", lang, "contains"));
         }
         match.appendChild(makeEditElement("family", "string", font, "prepend"));
+        return match;
+    }
+    
+    private Element makeFontRenderMatch(String name, String type, String value) {
+        Element match = doc.createElement("match");
+        match.setAttribute("target", "font");
+        match.appendChild(makeEditElement(name, type, value, "assign"));
         return match;
     }
     
@@ -493,5 +534,96 @@ public class FontConfigXML {
     
     public String getKoMono() {
         return this.koMono;
+    }
+    
+    public void setAntiAlias(boolean antialias) {
+        this.antialias = antialias;
+    }
+    
+    public boolean getAntiAlias() {
+        return this.antialias;
+    }
+    
+    public void setHinting(boolean hinting) {
+        this.hinting = hinting;
+    }
+    
+    public boolean getHinting() {
+        return this.hinting;
+    }
+    
+    public void setHintStyle(int style) {
+        switch (style) {
+            case HINT_NONE:
+                this.hintstyle = "hintnone";
+                break;
+            case HINT_SLIGHT:
+                this.hintstyle = "hintslight";
+                break;
+            case HINT_MEDIUM:
+                this.hintstyle = "hintmedium";
+                break;
+            case HINT_FULL:
+                this.hintstyle = "hintfull";
+                break;
+            default:
+                this.hintstyle = "hintnone";
+                break;
+        }
+    }
+    
+    public int getHintStyle() {
+        switch (this.hintstyle) {
+            case "hintnone":
+                return HINT_NONE;
+            case "hintslight":
+                return HINT_SLIGHT;
+            case "hintmedium":
+                return HINT_MEDIUM;
+            case "hintfull":
+                return HINT_FULL;
+            default:
+                return HINT_NONE;
+        }
+    }
+    
+    public void setSubpixel(int rgba) {
+        switch (rgba) {
+            case RGBA_NONE:
+                this.rgba = "none";
+                break;
+            case RGBA_RGB:
+                this.rgba = "rgb";
+                break;
+            case RGBA_BGR:
+                this.rgba = "bgr";
+                break;
+            case RGBA_VRGB:
+                this.rgba = "vrgb";
+                break;
+            case RGBA_VBGR:
+                this.rgba = "vbgr";
+                break;
+            default:
+                this.rgba = "none";
+                break;
+        }
+    }
+    
+    public int getSubpixel() {
+        switch (this.rgba) {
+            case "none":
+                return RGBA_NONE;
+            case "rgb":
+                return RGBA_RGB;
+            case "bgr":
+                return RGBA_BGR;
+            case "vrgb":
+                return RGBA_VRGB;
+            case "vbgr":
+                return RGBA_VBGR;
+            default:
+                return RGBA_NONE;
+        }
     }
 }
