@@ -45,6 +45,9 @@ public class MainWindow extends javax.swing.JFrame {
         subpixelTestDialog = new javax.swing.JDialog();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        logoutNoticeDialog = new javax.swing.JDialog();
+        jLabel3 = new javax.swing.JLabel();
+        closeNoticeButton = new javax.swing.JButton();
         tabbedPanel = new javax.swing.JTabbedPane();
         fontFamilyPanel = new javax.swing.JScrollPane();
         fontTypeContentPanel = new javax.swing.JPanel();
@@ -83,6 +86,7 @@ public class MainWindow extends javax.swing.JFrame {
         cancelButton = new javax.swing.JButton();
 
         subpixelTestDialog.setTitle("Subpixel Render: Test Your Screen");
+        subpixelTestDialog.setLocationByPlatform(true);
         subpixelTestDialog.setMaximumSize(new java.awt.Dimension(600, 450));
         subpixelTestDialog.setMinimumSize(new java.awt.Dimension(600, 450));
         subpixelTestDialog.setPreferredSize(new java.awt.Dimension(600, 500));
@@ -98,9 +102,29 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel2.setText("Please Take Off Your Glasses!");
         subpixelTestDialog.getContentPane().add(jLabel2);
 
+        logoutNoticeDialog.setTitle("Logout or restart needed");
+        logoutNoticeDialog.setLocationByPlatform(true);
+        logoutNoticeDialog.setMinimumSize(new java.awt.Dimension(240, 150));
+        logoutNoticeDialog.setPreferredSize(new java.awt.Dimension(200, 150));
+        logoutNoticeDialog.setResizable(false);
+
+        jLabel3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("<html>\n<p><center>Please <strong>logout</strong> and login again, or <strong>restart</strong> system, to make new configuration take effects!</center></p>\n</html>");
+        logoutNoticeDialog.getContentPane().add(jLabel3, java.awt.BorderLayout.CENTER);
+
+        closeNoticeButton.setText("Close");
+        closeNoticeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeNoticeButtonActionPerformed(evt);
+            }
+        });
+        logoutNoticeDialog.getContentPane().add(closeNoticeButton, java.awt.BorderLayout.SOUTH);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Font Config Master");
         setBackground(new java.awt.Color(255, 255, 255));
+        setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(800, 400));
         setPreferredSize(new java.awt.Dimension(800, 400));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
@@ -400,7 +424,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         this.saveConfig();
-        System.exit(0);
+        this.logoutNoticeDialog.setVisible(true);
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void sansComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sansComboBoxActionPerformed
@@ -414,6 +438,10 @@ public class MainWindow extends javax.swing.JFrame {
     private void subpixelTestButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subpixelTestButtonMouseClicked
         this.subpixelTestDialog.setVisible(true);
     }//GEN-LAST:event_subpixelTestButtonMouseClicked
+
+    private void closeNoticeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeNoticeButtonActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_closeNoticeButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -513,6 +541,7 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox antialiasCheckBox;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeNoticeButton;
     private javax.swing.JScrollPane fontFamilyPanel;
     private javax.swing.JPanel fontRenderContentPanel;
     private javax.swing.JScrollPane fontRenderPane;
@@ -524,6 +553,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jaLabel;
@@ -534,6 +564,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox koMonoComboBox;
     private javax.swing.JComboBox koSansComboBox;
     private javax.swing.JComboBox koSerifComboBox;
+    private javax.swing.JDialog logoutNoticeDialog;
     private javax.swing.JComboBox monoComboBox;
     private javax.swing.JLabel monoLabel;
     private javax.swing.JButton okButton;
