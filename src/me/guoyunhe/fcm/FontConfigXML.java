@@ -332,15 +332,6 @@ public class FontConfigXML {
         }
 
         // Save option values to document elements
-        if (validFont(sans)) {
-            root.appendChild(makeFontFamilyMatch("sans-serif", null, sans));
-        }
-        if (validFont(serif)) {
-            root.appendChild(makeFontFamilyMatch("serif", null, serif));
-        }
-        if (validFont(mono)) {
-            root.appendChild(makeFontFamilyMatch("monospace", null, mono));
-        }
         if (validFont(zhSans)) {
             root.appendChild(makeFontFamilyMatch("sans-serif", "zh", zhSans));
         }
@@ -368,6 +359,15 @@ public class FontConfigXML {
         if (validFont(koMono)) {
             root.appendChild(makeFontFamilyMatch("monospace", "ko", koMono));
         }
+        if (validFont(sans)) {
+            root.appendChild(makeFontFamilyMatch("sans-serif", null, sans));
+        }
+        if (validFont(serif)) {
+            root.appendChild(makeFontFamilyMatch("serif", null, serif));
+        }
+        if (validFont(mono)) {
+            root.appendChild(makeFontFamilyMatch("monospace", null, mono));
+        }
         
         root.appendChild(makeFontRenderMatch("antialias", "bool", Boolean.toString(this.antialias)));
         root.appendChild(makeFontRenderMatch("hinting", "bool", Boolean.toString(this.hinting)));
@@ -394,24 +394,29 @@ public class FontConfigXML {
         match.appendChild(makeTestElement("family", "string", family, null));
         if (lang != null && !lang.isEmpty()) {
             match.appendChild(makeTestElement("lang", "string", lang, "contains"));
+            match.appendChild(makeEditElement("family", "string", font, "prepend", null));
+        } else {
+            match.appendChild(makeEditElement("family", "string", font, "prepend", "strong"));
         }
-        match.appendChild(makeEditElement("family", "string", font, "prepend"));
         return match;
     }
     
     private Element makeFontRenderMatch(String name, String type, String value) {
         Element match = doc.createElement("match");
         match.setAttribute("target", "font");
-        match.appendChild(makeEditElement(name, type, value, "assign"));
+        match.appendChild(makeEditElement(name, type, value, "assign", null));
         return match;
     }
     
     private Element makeEditElement(String name, String type, String value,
-            String mode) {
+            String mode, String binding) {
         Element editElement = doc.createElement("edit");
         editElement.setAttribute("name", name);
         if (mode != null && !mode.isEmpty()) {
             editElement.setAttribute("mode", mode);
+        }
+        if (binding != null && !binding.isEmpty()) {
+            editElement.setAttribute("binding", binding);
         }
         Element valueElement = doc.createElement(type);
         valueElement.setTextContent(value);
