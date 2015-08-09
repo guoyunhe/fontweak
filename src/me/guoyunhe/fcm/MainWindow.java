@@ -16,6 +16,12 @@
  */
 package me.guoyunhe.fcm;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -69,7 +75,7 @@ public class MainWindow extends javax.swing.JFrame {
         koSansComboBox = new javax.swing.JComboBox();
         koSerifComboBox = new javax.swing.JComboBox();
         koMonoComboBox = new javax.swing.JComboBox();
-        fontRenderPane = new javax.swing.JScrollPane();
+        fontRenderPanel = new javax.swing.JScrollPane();
         fontRenderContentPanel = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         antialiasCheckBox = new javax.swing.JCheckBox();
@@ -80,6 +86,16 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         hintStyleComboBox = new javax.swing.JComboBox();
         subpixelTestButton = new javax.swing.JButton();
+        aboutPanel = new javax.swing.JScrollPane();
+        aboutContentPanel = new javax.swing.JPanel();
+        appTitlePanel = new javax.swing.JPanel();
+        appNameLabel = new javax.swing.JLabel();
+        appVersionLabel = new javax.swing.JLabel();
+        appInfoPanel = new javax.swing.JPanel();
+        freeSoftwareLabel = new javax.swing.JLabel();
+        licenseLabel = new javax.swing.JLabel();
+        authorLabel = new javax.swing.JLabel();
+        homepageLabel = new javax.swing.JLabel();
         saveButtonPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -383,9 +399,62 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.gridy = 6;
         fontRenderContentPanel.add(subpixelTestButton, gridBagConstraints);
 
-        fontRenderPane.setViewportView(fontRenderContentPanel);
+        fontRenderPanel.setViewportView(fontRenderContentPanel);
 
-        tabbedPanel.addTab("Font Render", fontRenderPane);
+        tabbedPanel.addTab("Font Render", fontRenderPanel);
+
+        aboutContentPanel.setMinimumSize(new java.awt.Dimension(0, 0));
+        aboutContentPanel.setPreferredSize(new java.awt.Dimension(300, 300));
+        aboutContentPanel.setLayout(new javax.swing.BoxLayout(aboutContentPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        appTitlePanel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 20);
+        flowLayout1.setAlignOnBaseline(true);
+        appTitlePanel.setLayout(flowLayout1);
+
+        appNameLabel.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
+        appNameLabel.setText("Font Config Master");
+        appTitlePanel.add(appNameLabel);
+
+        appVersionLabel.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        appVersionLabel.setText("0.1.1");
+        appTitlePanel.add(appVersionLabel);
+
+        aboutContentPanel.add(appTitlePanel);
+
+        appInfoPanel.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+
+        freeSoftwareLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        freeSoftwareLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        freeSoftwareLabel.setText("Free and Open Source Software");
+        appInfoPanel.add(freeSoftwareLabel);
+
+        licenseLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        licenseLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        licenseLabel.setText("GNU GPL version 3 or later");
+        appInfoPanel.add(licenseLabel);
+
+        authorLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        authorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        authorLabel.setText("Created by Guo \"IceRabbit\" Yunhe");
+        appInfoPanel.add(authorLabel);
+
+        homepageLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        homepageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        homepageLabel.setText("<html><a href=\"https://github.com/guoyunhe/font-config-master\">https://github.com/guoyunhe/font-config-master</a></html>");
+        homepageLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        homepageLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                homepageLabelMouseClicked(evt);
+            }
+        });
+        appInfoPanel.add(homepageLabel);
+
+        aboutContentPanel.add(appInfoPanel);
+
+        aboutPanel.setViewportView(aboutContentPanel);
+
+        tabbedPanel.addTab("About", aboutPanel);
 
         getContentPane().add(tabbedPanel);
 
@@ -438,6 +507,15 @@ public class MainWindow extends javax.swing.JFrame {
     private void sansComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sansComboBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_sansComboBoxActionPerformed
+
+    private void homepageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homepageLabelMouseClicked
+        String link = "https://github.com/guoyunhe/font-config-master";
+        try {
+            Desktop.getDesktop().browse(new URI(link));
+        } catch (IOException | URISyntaxException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_homepageLabelMouseClicked
 
     /**
      * @param args the command line arguments
@@ -545,15 +623,24 @@ public class MainWindow extends javax.swing.JFrame {
     private FontConfigXML fontconfig;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel aboutContentPanel;
+    private javax.swing.JScrollPane aboutPanel;
     private javax.swing.JCheckBox antialiasCheckBox;
+    private javax.swing.JPanel appInfoPanel;
+    private javax.swing.JLabel appNameLabel;
+    private javax.swing.JPanel appTitlePanel;
+    private javax.swing.JLabel appVersionLabel;
+    private javax.swing.JLabel authorLabel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeNoticeButton;
     private javax.swing.JScrollPane fontFamilyPanel;
     private javax.swing.JPanel fontRenderContentPanel;
-    private javax.swing.JScrollPane fontRenderPane;
+    private javax.swing.JScrollPane fontRenderPanel;
     private javax.swing.JPanel fontTypeContentPanel;
+    private javax.swing.JLabel freeSoftwareLabel;
     private javax.swing.JComboBox hintStyleComboBox;
     private javax.swing.JCheckBox hintingCheckBox;
+    private javax.swing.JLabel homepageLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -569,6 +656,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox koMonoComboBox;
     private javax.swing.JComboBox koSansComboBox;
     private javax.swing.JComboBox koSerifComboBox;
+    private javax.swing.JLabel licenseLabel;
     private javax.swing.JDialog logoutNoticeDialog;
     private javax.swing.JComboBox monoComboBox;
     private javax.swing.JLabel monoLabel;
