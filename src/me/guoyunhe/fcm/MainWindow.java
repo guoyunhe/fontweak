@@ -17,7 +17,6 @@
 package me.guoyunhe.fcm;
 
 import javax.swing.DefaultComboBoxModel;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -81,20 +80,13 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         hintStyleComboBox = new javax.swing.JComboBox();
         subpixelTestButton = new javax.swing.JButton();
-        historyPanel = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        recoverButton = new javax.swing.JButton();
         saveButtonPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
         subpixelTestDialog.setTitle("Subpixel Render: Test Your Screen");
         subpixelTestDialog.setLocationByPlatform(true);
-        subpixelTestDialog.setMaximumSize(new java.awt.Dimension(600, 450));
         subpixelTestDialog.setMinimumSize(new java.awt.Dimension(600, 450));
-        subpixelTestDialog.setPreferredSize(new java.awt.Dimension(600, 500));
         subpixelTestDialog.setType(java.awt.Window.Type.UTILITY);
         subpixelTestDialog.getContentPane().setLayout(new javax.swing.BoxLayout(subpixelTestDialog.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
@@ -110,7 +102,6 @@ public class MainWindow extends javax.swing.JFrame {
         logoutNoticeDialog.setTitle("Logout or restart needed");
         logoutNoticeDialog.setLocationByPlatform(true);
         logoutNoticeDialog.setMinimumSize(new java.awt.Dimension(240, 150));
-        logoutNoticeDialog.setPreferredSize(new java.awt.Dimension(200, 150));
         logoutNoticeDialog.setResizable(false);
 
         jLabel3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
@@ -396,26 +387,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         tabbedPanel.addTab("Font Render", fontRenderPane);
 
-        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.X_AXIS));
-
-        jList1.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
-
-        jPanel1.add(jScrollPane1);
-
-        recoverButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        recoverButton.setText("Recover");
-        jPanel1.add(recoverButton);
-
-        historyPanel.setViewportView(jPanel1);
-
-        tabbedPanel.addTab("History Backup", historyPanel);
-
         getContentPane().add(tabbedPanel);
 
         saveButtonPanel.setMaximumSize(new java.awt.Dimension(32767, 35));
@@ -452,21 +423,21 @@ public class MainWindow extends javax.swing.JFrame {
         this.logoutNoticeDialog.setVisible(true);
     }//GEN-LAST:event_okButtonActionPerformed
 
-    private void sansComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sansComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sansComboBoxActionPerformed
-
-    private void antialiasCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_antialiasCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_antialiasCheckBoxActionPerformed
+    private void closeNoticeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeNoticeButtonActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_closeNoticeButtonActionPerformed
 
     private void subpixelTestButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subpixelTestButtonMouseClicked
         this.subpixelTestDialog.setVisible(true);
     }//GEN-LAST:event_subpixelTestButtonMouseClicked
 
-    private void closeNoticeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeNoticeButtonActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_closeNoticeButtonActionPerformed
+    private void antialiasCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_antialiasCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_antialiasCheckBoxActionPerformed
+
+    private void sansComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sansComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sansComboBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -583,7 +554,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel fontTypeContentPanel;
     private javax.swing.JComboBox hintStyleComboBox;
     private javax.swing.JCheckBox hintingCheckBox;
-    private javax.swing.JScrollPane historyPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -591,9 +561,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JList jList1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jaLabel;
     private javax.swing.JComboBox jaMonoComboBox;
     private javax.swing.JComboBox jaSansComboBox;
@@ -606,7 +573,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox monoComboBox;
     private javax.swing.JLabel monoLabel;
     private javax.swing.JButton okButton;
-    private javax.swing.JButton recoverButton;
     private javax.swing.JComboBox sansComboBox;
     private javax.swing.JLabel sansLabel;
     private javax.swing.JPanel saveButtonPanel;
