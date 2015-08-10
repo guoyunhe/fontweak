@@ -86,6 +86,17 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         hintStyleComboBox = new javax.swing.JComboBox();
         subpixelTestButton = new javax.swing.JButton();
+        fontAliasPanel = new javax.swing.JScrollPane();
+        fontAliasContentPanel = new javax.swing.JPanel();
+        aliasTableScrollPanel = new javax.swing.JScrollPane();
+        aliasTable = new javax.swing.JTable();
+        fontAliasActionPanel = new javax.swing.JPanel();
+        originalFontLabel = new javax.swing.JLabel();
+        originalFontTextField = new javax.swing.JTextField();
+        fontAliasLabel = new javax.swing.JLabel();
+        fontAliasComboBox = new javax.swing.JComboBox();
+        newAliasButton = new javax.swing.JButton();
+        deleteAliasButton = new javax.swing.JButton();
         aboutPanel = new javax.swing.JScrollPane();
         aboutContentPanel = new javax.swing.JPanel();
         appTitlePanel = new javax.swing.JPanel();
@@ -136,6 +147,7 @@ public class MainWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Font Config Master");
         setBackground(new java.awt.Color(255, 255, 255));
+        setFont(new java.awt.Font("SansSerif", 0, 10)); // NOI18N
         setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(800, 400));
         setPreferredSize(new java.awt.Dimension(800, 400));
@@ -403,6 +415,77 @@ public class MainWindow extends javax.swing.JFrame {
 
         tabbedPanel.addTab("Font Render", fontRenderPanel);
 
+        fontAliasContentPanel.setLayout(new javax.swing.BoxLayout(fontAliasContentPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        aliasTableScrollPanel.setPreferredSize(new java.awt.Dimension(456, 250));
+
+        aliasTable.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        aliasTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Original font", "Font alias"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        aliasTableScrollPanel.setViewportView(aliasTable);
+
+        fontAliasContentPanel.add(aliasTableScrollPanel);
+
+        fontAliasActionPanel.setMaximumSize(new java.awt.Dimension(32767, 30));
+        fontAliasActionPanel.setMinimumSize(new java.awt.Dimension(408, 30));
+        fontAliasActionPanel.setPreferredSize(new java.awt.Dimension(100, 38));
+
+        originalFontLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        originalFontLabel.setText("Font");
+        fontAliasActionPanel.add(originalFontLabel);
+
+        originalFontTextField.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        originalFontTextField.setAlignmentX(0.0F);
+        originalFontTextField.setPreferredSize(new java.awt.Dimension(136, 28));
+        originalFontTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                originalFontTextFieldActionPerformed(evt);
+            }
+        });
+        fontAliasActionPanel.add(originalFontTextField);
+
+        fontAliasLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        fontAliasLabel.setText("Alias");
+        fontAliasActionPanel.add(fontAliasLabel);
+
+        fontAliasComboBox.setEditable(true);
+        fontAliasComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        fontAliasComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        fontAliasComboBox.setAlignmentX(0.0F);
+        fontAliasComboBox.setPreferredSize(new java.awt.Dimension(136, 28));
+        fontAliasActionPanel.add(fontAliasComboBox);
+
+        newAliasButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        newAliasButton.setText("New");
+        fontAliasActionPanel.add(newAliasButton);
+
+        deleteAliasButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        deleteAliasButton.setText("Delete");
+        fontAliasActionPanel.add(deleteAliasButton);
+
+        fontAliasContentPanel.add(fontAliasActionPanel);
+
+        fontAliasPanel.setViewportView(fontAliasContentPanel);
+
+        tabbedPanel.addTab("Font Alias", fontAliasPanel);
+
         aboutContentPanel.setMinimumSize(new java.awt.Dimension(0, 0));
         aboutContentPanel.setPreferredSize(new java.awt.Dimension(300, 300));
         aboutContentPanel.setLayout(new javax.swing.BoxLayout(aboutContentPanel, javax.swing.BoxLayout.Y_AXIS));
@@ -517,6 +600,10 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_homepageLabelMouseClicked
 
+    private void originalFontTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originalFontTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_originalFontTextFieldActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -625,6 +712,8 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel aboutContentPanel;
     private javax.swing.JScrollPane aboutPanel;
+    private javax.swing.JTable aliasTable;
+    private javax.swing.JScrollPane aliasTableScrollPanel;
     private javax.swing.JCheckBox antialiasCheckBox;
     private javax.swing.JPanel appInfoPanel;
     private javax.swing.JLabel appNameLabel;
@@ -633,6 +722,12 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel authorLabel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeNoticeButton;
+    private javax.swing.JButton deleteAliasButton;
+    private javax.swing.JPanel fontAliasActionPanel;
+    private javax.swing.JComboBox fontAliasComboBox;
+    private javax.swing.JPanel fontAliasContentPanel;
+    private javax.swing.JLabel fontAliasLabel;
+    private javax.swing.JScrollPane fontAliasPanel;
     private javax.swing.JScrollPane fontFamilyPanel;
     private javax.swing.JPanel fontRenderContentPanel;
     private javax.swing.JScrollPane fontRenderPanel;
@@ -660,7 +755,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JDialog logoutNoticeDialog;
     private javax.swing.JComboBox monoComboBox;
     private javax.swing.JLabel monoLabel;
+    private javax.swing.JButton newAliasButton;
     private javax.swing.JButton okButton;
+    private javax.swing.JLabel originalFontLabel;
+    private javax.swing.JTextField originalFontTextField;
     private javax.swing.JComboBox sansComboBox;
     private javax.swing.JLabel sansLabel;
     private javax.swing.JPanel saveButtonPanel;
