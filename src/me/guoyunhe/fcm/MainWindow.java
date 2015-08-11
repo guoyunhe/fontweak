@@ -647,7 +647,7 @@ public class MainWindow extends javax.swing.JFrame {
     
     public void refreshFontList() {
         FontList fontlist = new FontList();
-        String[] list = fontlist.getList();
+        String[] list = fontlist.get();
         this.sansComboBox.setModel(new DefaultComboBoxModel(list));
         this.serifComboBox.setModel(new DefaultComboBoxModel(list));
         this.monoComboBox.setModel(new DefaultComboBoxModel(list));

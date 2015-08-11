@@ -17,6 +17,8 @@
 package me.guoyunhe.fcm;
 
 import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -24,17 +26,48 @@ import java.awt.GraphicsEnvironment;
  */
 public class FontList {
     
-    private String list[];
+    private final GraphicsEnvironment env;
+    
+    private List<String> list;
+    private List<String> ignoreList;
 
     public FontList() {
-        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        String[] originalList = env.getAvailableFontFamilyNames();
-        this.list = new String[originalList.length + 1];
-        this.list[0] = "";
-        System.arraycopy(originalList, 0, this.list, 1, originalList.length);
+        env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        buildIgnoreList();
+        updateList();
     }
     
-    public String[] getList() {
-        return this.list;
+    private void updateList() {
+        String[] originalList = env.getAvailableFontFamilyNames();
+        list = new ArrayList<>();
+        list.add("");
+        for (String font : originalList) {
+            if (!isIgnored(font)) {
+                list.add(font);
+            }
+        }
+    }
+    
+    private void buildIgnoreList() {
+        ignoreList = new ArrayList<>();
+        ignoreList.add("Sans Serif");
+        ignoreList.add("SansSerif");
+        ignoreList.add("Serif");
+        ignoreList.add("Monospace");
+        ignoreList.add("Monospaced");
+    }
+    
+    private boolean isIgnored(String font) {
+        return ignoreList.contains(font);
+    }
+    
+    public String[] get() {
+        String[] array = new String[list.size()];
+        list.toArray(array);
+        return array;
+    }
+    
+    public void refresh() {
+        updateList();
     }
 }
