@@ -571,8 +571,8 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        this.saveConfig();
-        this.logoutNoticeDialog.setVisible(true);
+        saveConfig();
+        logoutNoticeDialog.setVisible(true);
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void closeNoticeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeNoticeButtonActionPerformed
@@ -580,7 +580,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_closeNoticeButtonActionPerformed
 
     private void subpixelTestButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subpixelTestButtonMouseClicked
-        this.subpixelTestDialog.setVisible(true);
+        subpixelTestDialog.setVisible(true);
     }//GEN-LAST:event_subpixelTestButtonMouseClicked
 
     private void antialiasCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_antialiasCheckBoxActionPerformed
@@ -653,22 +653,22 @@ public class MainWindow extends javax.swing.JFrame {
     public void refreshFontList() {
         FontList fontlist = new FontList();
         String[] list = fontlist.get();
-        this.sansComboBox.setModel(new DefaultComboBoxModel(list));
-        this.serifComboBox.setModel(new DefaultComboBoxModel(list));
-        this.monoComboBox.setModel(new DefaultComboBoxModel(list));
-        this.zhSansComboBox.setModel(new DefaultComboBoxModel(list));
-        this.zhSerifComboBox.setModel(new DefaultComboBoxModel(list));
-        this.zhMonoComboBox.setModel(new DefaultComboBoxModel(list));
-        this.jaSansComboBox.setModel(new DefaultComboBoxModel(list));
-        this.jaSerifComboBox.setModel(new DefaultComboBoxModel(list));
-        this.jaMonoComboBox.setModel(new DefaultComboBoxModel(list));
-        this.koSansComboBox.setModel(new DefaultComboBoxModel(list));
-        this.koSerifComboBox.setModel(new DefaultComboBoxModel(list));
-        this.koMonoComboBox.setModel(new DefaultComboBoxModel(list));
+        sansComboBox.setModel(new DefaultComboBoxModel(list));
+        serifComboBox.setModel(new DefaultComboBoxModel(list));
+        monoComboBox.setModel(new DefaultComboBoxModel(list));
+        zhSansComboBox.setModel(new DefaultComboBoxModel(list));
+        zhSerifComboBox.setModel(new DefaultComboBoxModel(list));
+        zhMonoComboBox.setModel(new DefaultComboBoxModel(list));
+        jaSansComboBox.setModel(new DefaultComboBoxModel(list));
+        jaSerifComboBox.setModel(new DefaultComboBoxModel(list));
+        jaMonoComboBox.setModel(new DefaultComboBoxModel(list));
+        koSansComboBox.setModel(new DefaultComboBoxModel(list));
+        koSerifComboBox.setModel(new DefaultComboBoxModel(list));
+        koMonoComboBox.setModel(new DefaultComboBoxModel(list));
     }
     
     public void openConfig() {
-        this.fontconfig = new FontConfigXML();
+        fontconfig = new FontConfigXML();
         // TODO: set UI components to configuration data
         sansComboBox.setSelectedItem(fontconfig.getSans());
         serifComboBox.setSelectedItem(fontconfig.getSerif());

@@ -88,9 +88,9 @@ public class FontConfigXML {
             Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        this.cleanConfigFiles();
+        cleanConfigFiles();
         
-        this.readConfig();
+        readConfig();
     }
     
     /**
@@ -139,9 +139,9 @@ public class FontConfigXML {
         for (int i = 0; i < list.getLength(); i++) {
             Element element = (Element) list.item(i);
             if (element.hasAttribute("target")) {
-                this.findOption(element);
+                findOption(element);
             } else {
-                this.findPattern(element);
+                findPattern(element);
             }
         }
         
@@ -155,16 +155,16 @@ public class FontConfigXML {
         Element edit = (Element)element.getElementsByTagName("edit").item(0);
         switch (edit.getAttribute("name")) {
             case "rgba":
-                this.rgba = this.parseConst(edit);
+                rgba = parseConst(edit);
                 break;
             case "hinting":
-                this.hinting = this.parseBool(edit);
+                hinting = parseBool(edit);
                 break;
             case "hintstyle":
-                this.hintstyle = this.parseConst(edit);
+                hintstyle = parseConst(edit);
                 break;
             case "antialias":
-                this.antialias = this.parseBool(edit);
+                antialias = parseBool(edit);
                 break;
         }
         
@@ -189,16 +189,16 @@ public class FontConfigXML {
                     case "test":
                         switch (child.getAttribute("name")) {
                             case "family":
-                                testFamily = this.parseString(child);
+                                testFamily = parseString(child);
                                 break;
                             case "lang":
-                                testLanguage = this.parseString(child);
+                                testLanguage = parseString(child);
                                 break;
                         }
                         break;
                     case "edit":
                         if (child.getAttribute("name").equals("family")) {
-                            editFamily = this.parseString(child);
+                            editFamily = parseString(child);
                         }
                         break;
                 }
@@ -212,16 +212,16 @@ public class FontConfigXML {
                     case "zh":
                     case "zh-cn":
                     case "zh-tw":
-                        this.zhSans = editFamily;
+                        zhSans = editFamily;
                         break;
                     case "ja":
-                        this.jaSans = editFamily;
+                        jaSans = editFamily;
                         break;
                     case "ko":
-                        this.koSans = editFamily;
+                        koSans = editFamily;
                         break;
                     default:
-                        this.sans = editFamily;
+                        sans = editFamily;
                         break;
                 }
                 break;
@@ -230,16 +230,16 @@ public class FontConfigXML {
                     case "zh":
                     case "zh-cn":
                     case "zh-tw":
-                        this.zhSerif = editFamily;
+                        zhSerif = editFamily;
                         break;
                     case "ja":
-                        this.jaSerif = editFamily;
+                        jaSerif = editFamily;
                         break;
                     case "ko":
-                        this.koSerif = editFamily;
+                        koSerif = editFamily;
                         break;
                     default:
-                        this.serif = editFamily;
+                        serif = editFamily;
                         break;
                 }
                 break;
@@ -249,16 +249,16 @@ public class FontConfigXML {
                     case "zh":
                     case "zh-cn":
                     case "zh-tw":
-                        this.zhMono = editFamily;
+                        zhMono = editFamily;
                         break;
                     case "ja":
-                        this.jaMono = editFamily;
+                        jaMono = editFamily;
                         break;
                     case "ko":
-                        this.koMono = editFamily;
+                        koMono = editFamily;
                         break;
                     default:
-                        this.mono = editFamily;
+                        mono = editFamily;
                         break;
                 }
                 break;
@@ -369,10 +369,10 @@ public class FontConfigXML {
             root.appendChild(makeFontFamilyMatch("monospace", null, mono));
         }
         
-        root.appendChild(makeFontRenderMatch("antialias", "bool", Boolean.toString(this.antialias)));
-        root.appendChild(makeFontRenderMatch("hinting", "bool", Boolean.toString(this.hinting)));
-        root.appendChild(makeFontRenderMatch("hintstyle", "const", this.hintstyle));
-        root.appendChild(makeFontRenderMatch("rgba", "const", this.rgba));
+        root.appendChild(makeFontRenderMatch("antialias", "bool", Boolean.toString(antialias)));
+        root.appendChild(makeFontRenderMatch("hinting", "bool", Boolean.toString(hinting)));
+        root.appendChild(makeFontRenderMatch("hintstyle", "const", hintstyle));
+        root.appendChild(makeFontRenderMatch("rgba", "const", rgba));
         
         // Write document object to XML file.
         try {
@@ -438,107 +438,103 @@ public class FontConfigXML {
     }
     
     private boolean validFont(String font) {
-        if(font == null || font.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(font == null || font.isEmpty());
     }
     
     public void setSans(String font) {
-        this.sans = font;
+        sans = font;
     }
     
     public void setSerif(String font) {
-        this.serif = font;
+        serif = font;
     }
     
     public void setMono(String font) {
-        this.mono = font;
+        mono = font;
     }
     
     public void setZhSans(String font) {
-        this.zhSans = font;
+        zhSans = font;
     }
     
     public void setZhSerif(String font) {
-        this.zhSerif = font;
+        zhSerif = font;
     }
     
     public void setZhMono(String font) {
-        this.zhMono = font;
+        zhMono = font;
     }
     
     public void setJaSans(String font) {
-        this.jaSans = font;
+        jaSans = font;
     }
     
     public void setJaSerif(String font) {
-        this.jaSerif = font;
+        jaSerif = font;
     }
     
     public void setJaMono(String font) {
-        this.jaMono = font;
+        jaMono = font;
     }
     
     public void setKoSans(String font) {
-        this.koSans = font;
+        koSans = font;
     }
     
     public void setKoSerif(String font) {
-        this.koSerif = font;
+        koSerif = font;
     }
     
     public void setKoMono(String font) {
-        this.koMono = font;
+        koMono = font;
     }
     
     public String getSans() {
-        return this.sans;
+        return sans;
     }
     
     public String getSerif() {
-        return this.serif;
+        return serif;
     }
     
     public String getMono() {
-        return this.mono;
+        return mono;
     }
     
     public String getZhSans() {
-        return this.zhSans;
+        return zhSans;
     }
     
     public String getZhSerif() {
-        return this.zhSerif;
+        return zhSerif;
     }
     
     public String getZhMono() {
-        return this.zhMono;
+        return zhMono;
     }
     
     public String getJaSans() {
-        return this.jaSans;
+        return jaSans;
     }
     
     public String getJaSerif() {
-        return this.jaSerif;
+        return jaSerif;
     }
     
     public String getJaMono() {
-        return this.jaMono;
+        return jaMono;
     }
     
     public String getKoSans() {
-        return this.koSans;
+        return koSans;
     }
     
     public String getKoSerif() {
-        return this.koSerif;
+        return koSerif;
     }
     
     public String getKoMono() {
-        return this.koMono;
+        return koMono;
     }
     
     public void setAntiAlias(boolean antialias) {
@@ -546,7 +542,7 @@ public class FontConfigXML {
     }
     
     public boolean getAntiAlias() {
-        return this.antialias;
+        return antialias;
     }
     
     public void setHinting(boolean hinting) {
@@ -554,31 +550,31 @@ public class FontConfigXML {
     }
     
     public boolean getHinting() {
-        return this.hinting;
+        return hinting;
     }
     
     public void setHintStyle(int style) {
         switch (style) {
             case HINT_NONE:
-                this.hintstyle = "hintnone";
+                hintstyle = "hintnone";
                 break;
             case HINT_SLIGHT:
-                this.hintstyle = "hintslight";
+                hintstyle = "hintslight";
                 break;
             case HINT_MEDIUM:
-                this.hintstyle = "hintmedium";
+                hintstyle = "hintmedium";
                 break;
             case HINT_FULL:
-                this.hintstyle = "hintfull";
+                hintstyle = "hintfull";
                 break;
             default:
-                this.hintstyle = "hintnone";
+                hintstyle = "hintnone";
                 break;
         }
     }
     
     public int getHintStyle() {
-        switch (this.hintstyle) {
+        switch (hintstyle) {
             case "hintnone":
                 return HINT_NONE;
             case "hintslight":
@@ -616,7 +612,7 @@ public class FontConfigXML {
     }
     
     public int getSubpixel() {
-        switch (this.rgba) {
+        switch (rgba) {
             case "none":
                 return RGBA_NONE;
             case "rgb":
