@@ -419,6 +419,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         aliasTableScrollPanel.setPreferredSize(new java.awt.Dimension(456, 250));
 
+        aliasTable.setAutoCreateRowSorter(true);
         aliasTable.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         aliasTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
