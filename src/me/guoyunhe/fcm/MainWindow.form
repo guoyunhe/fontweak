@@ -5,7 +5,6 @@
     <Container class="javax.swing.JDialog" name="subpixelTestDialog">
       <Properties>
         <Property name="title" type="java.lang.String" value="Subpixel Render: Test Your Screen"/>
-        <Property name="locationByPlatform" type="boolean" value="true"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[600, 450]"/>
         </Property>
@@ -42,11 +41,16 @@
     <Container class="javax.swing.JDialog" name="logoutNoticeDialog">
       <Properties>
         <Property name="title" type="java.lang.String" value="Logout or restart needed"/>
-        <Property name="locationByPlatform" type="boolean" value="true"/>
+        <Property name="location" type="java.awt.Point" editor="org.netbeans.beaninfo.editors.PointEditor">
+          <Point value="[0, 0]"/>
+        </Property>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[240, 150]"/>
         </Property>
         <Property name="resizable" type="boolean" value="false"/>
+        <Property name="type" type="java.awt.Window$Type" editor="org.netbeans.modules.form.editors.EnumEditor">
+          <Value id="UTILITY"/>
+        </Property>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>

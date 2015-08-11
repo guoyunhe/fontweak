@@ -112,7 +112,6 @@ public class MainWindow extends javax.swing.JFrame {
         cancelButton = new javax.swing.JButton();
 
         subpixelTestDialog.setTitle("Subpixel Render: Test Your Screen");
-        subpixelTestDialog.setLocationByPlatform(true);
         subpixelTestDialog.setMinimumSize(new java.awt.Dimension(600, 450));
         subpixelTestDialog.setType(java.awt.Window.Type.UTILITY);
         subpixelTestDialog.getContentPane().setLayout(new javax.swing.BoxLayout(subpixelTestDialog.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
@@ -127,9 +126,10 @@ public class MainWindow extends javax.swing.JFrame {
         subpixelTestDialog.getContentPane().add(jLabel2);
 
         logoutNoticeDialog.setTitle("Logout or restart needed");
-        logoutNoticeDialog.setLocationByPlatform(true);
+        logoutNoticeDialog.setLocation(new java.awt.Point(0, 0));
         logoutNoticeDialog.setMinimumSize(new java.awt.Dimension(240, 150));
         logoutNoticeDialog.setResizable(false);
+        logoutNoticeDialog.setType(java.awt.Window.Type.UTILITY);
 
         jLabel3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -639,12 +639,17 @@ public class MainWindow extends javax.swing.JFrame {
                 mw.setVisible(true);
                 mw.refreshFontList();
                 mw.openConfig();
+                mw.adjustUI();
             }
         });
-        
-        
+
     }
-    
+
+    public void adjustUI() {
+        logoutNoticeDialog.setLocationRelativeTo(this);
+        subpixelTestDialog.setLocationRelativeTo(this);
+    }
+
     public void refreshFontList() {
         FontList fontlist = new FontList();
         String[] list = fontlist.get();
