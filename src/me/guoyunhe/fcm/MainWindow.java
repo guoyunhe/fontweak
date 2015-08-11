@@ -665,6 +665,7 @@ public class MainWindow extends javax.swing.JFrame {
         koSansComboBox.setModel(new DefaultComboBoxModel(list));
         koSerifComboBox.setModel(new DefaultComboBoxModel(list));
         koMonoComboBox.setModel(new DefaultComboBoxModel(list));
+        fontAliasComboBox.setModel(new DefaultComboBoxModel(list));
     }
     
     public void openConfig() {
