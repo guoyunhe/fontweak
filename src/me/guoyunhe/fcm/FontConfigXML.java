@@ -358,6 +358,11 @@ public class FontConfigXML {
             Node n = list.item(0);
             n.getParentNode().removeChild(n);
         }
+        NodeList list2 = doc.getElementsByTagName("alias");
+        while (list2.getLength() > 0) {
+            Node n = list2.item(0);
+            n.getParentNode().removeChild(n);
+        }
         // Clean empty text nodes
         NodeList childList = root.getChildNodes();
         for (int i = 0; i < childList.getLength(); i++) {
@@ -404,6 +409,10 @@ public class FontConfigXML {
         }
         if (validFont(mono)) {
             root.appendChild(makeFontFamilyMatch("monospace", null, mono));
+        }
+        
+        for (String[] aliasPair : aliasList) {
+            root.appendChild(makeAliasElement(aliasPair[0], aliasPair[1]));
         }
         
         root.appendChild(makeFontRenderMatch("antialias", "bool", Boolean.toString(antialias)));
@@ -476,6 +485,20 @@ public class FontConfigXML {
     
     private boolean validFont(String font) {
         return !(font == null || font.isEmpty());
+    }
+    
+    private Element makeAliasElement(String font, String alias) {
+        Element aliasElement = doc.createElement("alias");
+        aliasElement.setAttribute("binding", "strong");
+        Element familyElement = doc.createElement("family");
+        familyElement.setTextContent(font);
+        aliasElement.appendChild(familyElement);
+        Element preferElement = doc.createElement("prefer");
+        Element preferFamilyElement = doc.createElement("family");
+        preferFamilyElement.setTextContent(alias);
+        preferElement.appendChild(preferFamilyElement);
+        aliasElement.appendChild(preferElement);
+        return aliasElement;
     }
     
     public void setSans(String font) {
@@ -665,7 +688,11 @@ public class FontConfigXML {
         }
     }
     
-    public List<String[]> getAliasList () {
+    public ArrayList<String[]> getAliasList () {
         return aliasList;
+    }
+    
+    public void setAliasList(ArrayList<String[]> aliasList) {
+        this.aliasList = aliasList;
     }
 }

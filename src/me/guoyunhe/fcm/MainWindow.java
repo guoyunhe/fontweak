@@ -20,6 +20,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -728,6 +729,14 @@ public class MainWindow extends javax.swing.JFrame {
         fontconfig.setKoSans((String)koSansComboBox.getSelectedItem());
         fontconfig.setKoSerif((String)koSerifComboBox.getSelectedItem());
         fontconfig.setKoMono((String)koMonoComboBox.getSelectedItem());
+        
+        ArrayList<String[]> aliasList = new ArrayList();
+        for(int i=0; i < this.aliasTableModel.getRowCount(); i++) {
+            String font = (String)aliasTableModel.getValueAt(i, 0);
+            String alias = (String)aliasTableModel.getValueAt(i, 1);
+            aliasList.add(new String[]{font, alias});
+        }
+        fontconfig.setAliasList(aliasList);
         
         fontconfig.setAntiAlias(antialiasCheckBox.isSelected());
         fontconfig.setHinting(hintingCheckBox.isSelected());
