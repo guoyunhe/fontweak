@@ -20,9 +20,11 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -689,6 +691,26 @@ public class MainWindow extends javax.swing.JFrame {
         hintingCheckBox.setSelected(fontconfig.getHinting());
         hintStyleComboBox.setSelectedIndex(fontconfig.getHintStyle());
         subpixelComboBox.setSelectedIndex(fontconfig.getSubpixel());
+        
+        aliasTableModel = new javax.swing.table.DefaultTableModel(
+                new String[][]{}, // TODO: Read from fontconfig
+                new String[]{
+                    "Original font", "Font alias"
+                }
+        ) {
+            Class[] types = new Class[]{
+                java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+        };
+        List<String[]> aliasList = fontconfig.getAliasList();
+        for (String[] alias : aliasList) {
+            aliasTableModel.addRow(alias);
+        }
+        aliasTable.setModel(aliasTableModel);
     }
     
     public void saveConfig() {
@@ -715,6 +737,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
     
     private FontConfigXML fontconfig;
+    private DefaultTableModel aliasTableModel;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel aboutContentPanel;

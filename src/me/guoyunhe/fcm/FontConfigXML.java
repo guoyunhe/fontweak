@@ -19,6 +19,8 @@ package me.guoyunhe.fcm;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -69,6 +71,8 @@ public class FontConfigXML {
     private String koSerif;
     private String koMono;
     
+    private ArrayList<String[]> aliasList;
+    
     public static final int HINT_NONE = 0;
     public static final int HINT_SLIGHT = 1;
     public static final int HINT_MEDIUM = 2;
@@ -87,6 +91,8 @@ public class FontConfigXML {
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        aliasList = new ArrayList();
         
         cleanConfigFiles();
         
@@ -134,17 +140,21 @@ public class FontConfigXML {
 
         // Read elements
         root = doc.getElementsByTagName("fontconfig").item(0);
-        NodeList list = doc.getElementsByTagName("match");
+        NodeList matchElements = doc.getElementsByTagName("match");
+        NodeList aliasElements = doc.getElementsByTagName("alias");
         
-        for (int i = 0; i < list.getLength(); i++) {
-            Element element = (Element) list.item(i);
+        for (int i = 0; i < matchElements.getLength(); i++) {
+            Element element = (Element) matchElements.item(i);
             if (element.hasAttribute("target")) {
                 findOption(element);
             } else {
                 findPattern(element);
             }
         }
-        
+
+        for (int i = 0; i < aliasElements.getLength(); i++) {
+            findAlias(aliasElements.item(i));
+        }
     }
     
     private void findOption(Node node) {
@@ -267,6 +277,33 @@ public class FontConfigXML {
         System.out.println(testFamily + " " + testLanguage + ": " + editFamily);
     }
     
+    private void findAlias(Node node) {
+        NodeList children = node.getChildNodes();
+        String originalFont = null;
+        String preferFont = null;
+        for(int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            switch (child.getNodeName()) {
+                case "family":
+                    originalFont = child.getTextContent().trim();
+                    break;
+                case "prefer":
+                    NodeList grandChildren = child.getChildNodes();
+                    for (int j = 0; j < grandChildren.getLength(); j++) {
+                        Node grandChild = grandChildren.item(j);
+                        if (grandChild.getNodeName().equals("family")) {
+                            preferFont = grandChild.getTextContent().trim();
+                        }
+                    }
+                    break;
+            }
+        }
+        if (originalFont != null && preferFont != null) {
+            String pair[] = {originalFont, preferFont};
+            aliasList.add(pair);
+        }
+    }
+
     /**
      * Paser the boolean value inside of "test" or "edit" tags.
      * @param node An edit or test node that contains boolean value.
@@ -626,5 +663,9 @@ public class FontConfigXML {
             default:
                 return RGBA_NONE;
         }
+    }
+    
+    public List<String[]> getAliasList () {
+        return aliasList;
     }
 }
