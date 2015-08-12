@@ -1,5 +1,6 @@
 # font-config-master
-A font display setup tool, Java/Swing front-end for fontconfig.
+
+A front-end for fontconfig. Setup perfect font effects, fast and easily.
 
 ## Features and Screenshots
 
@@ -13,6 +14,12 @@ A font display setup tool, Java/Swing front-end for fontconfig.
 
 **Setup font render options**, including hinting, antialias, subpixel rendering
 
+![Font render options](http://i.imgur.com/yn6zWD0.png)
+
+**Font replacement**. Use installed fonts render missing fonts.
+
+![Font replacement](http://i.imgur.com/2I1UDro.png)
+
 ## Download
 
 <https://github.com/guoyunhe/font-config-master/releases>
@@ -20,6 +27,10 @@ A font display setup tool, Java/Swing front-end for fontconfig.
 ## Get Help and Report problems
 
 <https://github.com/guoyunhe/font-config-master/issues>
+
+## License
+
+GNU GENERAL PUBLIC LICENSE version 3 or later.
 
 ## Author
 
