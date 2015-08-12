@@ -470,6 +470,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         deleteAliasButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         deleteAliasButton.setText("Delete");
+        deleteAliasButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteAliasButtonActionPerformed(evt);
+            }
+        });
         fontAliasActionPanel.add(deleteAliasButton);
 
         fontAliasContentPanel.add(fontAliasActionPanel);
@@ -587,8 +592,16 @@ public class MainWindow extends javax.swing.JFrame {
     private void newAliasButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAliasButtonActionPerformed
         String font = originalFontTextField.getText().trim();
         String alias = ((String)fontAliasComboBox.getSelectedItem()).trim();
-        this.aliasTableModel.addRow(new String[]{font, alias});
+        aliasTableModel.addRow(new String[]{font, alias});
     }//GEN-LAST:event_newAliasButtonActionPerformed
+
+    private void deleteAliasButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAliasButtonActionPerformed
+        int[] selectedIndex = this.aliasTable.getSelectedRows();
+        for (int indexOfView : selectedIndex) {
+            int indexOfModel = aliasTable.convertRowIndexToModel(indexOfView);
+            aliasTableModel.removeRow(indexOfModel);
+        }
+    }//GEN-LAST:event_deleteAliasButtonActionPerformed
 
     /**
      * @param args the command line arguments
