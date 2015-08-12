@@ -152,7 +152,6 @@ public class MainWindow extends javax.swing.JFrame {
         setFont(new java.awt.Font("SansSerif", 0, 10)); // NOI18N
         setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(800, 400));
-        setPreferredSize(new java.awt.Dimension(800, 400));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         tabbedPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -200,11 +199,6 @@ public class MainWindow extends javax.swing.JFrame {
         sansComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         sansComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         sansComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
-        sansComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sansComboBoxActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
@@ -343,11 +337,6 @@ public class MainWindow extends javax.swing.JFrame {
         fontRenderContentPanel.add(jLabel8, gridBagConstraints);
 
         antialiasCheckBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        antialiasCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                antialiasCheckBoxActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -457,11 +446,6 @@ public class MainWindow extends javax.swing.JFrame {
         originalFontTextField.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         originalFontTextField.setAlignmentX(0.0F);
         originalFontTextField.setPreferredSize(new java.awt.Dimension(136, 28));
-        originalFontTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                originalFontTextFieldActionPerformed(evt);
-            }
-        });
         fontAliasActionPanel.add(originalFontTextField);
 
         fontAliasLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
@@ -477,6 +461,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         newAliasButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         newAliasButton.setText("New");
+        newAliasButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newAliasButtonActionPerformed(evt);
+            }
+        });
         fontAliasActionPanel.add(newAliasButton);
 
         deleteAliasButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
@@ -586,14 +575,6 @@ public class MainWindow extends javax.swing.JFrame {
         subpixelTestDialog.setVisible(true);
     }//GEN-LAST:event_subpixelTestButtonMouseClicked
 
-    private void antialiasCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_antialiasCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_antialiasCheckBoxActionPerformed
-
-    private void sansComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sansComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sansComboBoxActionPerformed
-
     private void homepageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homepageLabelMouseClicked
         String link = "https://github.com/guoyunhe/font-config-master";
         try {
@@ -603,9 +584,11 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_homepageLabelMouseClicked
 
-    private void originalFontTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originalFontTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_originalFontTextFieldActionPerformed
+    private void newAliasButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAliasButtonActionPerformed
+        String font = originalFontTextField.getText().trim();
+        String alias = ((String)fontAliasComboBox.getSelectedItem()).trim();
+        this.aliasTableModel.addRow(new String[]{font, alias});
+    }//GEN-LAST:event_newAliasButtonActionPerformed
 
     /**
      * @param args the command line arguments
