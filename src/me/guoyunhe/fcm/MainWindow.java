@@ -20,6 +20,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -596,10 +597,14 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_newAliasButtonActionPerformed
 
     private void deleteAliasButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAliasButtonActionPerformed
-        int[] selectedIndex = this.aliasTable.getSelectedRows();
-        for (int indexOfView : selectedIndex) {
-            int indexOfModel = aliasTable.convertRowIndexToModel(indexOfView);
-            aliasTableModel.removeRow(indexOfModel);
+        int[] selectedRowsOfView = this.aliasTable.getSelectedRows();
+        int[] selectedRowsOfModel = new int[selectedRowsOfView.length];
+        for (int i = 0; i < selectedRowsOfView.length; i++) {
+            selectedRowsOfModel[i] = aliasTable.convertRowIndexToModel(selectedRowsOfView[i]);
+        }
+        Arrays.sort(selectedRowsOfModel);
+        for (int i = selectedRowsOfModel.length - 1; i >= 0; i--) {
+            aliasTableModel.removeRow(selectedRowsOfModel[i]);
         }
     }//GEN-LAST:event_deleteAliasButtonActionPerformed
 
