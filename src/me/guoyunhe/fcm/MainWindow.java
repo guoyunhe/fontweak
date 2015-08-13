@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -57,6 +58,12 @@ public class MainWindow extends javax.swing.JFrame {
         logoutNoticeDialog = new javax.swing.JDialog();
         jLabel3 = new javax.swing.JLabel();
         closeNoticeButton = new javax.swing.JButton();
+        schemePanel = new javax.swing.JPanel();
+        schemeLabel = new javax.swing.JLabel();
+        schemeComboBox = new javax.swing.JComboBox();
+        newSchemeButton = new javax.swing.JButton();
+        renameSchemeButton = new javax.swing.JButton();
+        deleteSchemeButton = new javax.swing.JButton();
         tabbedPanel = new javax.swing.JTabbedPane();
         fontFamilyPanel = new javax.swing.JScrollPane();
         fontTypeContentPanel = new javax.swing.JPanel();
@@ -155,6 +162,35 @@ public class MainWindow extends javax.swing.JFrame {
         setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(800, 400));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
+
+        schemePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        schemeLabel.setText("Scheme");
+        schemePanel.add(schemeLabel);
+
+        schemeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        schemeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                schemeComboBoxActionPerformed(evt);
+            }
+        });
+        schemePanel.add(schemeComboBox);
+
+        newSchemeButton.setText("New Scheme");
+        newSchemeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newSchemeButtonActionPerformed(evt);
+            }
+        });
+        schemePanel.add(newSchemeButton);
+
+        renameSchemeButton.setText("Rename");
+        schemePanel.add(renameSchemeButton);
+
+        deleteSchemeButton.setText("Delete");
+        schemePanel.add(deleteSchemeButton);
+
+        getContentPane().add(schemePanel);
 
         tabbedPanel.setBackground(new java.awt.Color(255, 255, 255));
         tabbedPanel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
@@ -540,8 +576,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(tabbedPanel);
 
-        saveButtonPanel.setMaximumSize(new java.awt.Dimension(32767, 35));
-
         okButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         okButton.setText("OK");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -609,6 +643,19 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_deleteAliasButtonActionPerformed
 
+    private void schemeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_schemeComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_schemeComboBoxActionPerformed
+
+    private void newSchemeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newSchemeButtonActionPerformed
+        // Show dialog to create new scheme and save the configuration file
+        String schemeName = (String) JOptionPane.showInputDialog(
+                this,
+                "Name of new scheme: ",
+                "Create New Scheme",
+                JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_newSchemeButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -644,6 +691,7 @@ public class MainWindow extends javax.swing.JFrame {
                 mw.setVisible(true);
                 mw.refreshFontList();
                 mw.openConfig();
+                mw.refreshSchemeList();
                 mw.adjustUI();
             }
         });
@@ -653,6 +701,10 @@ public class MainWindow extends javax.swing.JFrame {
     public void adjustUI() {
         logoutNoticeDialog.setLocationRelativeTo(this);
         subpixelTestDialog.setLocationRelativeTo(this);
+    }
+    
+    public void refreshSchemeList() {
+        schemeManager = new SchemeManager();
     }
 
     public void refreshFontList() {
@@ -746,8 +798,17 @@ public class MainWindow extends javax.swing.JFrame {
         fontconfig.writeConfig();
     }
     
+    private void openScheme() {
+        
+    }
+    
+    private void saveScheme() {
+        
+    }
+    
     private FontConfigXML fontconfig;
     private DefaultTableModel aliasTableModel;
+    private SchemeManager schemeManager;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel aboutContentPanel;
@@ -763,6 +824,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeNoticeButton;
     private javax.swing.JButton deleteAliasButton;
+    private javax.swing.JButton deleteSchemeButton;
     private javax.swing.JPanel fontAliasActionPanel;
     private javax.swing.JComboBox fontAliasComboBox;
     private javax.swing.JPanel fontAliasContentPanel;
@@ -796,12 +858,17 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox monoComboBox;
     private javax.swing.JLabel monoLabel;
     private javax.swing.JButton newAliasButton;
+    private javax.swing.JButton newSchemeButton;
     private javax.swing.JButton okButton;
     private javax.swing.JLabel originalFontLabel;
     private javax.swing.JTextField originalFontTextField;
+    private javax.swing.JButton renameSchemeButton;
     private javax.swing.JComboBox sansComboBox;
     private javax.swing.JLabel sansLabel;
     private javax.swing.JPanel saveButtonPanel;
+    private javax.swing.JComboBox schemeComboBox;
+    private javax.swing.JLabel schemeLabel;
+    private javax.swing.JPanel schemePanel;
     private javax.swing.JComboBox serifComboBox;
     private javax.swing.JLabel serifLabel;
     private javax.swing.JComboBox subpixelComboBox;
