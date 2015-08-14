@@ -192,6 +192,11 @@ public class MainWindow extends javax.swing.JFrame {
         schemePanel.add(newSchemeButton);
 
         renameSchemeButton.setText("Rename");
+        renameSchemeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                renameSchemeButtonActionPerformed(evt);
+            }
+        });
         schemePanel.add(renameSchemeButton);
 
         deleteSchemeButton.setText("Delete");
@@ -666,10 +671,34 @@ public class MainWindow extends javax.swing.JFrame {
                 "Name of new scheme: ",
                 "Create New Scheme",
                 JOptionPane.PLAIN_MESSAGE);
-        File schemeFile = schemeManager.getSchemeFile(scheme);
-        saveConfig();
-        fontconfig.writeConfig(schemeFile);
+        // If users clicked "Cancel" button of dialog, it will return null.
+        if (scheme != null) {
+            File schemeFile = schemeManager.getSchemeFile(scheme);
+            saveConfig();
+            fontconfig.writeConfig(schemeFile);
+        }
     }//GEN-LAST:event_newSchemeButtonActionPerformed
+
+    private void renameSchemeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameSchemeButtonActionPerformed
+        int selectedIndex = schemeComboBox.getSelectedIndex();
+        String oldName = (String)schemeComboBox.getSelectedItem();
+        // Get input value from dialog
+        String newName = (String) JOptionPane.showInputDialog(
+                this,
+                "New name of scheme " + oldName, // Text body above text field
+                "Create New Scheme", // Title of dialog
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                oldName
+        );
+        // If users clicked "Cancel" button of dialog, it will return null.
+        if (newName != null) {
+            schemeComboBox.insertItemAt(newName, selectedIndex);
+            schemeComboBox.removeItemAt(selectedIndex + 1);
+            schemeManager.renameScheme(oldName, newName);
+        }
+    }//GEN-LAST:event_renameSchemeButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -719,6 +748,9 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void refreshSchemeList() {
         schemeManager = new SchemeManager();
+        String[] schemeList = {"Hello", "Foo"}; // Test value...
+        schemeComboBoxModel = new DefaultComboBoxModel( schemeList );
+        schemeComboBox.setModel(schemeComboBoxModel);
     }
 
     private void refreshFontList() {
@@ -825,6 +857,7 @@ public class MainWindow extends javax.swing.JFrame {
     private FontConfigXML fontconfig;
     private DefaultTableModel aliasTableModel;
     private SchemeManager schemeManager;
+    private DefaultComboBoxModel schemeComboBoxModel;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel aboutContentPanel;
