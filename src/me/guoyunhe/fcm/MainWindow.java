@@ -200,6 +200,11 @@ public class MainWindow extends javax.swing.JFrame {
         schemePanel.add(renameSchemeButton);
 
         deleteSchemeButton.setText("Delete");
+        deleteSchemeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteSchemeButtonActionPerformed(evt);
+            }
+        });
         schemePanel.add(deleteSchemeButton);
 
         getContentPane().add(schemePanel);
@@ -699,6 +704,24 @@ public class MainWindow extends javax.swing.JFrame {
             schemeManager.renameScheme(oldName, newName);
         }
     }//GEN-LAST:event_renameSchemeButtonActionPerformed
+
+    private void deleteSchemeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSchemeButtonActionPerformed
+        // Delete scheme file
+        String scheme = (String) schemeComboBox.getSelectedItem();
+        schemeManager.deleteScheme(scheme);
+
+        // Remove item in ComboBox
+        int selectedIndex = schemeComboBox.getSelectedIndex();
+        schemeComboBox.remove(selectedIndex);
+        // This will trigger schemeComboBoxActionPerformed() function, and load
+        // new scheme automatically
+
+        // If deleted current scheme, set current scheme to new selected scheme
+        if (schemeManager.getCurrentSchemeName().equals(scheme)) {
+            String fallbackScheme = (String) schemeComboBox.getSelectedItem();
+            schemeManager.setCurrentSchemeName(fallbackScheme);
+        }
+    }//GEN-LAST:event_deleteSchemeButtonActionPerformed
 
     /**
      * @param args the command line arguments
