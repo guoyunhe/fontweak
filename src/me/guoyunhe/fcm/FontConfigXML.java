@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -88,6 +87,14 @@ public class FontConfigXML {
         factory = DocumentBuilderFactory.newInstance();
         try {
             builder = factory.newDocumentBuilder();
+            // Empty DTD reference, since it is missing in most system
+            builder.setEntityResolver((String publicId, String systemId) -> {
+                if (systemId.contains("fonts.dtd")) {
+                    return new InputSource(new StringReader(""));
+                } else {
+                    return null;
+                }
+            });
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -95,8 +102,6 @@ public class FontConfigXML {
         aliasList = new ArrayList();
         
         cleanConfigFiles();
-        
-        readConfig();
     }
     
     /**
@@ -117,23 +122,15 @@ public class FontConfigXML {
         // configuration file.
         configFile = newConfigFile;
     }
-    
-    /**
-     * Read configuration XML.
-     */
-    private void readConfig() {
-        // Empty DTD reference, since it is missing in most system
-        builder.setEntityResolver((String publicId, String systemId) -> {
-            if (systemId.contains("fonts.dtd")) {
-                return new InputSource(new StringReader(""));
-            } else {
-                return null;
-            }
-        });
 
+    /**
+     * Read fontconfig configuration file (XML).
+     * @param xml Fontconfig XML file to be read
+     */
+    public void readConfig(File xml) {
         // Parse DOM from XML
         try {
-            doc = builder.parse(configFile);
+            doc = builder.parse(xml);
         } catch (SAXException | IOException ex) {
             Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -155,6 +152,14 @@ public class FontConfigXML {
         for (int i = 0; i < aliasElements.getLength(); i++) {
             findAlias(aliasElements.item(i));
         }
+    }
+    
+    /**
+     * Read default fontconfig configuration file.
+     * Located at `~/.config/fontconfig/fonts.conf`
+     */
+    public void readConfig() {
+        readConfig(configFile);
     }
     
     private void findOption(Node node) {
@@ -349,9 +354,10 @@ public class FontConfigXML {
     }
     
     /**
-     * Write changes to `.config/fontconfig/fonts.conf` XML file.
+     * Write changes to fontconfig configuration file (XML).
+     * @param xml The configuration file to be saved.
      */
-    public void writeConfig() {
+    public void writeConfig(File xml) {
         // Clean old nodes
         NodeList list = doc.getElementsByTagName("match");
         while (list.getLength() > 0) {
@@ -423,7 +429,7 @@ public class FontConfigXML {
         // Write document object to XML file.
         try {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            Result output = new StreamResult(configFile);
+            Result output = new StreamResult(xml);
             Source input = new DOMSource(doc);
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
@@ -433,6 +439,14 @@ public class FontConfigXML {
         } catch (TransformerException ex) {
             Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * Write changes to default fontconfig configuration file (XML).
+     * Located at `~/.config/fontconfig/fonts.conf`.
+     */
+    public void writeConfig() {
+        writeConfig(configFile);
     }
     
     private Element makeFontFamilyMatch(String family, String lang, String font) {

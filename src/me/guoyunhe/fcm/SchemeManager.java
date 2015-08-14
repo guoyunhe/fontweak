@@ -105,16 +105,16 @@ public class SchemeManager {
         configProp.setProperty("currentscheme", scheme);
         writeAppConfig();
     }
-    
-    public void saveScheme(String scheme) {
-        
-    }
-    
+
     public void renameScheme(String oldName, String newName) {
         
     }
     
     public void deleteScheme(String scheme) {
         
+    }
+    
+    public File getSchemeFile(String scheme) {
+        return new File(schemeDir + "/" + scheme);
     }
 }

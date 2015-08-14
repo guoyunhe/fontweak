@@ -17,6 +17,7 @@
 package me.guoyunhe.fcm;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,6 +41,12 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow() {
         initComponents();
+        
+        setupUI();
+        
+        fontconfig = new FontConfigXML();
+        fontconfig.readConfig();
+        loadConfig();
     }
 
     /**
@@ -644,16 +651,24 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteAliasButtonActionPerformed
 
     private void schemeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_schemeComboBoxActionPerformed
-        // TODO add your handling code here:
+        String scheme = (String)schemeComboBox.getSelectedItem();
+        // Debug info
+        System.out.println("Scheme changed:" + scheme);
+        File schemeFile = schemeManager.getSchemeFile(scheme);
+        fontconfig.readConfig(schemeFile);
+        loadConfig();
     }//GEN-LAST:event_schemeComboBoxActionPerformed
 
     private void newSchemeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newSchemeButtonActionPerformed
         // Show dialog to create new scheme and save the configuration file
-        String schemeName = (String) JOptionPane.showInputDialog(
+        String scheme = (String) JOptionPane.showInputDialog(
                 this,
                 "Name of new scheme: ",
                 "Create New Scheme",
                 JOptionPane.PLAIN_MESSAGE);
+        File schemeFile = schemeManager.getSchemeFile(scheme);
+        saveConfig();
+        fontconfig.writeConfig(schemeFile);
     }//GEN-LAST:event_newSchemeButtonActionPerformed
 
     /**
@@ -689,25 +704,24 @@ public class MainWindow extends javax.swing.JFrame {
             public void run() {
                 MainWindow mw = new MainWindow();
                 mw.setVisible(true);
-                mw.refreshFontList();
-                mw.openConfig();
-                mw.refreshSchemeList();
-                mw.adjustUI();
             }
         });
 
     }
 
-    public void adjustUI() {
+    private void setupUI() {
         logoutNoticeDialog.setLocationRelativeTo(this);
         subpixelTestDialog.setLocationRelativeTo(this);
+        
+        refreshSchemeList();
+        refreshFontList();
     }
     
-    public void refreshSchemeList() {
+    private void refreshSchemeList() {
         schemeManager = new SchemeManager();
     }
 
-    public void refreshFontList() {
+    private void refreshFontList() {
         FontList fontlist = new FontList();
         String[] list = fontlist.get();
         sansComboBox.setModel(new DefaultComboBoxModel(list));
@@ -725,9 +739,11 @@ public class MainWindow extends javax.swing.JFrame {
         fontAliasComboBox.setModel(new DefaultComboBoxModel(list));
     }
     
-    public void openConfig() {
-        fontconfig = new FontConfigXML();
-        // TODO: set UI components to configuration data
+    /**
+     * Load fontconfig configuration file data to views.
+     */
+    private void loadConfig() {
+        // Set UI components to configuration data
         sansComboBox.setSelectedItem(fontconfig.getSans());
         serifComboBox.setSelectedItem(fontconfig.getSerif());
         monoComboBox.setSelectedItem(fontconfig.getMono());
@@ -756,18 +772,22 @@ public class MainWindow extends javax.swing.JFrame {
                 java.lang.String.class, java.lang.String.class
             };
 
+            @Override
             public Class getColumnClass(int columnIndex) {
                 return types[columnIndex];
             }
         };
         List<String[]> aliasList = fontconfig.getAliasList();
-        for (String[] alias : aliasList) {
+        aliasList.stream().forEach((alias) -> {
             aliasTableModel.addRow(alias);
-        }
+        });
         aliasTable.setModel(aliasTableModel);
     }
     
-    public void saveConfig() {
+    /**
+     * Save options in views to fontconfig configuration and scheme.
+     */
+    private void saveConfig() {
         // TODO: write configuration from UI components
         fontconfig.setSans((String)sansComboBox.getSelectedItem());
         fontconfig.setSerif((String)serifComboBox.getSelectedItem());
@@ -794,16 +814,12 @@ public class MainWindow extends javax.swing.JFrame {
         fontconfig.setHinting(hintingCheckBox.isSelected());
         fontconfig.setHintStyle(hintStyleComboBox.getSelectedIndex());
         fontconfig.setSubpixel(subpixelComboBox.getSelectedIndex());
-        
-        fontconfig.writeConfig();
     }
     
-    private void openScheme() {
-        
-    }
-    
-    private void saveScheme() {
-        
+    private void switchScheme(String scheme) {
+        File schemeFile = schemeManager.getSchemeFile(scheme);
+        fontconfig.readConfig(schemeFile);
+        loadConfig();
     }
     
     private FontConfigXML fontconfig;
