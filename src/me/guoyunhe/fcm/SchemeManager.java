@@ -20,11 +20,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,6 +55,9 @@ public class SchemeManager {
         readAppConfig();
     }
     
+    /**
+     * Create application config files and directories if not exist.
+     */
     private void checkAppConfig() {
         try {
             if (!Files.exists(Paths.get(appConfigDir))) {
@@ -97,6 +103,33 @@ public class SchemeManager {
         }
     }
     
+    public String[] getSchemeList() {
+        File schemeDirFile = new File(schemeDir);
+        FilenameFilter filter = new FilenameFilter() {
+
+            @Override
+            public boolean accept(File dir, String name) {
+                if (name.endsWith(".xml")) {
+                    return true;
+                } else {
+                    return false;
+                }
+                    
+            }
+        };
+        String[] schemeFiles = schemeDirFile.list(filter);
+        if (schemeFiles.length > 0) {
+            String[] schemeList = new String[schemeFiles.length];
+            for (int i = 0; i < schemeFiles.length; i++) {
+                String filename = schemeFiles[i];
+                schemeList[i] = filename.substring(0, filename.length() - 4);
+            }
+            return schemeList;
+        } else {
+            return null;
+        }
+    }
+    
     public String getCurrentSchemeName() {        
         return configProp.getProperty("currentscheme");
     }
@@ -107,14 +140,14 @@ public class SchemeManager {
     }
 
     public void renameScheme(String oldName, String newName) {
-        
+        getSchemeFile(oldName).renameTo(getSchemeFile(newName));
     }
     
     public void deleteScheme(String scheme) {
-        
+        getSchemeFile(scheme).delete();
     }
     
     public File getSchemeFile(String scheme) {
-        return new File(schemeDir + "/" + scheme);
+        return new File(schemeDir + "/" + scheme + ".xml");
     }
 }

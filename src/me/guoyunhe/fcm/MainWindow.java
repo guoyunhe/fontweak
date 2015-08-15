@@ -42,11 +42,7 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow() {
         initComponents();
         
-        setupUI();
-        
-        fontconfig = new FontConfigXML();
-        fontconfig.readConfig();
-        loadConfig();
+        initApplication();
     }
 
     /**
@@ -622,6 +618,10 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         saveConfig();
+        fontconfig.writeConfig();
+        String scheme = (String)schemeComboBox.getSelectedItem();
+        fontconfig.writeConfig(schemeManager.getSchemeFile(scheme));
+        this.schemeManager.setCurrentSchemeName(scheme);
         logoutNoticeDialog.setVisible(true);
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -662,8 +662,6 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void schemeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_schemeComboBoxActionPerformed
         String scheme = (String)schemeComboBox.getSelectedItem();
-        // Debug info
-        System.out.println("Scheme changed:" + scheme);
         File schemeFile = schemeManager.getSchemeFile(scheme);
         fontconfig.readConfig(schemeFile);
         loadConfig();
@@ -673,14 +671,18 @@ public class MainWindow extends javax.swing.JFrame {
         // Show dialog to create new scheme and save the configuration file
         String scheme = (String) JOptionPane.showInputDialog(
                 this,
-                "Name of new scheme: ",
+                "Name of new scheme",
                 "Create New Scheme",
                 JOptionPane.PLAIN_MESSAGE);
         // If users clicked "Cancel" button of dialog, it will return null.
         if (scheme != null) {
-            File schemeFile = schemeManager.getSchemeFile(scheme);
+            // Save new scheme file of current options
             saveConfig();
+            File schemeFile = schemeManager.getSchemeFile(scheme);
             fontconfig.writeConfig(schemeFile);
+            // Add and select new scheme item in ComboBox
+            schemeComboBox.addItem(scheme);
+            schemeComboBox.setSelectedItem(scheme);
         }
     }//GEN-LAST:event_newSchemeButtonActionPerformed
 
@@ -699,9 +701,14 @@ public class MainWindow extends javax.swing.JFrame {
         );
         // If users clicked "Cancel" button of dialog, it will return null.
         if (newName != null) {
+            // Rename scheme file. Must be done before changing ComboBox, otherwise,
+            // it will read file not exist in schemeComboBoxActionPerformed()
+            schemeManager.renameScheme(oldName, newName);
+            // Change ComboBox
             schemeComboBox.insertItemAt(newName, selectedIndex);
             schemeComboBox.removeItemAt(selectedIndex + 1);
-            schemeManager.renameScheme(oldName, newName);
+            // This will tigger schemeComboBoxActionPerformed() function, and
+            // load renamed scheme file
         }
     }//GEN-LAST:event_renameSchemeButtonActionPerformed
 
@@ -711,8 +718,7 @@ public class MainWindow extends javax.swing.JFrame {
         schemeManager.deleteScheme(scheme);
 
         // Remove item in ComboBox
-        int selectedIndex = schemeComboBox.getSelectedIndex();
-        schemeComboBox.remove(selectedIndex);
+        schemeComboBox.removeItem(scheme);
         // This will trigger schemeComboBoxActionPerformed() function, and load
         // new scheme automatically
 
@@ -760,23 +766,22 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
     }
-
-    private void setupUI() {
-        logoutNoticeDialog.setLocationRelativeTo(this);
-        subpixelTestDialog.setLocationRelativeTo(this);
-        
-        refreshSchemeList();
-        refreshFontList();
-    }
     
-    private void refreshSchemeList() {
+    private void initApplication() {
+        // Initialize objects
+        fontconfig = new FontConfigXML();
         schemeManager = new SchemeManager();
-        String[] schemeList = {"Hello", "Foo"}; // Test value...
-        schemeComboBoxModel = new DefaultComboBoxModel( schemeList );
-        schemeComboBox.setModel(schemeComboBoxModel);
+
+        // Read data from fontconfig XML file
+        fontconfig.readConfig();
+        
+        // Load system font list, fontconfig and application schemes to views
+        loadFontList();
+        loadConfig();
+        loadScheme();
     }
 
-    private void refreshFontList() {
+    private void loadFontList() {
         FontList fontlist = new FontList();
         String[] list = fontlist.get();
         sansComboBox.setModel(new DefaultComboBoxModel(list));
@@ -839,6 +844,22 @@ public class MainWindow extends javax.swing.JFrame {
         aliasTable.setModel(aliasTableModel);
     }
     
+    private void loadScheme() {
+        // Load scheme list
+        String[] schemeList = schemeManager.getSchemeList();
+        if (schemeList == null) {
+            schemeList = new String[]{"Default"};
+        }
+        schemeComboBoxModel = new DefaultComboBoxModel(schemeList);
+        schemeComboBox.setModel(schemeComboBoxModel);
+        // Set current scheme
+        String currentScheme = schemeManager.getCurrentSchemeName();
+        if (currentScheme != null) {
+            System.out.println("Current scheme: " + currentScheme);
+            schemeComboBox.setSelectedItem(currentScheme);
+        }
+    }
+    
     /**
      * Save options in views to fontconfig configuration and scheme.
      */
@@ -869,12 +890,6 @@ public class MainWindow extends javax.swing.JFrame {
         fontconfig.setHinting(hintingCheckBox.isSelected());
         fontconfig.setHintStyle(hintStyleComboBox.getSelectedIndex());
         fontconfig.setSubpixel(subpixelComboBox.getSelectedIndex());
-    }
-    
-    private void switchScheme(String scheme) {
-        File schemeFile = schemeManager.getSchemeFile(scheme);
-        fontconfig.readConfig(schemeFile);
-        loadConfig();
     }
     
     private FontConfigXML fontconfig;
