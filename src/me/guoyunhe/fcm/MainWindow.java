@@ -58,9 +58,6 @@ public class MainWindow extends javax.swing.JFrame {
         subpixelTestDialog = new javax.swing.JDialog();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        logoutNoticeDialog = new javax.swing.JDialog();
-        jLabel3 = new javax.swing.JLabel();
-        closeNoticeButton = new javax.swing.JButton();
         schemePanel = new javax.swing.JPanel();
         schemeLabel = new javax.swing.JLabel();
         schemeComboBox = new javax.swing.JComboBox();
@@ -138,25 +135,6 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 51, 51));
         jLabel2.setText("Please Take Off Your Glasses!");
         subpixelTestDialog.getContentPane().add(jLabel2);
-
-        logoutNoticeDialog.setTitle("Logout or restart needed");
-        logoutNoticeDialog.setLocation(new java.awt.Point(0, 0));
-        logoutNoticeDialog.setMinimumSize(new java.awt.Dimension(240, 150));
-        logoutNoticeDialog.setResizable(false);
-        logoutNoticeDialog.setType(java.awt.Window.Type.UTILITY);
-
-        jLabel3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("<html>\n<p><center>Please <strong>logout</strong> and login again, or <strong>restart</strong> system, to make new configuration take effects!</center></p>\n</html>");
-        logoutNoticeDialog.getContentPane().add(jLabel3, java.awt.BorderLayout.CENTER);
-
-        closeNoticeButton.setText("Close");
-        closeNoticeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeNoticeButtonActionPerformed(evt);
-            }
-        });
-        logoutNoticeDialog.getContentPane().add(closeNoticeButton, java.awt.BorderLayout.SOUTH);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Font Config Master");
@@ -621,13 +599,9 @@ public class MainWindow extends javax.swing.JFrame {
         fontconfig.writeConfig();
         String scheme = (String)schemeComboBox.getSelectedItem();
         fontconfig.writeConfig(schemeManager.getSchemeFile(scheme));
-        this.schemeManager.setCurrentSchemeName(scheme);
-        logoutNoticeDialog.setVisible(true);
-    }//GEN-LAST:event_okButtonActionPerformed
-
-    private void closeNoticeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeNoticeButtonActionPerformed
+        schemeManager.setCurrentSchemeName(scheme);
         System.exit(0);
-    }//GEN-LAST:event_closeNoticeButtonActionPerformed
+    }//GEN-LAST:event_okButtonActionPerformed
 
     private void subpixelTestButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subpixelTestButtonMouseClicked
         subpixelTestDialog.setVisible(true);
@@ -663,7 +637,11 @@ public class MainWindow extends javax.swing.JFrame {
     private void schemeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_schemeComboBoxActionPerformed
         String scheme = (String)schemeComboBox.getSelectedItem();
         File schemeFile = schemeManager.getSchemeFile(scheme);
-        fontconfig.readConfig(schemeFile);
+        if (schemeFile.exists()) {
+            fontconfig.readConfig(schemeFile);
+        } else {
+            fontconfig.readConfig();
+        }
         loadConfig();
     }//GEN-LAST:event_schemeComboBoxActionPerformed
 
@@ -777,8 +755,9 @@ public class MainWindow extends javax.swing.JFrame {
         
         // Load system font list, fontconfig and application schemes to views
         loadFontList();
-        loadConfig();
         loadScheme();
+        // loadConfig() will be triggerd by loadScheme() because it trigger
+        // schemeComboBoxActionPerformed() listener
     }
 
     private void loadFontList() {
@@ -896,6 +875,7 @@ public class MainWindow extends javax.swing.JFrame {
     private DefaultTableModel aliasTableModel;
     private SchemeManager schemeManager;
     private DefaultComboBoxModel schemeComboBoxModel;
+    private String currentScheme = null;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel aboutContentPanel;
@@ -909,7 +889,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel appVersionLabel;
     private javax.swing.JLabel authorLabel;
     private javax.swing.JButton cancelButton;
-    private javax.swing.JButton closeNoticeButton;
     private javax.swing.JButton deleteAliasButton;
     private javax.swing.JButton deleteSchemeButton;
     private javax.swing.JPanel fontAliasActionPanel;
@@ -929,7 +908,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jaLabel;
@@ -941,7 +919,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox koSansComboBox;
     private javax.swing.JComboBox koSerifComboBox;
     private javax.swing.JLabel licenseLabel;
-    private javax.swing.JDialog logoutNoticeDialog;
     private javax.swing.JComboBox monoComboBox;
     private javax.swing.JLabel monoLabel;
     private javax.swing.JButton newAliasButton;

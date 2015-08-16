@@ -149,6 +149,8 @@ public class FontConfigXML {
             }
         }
 
+        // Empty aliasList, load new values
+        aliasList.clear();
         for (int i = 0; i < aliasElements.getLength(); i++) {
             findAlias(aliasElements.item(i));
         }
@@ -425,7 +427,7 @@ public class FontConfigXML {
         root.appendChild(makeFontRenderMatch("hinting", "bool", Boolean.toString(hinting)));
         root.appendChild(makeFontRenderMatch("hintstyle", "const", hintstyle));
         root.appendChild(makeFontRenderMatch("rgba", "const", rgba));
-        
+        System.out.println(System.currentTimeMillis() + " save file start");
         // Write document object to XML file.
         try {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -439,6 +441,7 @@ public class FontConfigXML {
         } catch (TransformerException ex) {
             Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println(System.currentTimeMillis() + " save file end");
     }
     
     /**
