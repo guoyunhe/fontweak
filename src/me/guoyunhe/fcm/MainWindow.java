@@ -834,7 +834,6 @@ public class MainWindow extends javax.swing.JFrame {
         // Set current scheme
         String currentScheme = schemeManager.getCurrentSchemeName();
         if (currentScheme != null) {
-            System.out.println("Current scheme: " + currentScheme);
             schemeComboBox.setSelectedItem(currentScheme);
         }
     }
