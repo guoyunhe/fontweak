@@ -2643,7 +2643,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="SansSerif" size="18" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="0.2.0" noResource="true"/>
+                        <Property name="text" type="java.lang.String" value="0.3.0" noResource="true"/>
                       </Properties>
                     </Component>
                   </SubComponents>
