@@ -709,7 +709,7 @@ public class MainWindow extends javax.swing.JFrame {
         antialiasCheckBox.setSelected(true);
         hintingCheckBox.setSelected(true);
         hintStyleComboBox.setSelectedIndex(FontConfigXML.HINT_FULL);
-        subpixelComboBox.setSelectedIndex(FontConfigXML.RGBA_RGB);
+        subpixelComboBox.setSelectedIndex(FontConfigXML.RGBA_NONE);
         // Font alias
         while(aliasTableModel.getRowCount() > 0) {
             aliasTableModel.removeRow(0);
