@@ -119,6 +119,9 @@ public class MainWindow extends javax.swing.JFrame {
         authorLabel = new javax.swing.JLabel();
         homepageLabel = new javax.swing.JLabel();
         saveButtonPanel = new javax.swing.JPanel();
+        oneClickButton = new javax.swing.JButton();
+        resetButton = new javax.swing.JButton();
+        placeholderPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
@@ -554,6 +557,27 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(tabbedPanel);
 
+        saveButtonPanel.setLayout(new javax.swing.BoxLayout(saveButtonPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        oneClickButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        oneClickButton.setText(bundle.getString("MainWindow.oneClickButton.text")); // NOI18N
+        oneClickButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                oneClickButtonActionPerformed(evt);
+            }
+        });
+        saveButtonPanel.add(oneClickButton);
+
+        resetButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        resetButton.setText(bundle.getString("MainWindow.resetButton.text")); // NOI18N
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+        saveButtonPanel.add(resetButton);
+        saveButtonPanel.add(placeholderPanel);
+
         okButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         okButton.setText(bundle.getString("OK")); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -693,6 +717,14 @@ public class MainWindow extends javax.swing.JFrame {
             schemeManager.setCurrentSchemeName(fallbackScheme);
         }
     }//GEN-LAST:event_deleteSchemeButtonActionPerformed
+
+    private void oneClickButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneClickButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_oneClickButtonActionPerformed
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_resetButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -910,9 +942,12 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton newAliasButton;
     private javax.swing.JButton newSchemeButton;
     private javax.swing.JButton okButton;
+    private javax.swing.JButton oneClickButton;
     private javax.swing.JLabel originalFontLabel;
     private javax.swing.JTextField originalFontTextField;
+    private javax.swing.JPanel placeholderPanel;
     private javax.swing.JButton renameSchemeButton;
+    private javax.swing.JButton resetButton;
     private javax.swing.JComboBox sansComboBox;
     private javax.swing.JLabel sansLabel;
     private javax.swing.JPanel saveButtonPanel;
