@@ -64,6 +64,7 @@ public class MainWindow extends javax.swing.JFrame {
         newSchemeButton = new javax.swing.JButton();
         renameSchemeButton = new javax.swing.JButton();
         deleteSchemeButton = new javax.swing.JButton();
+        schemePanelFillSpace = new javax.swing.JPanel();
         tabbedPanel = new javax.swing.JTabbedPane();
         fontFamilyPanel = new javax.swing.JScrollPane();
         fontTypeContentPanel = new javax.swing.JPanel();
@@ -88,13 +89,13 @@ public class MainWindow extends javax.swing.JFrame {
         koMonoComboBox = new javax.swing.JComboBox();
         fontRenderPanel = new javax.swing.JScrollPane();
         fontRenderContentPanel = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
+        antialiasLabel = new javax.swing.JLabel();
         antialiasCheckBox = new javax.swing.JCheckBox();
-        jLabel9 = new javax.swing.JLabel();
+        hintingLabel = new javax.swing.JLabel();
         subpixelComboBox = new javax.swing.JComboBox();
-        jLabel10 = new javax.swing.JLabel();
+        subpixelLabel = new javax.swing.JLabel();
         hintingCheckBox = new javax.swing.JCheckBox();
-        jLabel11 = new javax.swing.JLabel();
+        hintStyleLabel = new javax.swing.JLabel();
         hintStyleComboBox = new javax.swing.JComboBox();
         subpixelTestButton = new javax.swing.JButton();
         fontAliasPanel = new javax.swing.JScrollPane();
@@ -110,6 +111,7 @@ public class MainWindow extends javax.swing.JFrame {
         deleteAliasButton = new javax.swing.JButton();
         aboutPanel = new javax.swing.JScrollPane();
         aboutContentPanel = new javax.swing.JPanel();
+        aboutPanelFillSpaceTop = new javax.swing.JPanel();
         appTitlePanel = new javax.swing.JPanel();
         appNameLabel = new javax.swing.JLabel();
         appVersionLabel = new javax.swing.JLabel();
@@ -118,10 +120,11 @@ public class MainWindow extends javax.swing.JFrame {
         licenseLabel = new javax.swing.JLabel();
         authorLabel = new javax.swing.JLabel();
         homepageLabel = new javax.swing.JLabel();
+        aboutPanelFillSpaceBottom = new javax.swing.JPanel();
         saveButtonPanel = new javax.swing.JPanel();
         oneClickButton = new javax.swing.JButton();
         resetButton = new javax.swing.JButton();
-        placeholderPanel = new javax.swing.JPanel();
+        savePanelFillSpace = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
@@ -142,17 +145,17 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(bundle.getString("FONT CONFIG MASTER")); // NOI18N
-        setBackground(new java.awt.Color(255, 255, 255));
-        setFont(new java.awt.Font("SansSerif", 0, 10)); // NOI18N
         setLocationByPlatform(true);
-        setMinimumSize(new java.awt.Dimension(800, 400));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
-        schemePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        schemePanel.setMaximumSize(new java.awt.Dimension(32767, 28));
+        schemePanel.setLayout(new javax.swing.BoxLayout(schemePanel, javax.swing.BoxLayout.LINE_AXIS));
 
         schemeLabel.setText(bundle.getString("SCHEME")); // NOI18N
         schemePanel.add(schemeLabel);
 
+        schemeComboBox.setMaximumSize(new java.awt.Dimension(200, 32767));
+        schemeComboBox.setPreferredSize(new java.awt.Dimension(100, 26));
         schemeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 schemeComboBoxActionPerformed(evt);
@@ -183,43 +186,39 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         schemePanel.add(deleteSchemeButton);
+        schemePanel.add(schemePanelFillSpace);
 
         getContentPane().add(schemePanel);
 
-        tabbedPanel.setBackground(new java.awt.Color(255, 255, 255));
-        tabbedPanel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-
-        fontTypeContentPanel.setOpaque(false);
         java.awt.GridBagLayout fontTypeContentPanelLayout = new java.awt.GridBagLayout();
         fontTypeContentPanelLayout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0};
         fontTypeContentPanelLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0};
         fontTypeContentPanel.setLayout(fontTypeContentPanelLayout);
 
-        sansLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         sansLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         sansLabel.setText(bundle.getString("SANS SERIF")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(sansLabel, gridBagConstraints);
 
-        serifLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         serifLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         serifLabel.setText(bundle.getString("SERIF")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(serifLabel, gridBagConstraints);
 
-        monoLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         monoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         monoLabel.setText(bundle.getString("MONOSPACE")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(monoLabel, gridBagConstraints);
 
-        westLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         westLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         westLabel.setText(bundle.getString("WESTERN FONTS")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -228,28 +227,27 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontTypeContentPanel.add(westLabel, gridBagConstraints);
 
-        sansComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        sansComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        sansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(sansComboBox, gridBagConstraints);
 
-        serifComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        serifComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        serifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(serifComboBox, gridBagConstraints);
 
-        monoComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        monoComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        monoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(monoComboBox, gridBagConstraints);
 
-        zhLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         zhLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         zhLabel.setText(bundle.getString("CHINESE FONTS")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -258,28 +256,27 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontTypeContentPanel.add(zhLabel, gridBagConstraints);
 
-        zhSansComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        zhSansComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        zhSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(zhSansComboBox, gridBagConstraints);
 
-        zhSerifComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        zhSerifComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        zhSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(zhSerifComboBox, gridBagConstraints);
 
-        zhMonoComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        zhMonoComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        zhMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(zhMonoComboBox, gridBagConstraints);
 
-        jaLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         jaLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jaLabel.setText(bundle.getString("JAPANESE FONTS")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -288,7 +285,6 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontTypeContentPanel.add(jaLabel, gridBagConstraints);
 
-        koLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         koLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         koLabel.setText(bundle.getString("KOREAN FONTS")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -297,46 +293,46 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontTypeContentPanel.add(koLabel, gridBagConstraints);
 
-        jaSansComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jaSansComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        jaSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(jaSansComboBox, gridBagConstraints);
 
-        jaSerifComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jaSerifComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        jaSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(jaSerifComboBox, gridBagConstraints);
 
-        jaMonoComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jaMonoComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        jaMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(jaMonoComboBox, gridBagConstraints);
 
-        koSansComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        koSansComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        koSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(koSansComboBox, gridBagConstraints);
 
-        koSerifComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        koSerifComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        koSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(koSerifComboBox, gridBagConstraints);
 
-        koMonoComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        koMonoComboBox.setMaximumSize(new java.awt.Dimension(100, 32767));
+        koMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(koMonoComboBox, gridBagConstraints);
 
         fontFamilyPanel.setViewportView(fontTypeContentPanel);
@@ -348,30 +344,25 @@ public class MainWindow extends javax.swing.JFrame {
         fontRenderContentPanelLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0};
         fontRenderContentPanel.setLayout(fontRenderContentPanelLayout);
 
-        jLabel8.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jLabel8.setText(bundle.getString("ANTIALIAS")); // NOI18N
+        antialiasLabel.setText(bundle.getString("ANTIALIAS")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontRenderContentPanel.add(jLabel8, gridBagConstraints);
-
-        antialiasCheckBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        fontRenderContentPanel.add(antialiasLabel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontRenderContentPanel.add(antialiasCheckBox, gridBagConstraints);
 
-        jLabel9.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jLabel9.setText(bundle.getString("HINTING")); // NOI18N
+        hintingLabel.setText(bundle.getString("HINTING")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontRenderContentPanel.add(jLabel9, gridBagConstraints);
+        fontRenderContentPanel.add(hintingLabel, gridBagConstraints);
 
-        subpixelComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         subpixelComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { bundle.getString("NONE"), "RGB", "BGR", bundle.getString("VRGB"), bundle.getString("VBGR") }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -379,30 +370,25 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontRenderContentPanel.add(subpixelComboBox, gridBagConstraints);
 
-        jLabel10.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jLabel10.setText(bundle.getString("SUBPIXEL RENDER")); // NOI18N
+        subpixelLabel.setText(bundle.getString("SUBPIXEL RENDER")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontRenderContentPanel.add(jLabel10, gridBagConstraints);
-
-        hintingCheckBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        fontRenderContentPanel.add(subpixelLabel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontRenderContentPanel.add(hintingCheckBox, gridBagConstraints);
 
-        jLabel11.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jLabel11.setText(bundle.getString("HINT STYLE")); // NOI18N
+        hintStyleLabel.setText(bundle.getString("HINT STYLE")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontRenderContentPanel.add(jLabel11, gridBagConstraints);
+        fontRenderContentPanel.add(hintStyleLabel, gridBagConstraints);
 
-        hintStyleComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         hintStyleComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { bundle.getString("NONE"), bundle.getString("SLIGHT"), bundle.getString("MEDIUM"), bundle.getString("FULL") }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -410,7 +396,6 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontRenderContentPanel.add(hintStyleComboBox, gridBagConstraints);
 
-        subpixelTestButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         subpixelTestButton.setText(bundle.getString("TEST")); // NOI18N
         subpixelTestButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -431,13 +416,9 @@ public class MainWindow extends javax.swing.JFrame {
         aliasTableScrollPanel.setPreferredSize(new java.awt.Dimension(456, 250));
 
         aliasTable.setAutoCreateRowSorter(true);
-        aliasTable.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         aliasTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Original font", "Font alias"
@@ -452,6 +433,10 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         aliasTableScrollPanel.setViewportView(aliasTable);
+        if (aliasTable.getColumnModel().getColumnCount() > 0) {
+            aliasTable.getColumnModel().getColumn(0).setHeaderValue(bundle.getString("MainWindow.aliasTable.columnModel.title0")); // NOI18N
+            aliasTable.getColumnModel().getColumn(1).setHeaderValue(bundle.getString("MainWindow.aliasTable.columnModel.title1")); // NOI18N
+        }
 
         fontAliasContentPanel.add(aliasTableScrollPanel);
 
@@ -459,26 +444,21 @@ public class MainWindow extends javax.swing.JFrame {
         fontAliasActionPanel.setMinimumSize(new java.awt.Dimension(408, 30));
         fontAliasActionPanel.setPreferredSize(new java.awt.Dimension(100, 38));
 
-        originalFontLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         originalFontLabel.setText(bundle.getString("FONT")); // NOI18N
         fontAliasActionPanel.add(originalFontLabel);
 
-        originalFontTextField.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         originalFontTextField.setAlignmentX(0.0F);
         originalFontTextField.setPreferredSize(new java.awt.Dimension(136, 28));
         fontAliasActionPanel.add(originalFontTextField);
 
-        fontAliasLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         fontAliasLabel.setText(bundle.getString("ALIAS")); // NOI18N
         fontAliasActionPanel.add(fontAliasLabel);
 
         fontAliasComboBox.setEditable(true);
-        fontAliasComboBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         fontAliasComboBox.setAlignmentX(0.0F);
         fontAliasComboBox.setPreferredSize(new java.awt.Dimension(136, 28));
         fontAliasActionPanel.add(fontAliasComboBox);
 
-        newAliasButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         newAliasButton.setText(bundle.getString("NEW")); // NOI18N
         newAliasButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -487,7 +467,6 @@ public class MainWindow extends javax.swing.JFrame {
         });
         fontAliasActionPanel.add(newAliasButton);
 
-        deleteAliasButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         deleteAliasButton.setText(bundle.getString("DELETE")); // NOI18N
         deleteAliasButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -505,42 +484,37 @@ public class MainWindow extends javax.swing.JFrame {
         aboutContentPanel.setMinimumSize(new java.awt.Dimension(0, 0));
         aboutContentPanel.setPreferredSize(new java.awt.Dimension(300, 300));
         aboutContentPanel.setLayout(new javax.swing.BoxLayout(aboutContentPanel, javax.swing.BoxLayout.Y_AXIS));
+        aboutContentPanel.add(aboutPanelFillSpaceTop);
 
-        appTitlePanel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 20);
-        flowLayout1.setAlignOnBaseline(true);
-        appTitlePanel.setLayout(flowLayout1);
+        appTitlePanel.setMaximumSize(new java.awt.Dimension(32767, 50));
 
-        appNameLabel.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
+        appNameLabel.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
         appNameLabel.setText(bundle.getString("FONT CONFIG MASTER")); // NOI18N
         appTitlePanel.add(appNameLabel);
 
-        appVersionLabel.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        appVersionLabel.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
         appVersionLabel.setText("0.3.0"); // NOI18N
         appTitlePanel.add(appVersionLabel);
 
         aboutContentPanel.add(appTitlePanel);
 
-        appInfoPanel.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        appInfoPanel.setMaximumSize(new java.awt.Dimension(32767, 200));
+        appInfoPanel.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
 
-        freeSoftwareLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         freeSoftwareLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         freeSoftwareLabel.setText(bundle.getString("FREE AND OPEN SOURCE SOFTWARE")); // NOI18N
         appInfoPanel.add(freeSoftwareLabel);
 
-        licenseLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         licenseLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         licenseLabel.setText(bundle.getString("GNU GPL VERSION 3 OR LATER")); // NOI18N
         appInfoPanel.add(licenseLabel);
 
-        authorLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         authorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         authorLabel.setText(bundle.getString("MainWindow.authorLabel.text")); // NOI18N
         appInfoPanel.add(authorLabel);
 
-        homepageLabel.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         homepageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        homepageLabel.setText("<html><a href=\"https://github.com/guoyunhe/font-config-master\">https://github.com/guoyunhe/font-config-master</a></html>"); // NOI18N
+        homepageLabel.setText("<html><a href=\"#\">https://github.com/guoyunhe/font-config-master</a></html>"); // NOI18N
         homepageLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         homepageLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -550,6 +524,7 @@ public class MainWindow extends javax.swing.JFrame {
         appInfoPanel.add(homepageLabel);
 
         aboutContentPanel.add(appInfoPanel);
+        aboutContentPanel.add(aboutPanelFillSpaceBottom);
 
         aboutPanel.setViewportView(aboutContentPanel);
 
@@ -557,9 +532,9 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(tabbedPanel);
 
+        saveButtonPanel.setMaximumSize(new java.awt.Dimension(33075, 28));
         saveButtonPanel.setLayout(new javax.swing.BoxLayout(saveButtonPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        oneClickButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         oneClickButton.setText(bundle.getString("MainWindow.oneClickButton.text")); // NOI18N
         oneClickButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -568,7 +543,6 @@ public class MainWindow extends javax.swing.JFrame {
         });
         saveButtonPanel.add(oneClickButton);
 
-        resetButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         resetButton.setText(bundle.getString("MainWindow.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -576,9 +550,8 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         saveButtonPanel.add(resetButton);
-        saveButtonPanel.add(placeholderPanel);
+        saveButtonPanel.add(savePanelFillSpace);
 
-        okButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         okButton.setText(bundle.getString("OK")); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -587,7 +560,6 @@ public class MainWindow extends javax.swing.JFrame {
         });
         saveButtonPanel.add(okButton);
 
-        cancelButton.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         cancelButton.setText(bundle.getString("CANCEL")); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -948,9 +920,12 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel aboutContentPanel;
     private javax.swing.JScrollPane aboutPanel;
+    private javax.swing.JPanel aboutPanelFillSpaceBottom;
+    private javax.swing.JPanel aboutPanelFillSpaceTop;
     private javax.swing.JTable aliasTable;
     private javax.swing.JScrollPane aliasTableScrollPanel;
     private javax.swing.JCheckBox antialiasCheckBox;
+    private javax.swing.JLabel antialiasLabel;
     private javax.swing.JPanel appInfoPanel;
     private javax.swing.JLabel appNameLabel;
     private javax.swing.JPanel appTitlePanel;
@@ -970,14 +945,12 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel fontTypeContentPanel;
     private javax.swing.JLabel freeSoftwareLabel;
     private javax.swing.JComboBox hintStyleComboBox;
+    private javax.swing.JLabel hintStyleLabel;
     private javax.swing.JCheckBox hintingCheckBox;
+    private javax.swing.JLabel hintingLabel;
     private javax.swing.JLabel homepageLabel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jaLabel;
     private javax.swing.JComboBox jaMonoComboBox;
     private javax.swing.JComboBox jaSansComboBox;
@@ -995,18 +968,20 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton oneClickButton;
     private javax.swing.JLabel originalFontLabel;
     private javax.swing.JTextField originalFontTextField;
-    private javax.swing.JPanel placeholderPanel;
     private javax.swing.JButton renameSchemeButton;
     private javax.swing.JButton resetButton;
     private javax.swing.JComboBox sansComboBox;
     private javax.swing.JLabel sansLabel;
     private javax.swing.JPanel saveButtonPanel;
+    private javax.swing.JPanel savePanelFillSpace;
     private javax.swing.JComboBox schemeComboBox;
     private javax.swing.JLabel schemeLabel;
     private javax.swing.JPanel schemePanel;
+    private javax.swing.JPanel schemePanelFillSpace;
     private javax.swing.JComboBox serifComboBox;
     private javax.swing.JLabel serifLabel;
     private javax.swing.JComboBox subpixelComboBox;
+    private javax.swing.JLabel subpixelLabel;
     private javax.swing.JButton subpixelTestButton;
     private javax.swing.JDialog subpixelTestDialog;
     private javax.swing.JTabbedPane tabbedPanel;
