@@ -719,11 +719,61 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteSchemeButtonActionPerformed
 
     private void oneClickButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneClickButtonActionPerformed
-        // TODO add your handling code here:
+        // Font family
+        FontList fontlist = new FontList();
+        sansComboBox.setSelectedItem("Nimbus Sans L");
+        serifComboBox.setSelectedItem("Nimbus Roman No9 L");
+        monoComboBox.setSelectedItem("DejaVu Sans Mono");
+        zhSansComboBox.setSelectedItem("文泉驿微米黑");
+        zhSerifComboBox.setSelectedItem("AR PL UMing CN");
+        zhMonoComboBox.setSelectedItem("文泉驿微米黑");
+        jaSansComboBox.setSelectedItem("文泉驿微米黑");
+        jaSerifComboBox.setSelectedItem("AR PL UMing CN");
+        jaMonoComboBox.setSelectedItem("文泉驿微米黑");
+        koSansComboBox.setSelectedItem("文泉驿微米黑");
+        koSerifComboBox.setSelectedItem("AR PL UMing CN");
+        koMonoComboBox.setSelectedItem("文泉驿微米黑");
+        // Render options
+        antialiasCheckBox.setSelected(true);
+        hintingCheckBox.setSelected(true);
+        hintStyleComboBox.setSelectedIndex(FontConfigXML.HINT_FULL);
+        subpixelComboBox.setSelectedIndex(FontConfigXML.RGBA_RGB);
+        // Font alias
+        while(aliasTableModel.getRowCount() > 0) {
+            aliasTableModel.removeRow(0);
+        }
+        aliasTableModel.addRow(new String[]{"Helvetica", "Nimbus Sans L"});
+        aliasTableModel.addRow(new String[]{"Helvetica Neue", "Nimbus Sans L"});
+        aliasTableModel.addRow(new String[]{"Arial", "Nimbus Sans L"});
+        aliasTableModel.addRow(new String[]{"Times New Roman", "Nimbus Roman No9 L"});
+        aliasTableModel.addRow(new String[]{"SimSun", "AR PL UMing CN"});
+        aliasTableModel.addRow(new String[]{"SimHei", "文泉驿微米黑"});
     }//GEN-LAST:event_oneClickButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-        // TODO add your handling code here:
+        // Clear all selection from views, except schemes ComboBox
+        // Font family
+        sansComboBox.setSelectedIndex(0);
+        serifComboBox.setSelectedIndex(0);
+        monoComboBox.setSelectedIndex(0);
+        zhSansComboBox.setSelectedIndex(0);
+        zhSerifComboBox.setSelectedIndex(0);
+        zhMonoComboBox.setSelectedIndex(0);
+        jaSansComboBox.setSelectedIndex(0);
+        jaSerifComboBox.setSelectedIndex(0);
+        jaMonoComboBox.setSelectedIndex(0);
+        koSansComboBox.setSelectedIndex(0);
+        koSerifComboBox.setSelectedIndex(0);
+        koMonoComboBox.setSelectedIndex(0);
+        // Render options
+        antialiasCheckBox.setSelected(false);
+        hintingCheckBox.setSelected(false);
+        hintStyleComboBox.setSelectedIndex(0);
+        subpixelComboBox.setSelectedIndex(0);
+        // Font alias
+        while(aliasTableModel.getRowCount() > 0) {
+            aliasTableModel.removeRow(0);
+        }
     }//GEN-LAST:event_resetButtonActionPerformed
 
     /**

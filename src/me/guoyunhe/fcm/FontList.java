@@ -70,4 +70,8 @@ public class FontList {
     public void refresh() {
         updateList();
     }
+    
+    public boolean contains(String font) {
+        return false;
+    }
 }
