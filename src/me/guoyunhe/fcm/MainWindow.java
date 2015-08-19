@@ -693,18 +693,18 @@ public class MainWindow extends javax.swing.JFrame {
     private void oneClickButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneClickButtonActionPerformed
         // Font family
         FontList fontlist = new FontList();
-        sansComboBox.setSelectedItem("Nimbus Sans L");
-        serifComboBox.setSelectedItem("Nimbus Roman No9 L");
-        monoComboBox.setSelectedItem("DejaVu Sans Mono");
-        zhSansComboBox.setSelectedItem("文泉驿微米黑");
-        zhSerifComboBox.setSelectedItem("AR PL UMing CN");
-        zhMonoComboBox.setSelectedItem("文泉驿微米黑");
-        jaSansComboBox.setSelectedItem("文泉驿微米黑");
-        jaSerifComboBox.setSelectedItem("AR PL UMing CN");
-        jaMonoComboBox.setSelectedItem("文泉驿微米黑");
-        koSansComboBox.setSelectedItem("文泉驿微米黑");
-        koSerifComboBox.setSelectedItem("AR PL UMing CN");
-        koMonoComboBox.setSelectedItem("文泉驿微米黑");
+        sansComboBox.setSelectedItem(fontlist.sansFallback());
+        serifComboBox.setSelectedItem(fontlist.serifFallback());
+        monoComboBox.setSelectedItem(fontlist.monoFallback());
+        zhSansComboBox.setSelectedItem(fontlist.zhCNSansFallback());
+        zhSerifComboBox.setSelectedItem(fontlist.zhCNSerifFallback());
+        zhMonoComboBox.setSelectedItem("");
+        jaSansComboBox.setSelectedItem(fontlist.jaSansFallback());
+        jaSerifComboBox.setSelectedItem(fontlist.jaSerifFallback());
+        jaMonoComboBox.setSelectedItem("");
+        koSansComboBox.setSelectedItem(fontlist.koSansFallback());
+        koSerifComboBox.setSelectedItem(fontlist.koSerifFallback());
+        koMonoComboBox.setSelectedItem("");
         // Render options
         antialiasCheckBox.setSelected(true);
         hintingCheckBox.setSelected(true);
@@ -719,7 +719,7 @@ public class MainWindow extends javax.swing.JFrame {
         aliasTableModel.addRow(new String[]{"Arial", "Nimbus Sans L"});
         aliasTableModel.addRow(new String[]{"Times New Roman", "Nimbus Roman No9 L"});
         aliasTableModel.addRow(new String[]{"SimSun", "AR PL UMing CN"});
-        aliasTableModel.addRow(new String[]{"SimHei", "文泉驿微米黑"});
+        aliasTableModel.addRow(new String[]{"SimHei", "WenQuanYi Zen Hei"});
     }//GEN-LAST:event_oneClickButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
