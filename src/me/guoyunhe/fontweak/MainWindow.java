@@ -35,6 +35,12 @@ import javax.swing.table.DefaultTableModel;
  * @author Guo Yunhe <guoyunhebrave@gmail.com>
  */
 public class MainWindow extends javax.swing.JFrame {
+    
+    private FontConfigXML fontconfig;
+    private DefaultTableModel aliasTableModel;
+    private SchemeManager schemeManager;
+    private DefaultComboBoxModel schemeComboBoxModel;
+    private String currentScheme = null;
 
     /**
      * Creates new form MainWindow
@@ -618,14 +624,18 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteAliasButtonActionPerformed
 
     private void schemeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_schemeComboBoxActionPerformed
-        String scheme = (String)schemeComboBox.getSelectedItem();
-        File schemeFile = schemeManager.getSchemeFile(scheme);
-        if (schemeFile.exists()) {
-            fontconfig.readConfig(schemeFile);
-        } else {
-            fontconfig.readConfig();
+        if (currentScheme != null && currentScheme.isEmpty()) {
+            String scheme = (String) schemeComboBox.getSelectedItem();
+            if (!currentScheme.equals(scheme)) {
+                File schemeFile = schemeManager.getSchemeFile(scheme);
+                if (schemeFile.exists()) {
+                    fontconfig.readConfig(schemeFile);
+                } else {
+                    fontconfig.readConfig();
+                }
+                loadConfig();
+            }
         }
-        loadConfig();
     }//GEN-LAST:event_schemeComboBoxActionPerformed
 
     private void newSchemeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newSchemeButtonActionPerformed
@@ -796,9 +806,9 @@ public class MainWindow extends javax.swing.JFrame {
         
         // Load system font list, fontconfig and application schemes to views
         loadFontList();
-        loadScheme();
-        // loadConfig() will be triggerd by loadScheme() because it trigger
-        // schemeComboBoxActionPerformed() listener
+        
+        loadConfig();
+        loadSchemes();
     }
 
     private void loadFontList() {
@@ -864,7 +874,7 @@ public class MainWindow extends javax.swing.JFrame {
         aliasTable.setModel(aliasTableModel);
     }
     
-    private void loadScheme() {
+    private void loadSchemes() {
         // Load scheme list
         String[] schemeList = schemeManager.getSchemeList();
         if (schemeList == null) {
@@ -873,12 +883,18 @@ public class MainWindow extends javax.swing.JFrame {
         schemeComboBoxModel = new DefaultComboBoxModel(schemeList);
         schemeComboBox.setModel(schemeComboBoxModel);
         // Set current scheme
-        String currentScheme = schemeManager.getCurrentSchemeName();
+        currentScheme = schemeManager.getCurrentSchemeName();
         if (currentScheme != null) {
             schemeComboBox.setSelectedItem(currentScheme);
+        } else {
+            schemeComboBox.setSelectedIndex(0);
+            currentScheme = (String) schemeComboBox.getSelectedItem();
+            schemeManager.setCurrentSchemeName(currentScheme);
         }
+        // Sync from fontconfig to current scheme file
+        fontconfig.writeConfig(schemeManager.getSchemeFile(currentScheme));
     }
-    
+
     /**
      * Save options in views to fontconfig configuration and scheme.
      */
@@ -911,11 +927,6 @@ public class MainWindow extends javax.swing.JFrame {
         fontconfig.setSubpixel(subpixelComboBox.getSelectedIndex());
     }
     
-    private FontConfigXML fontconfig;
-    private DefaultTableModel aliasTableModel;
-    private SchemeManager schemeManager;
-    private DefaultComboBoxModel schemeComboBoxModel;
-    private String currentScheme = null;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel aboutContentPanel;
