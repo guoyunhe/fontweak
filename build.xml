@@ -70,4 +70,11 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar">
+        <copy file="LICENSE" flatten="true" todir="${dist.dir}"/>
+        <copy file="README.md" flatten="true" todir="${dist.dir}"/>
+        <copy file="start.sh" flatten="true" todir="${dist.dir}"/>
+        <chmod file="${dist.dir}/start.sh" perm="ugo+rx"/>
+        <delete file="${dist.dir}/README.TXT"/>
+    </target>
 </project>

@@ -1,1 +1,3 @@
-java -jar "font-config-master.jar"  
+#!/bin/bash
+
+java -jar "fontweak.jar"  
