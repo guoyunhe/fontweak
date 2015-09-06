@@ -17,16 +17,19 @@
 package me.guoyunhe.fontweak;
 
 import java.awt.Desktop;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -36,6 +39,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainWindow extends javax.swing.JFrame {
     
+    private ArrayList<Image> appIconImages;
     private FontConfigXML fontconfig;
     private DefaultTableModel aliasTableModel;
     private SchemeManager schemeManager;
@@ -46,9 +50,24 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
+        initResources();
+        
         initComponents();
         
         initApplication();
+    }
+    
+    private void initResources() {
+        appIconImages = new ArrayList<>();
+        URL appIcon16URL = getClass().getResource("/me/guoyunhe/fontweak/img/icon-16.png");
+        ImageIcon appIcon16 = new ImageIcon(appIcon16URL);
+        appIconImages.add(appIcon16.getImage());
+        URL appIcon32URL = getClass().getResource("/me/guoyunhe/fontweak/img/icon-32.png");
+        ImageIcon appIcon32 = new ImageIcon(appIcon32URL);
+        appIconImages.add(appIcon32.getImage());
+        URL appIcon64URL = getClass().getResource("/me/guoyunhe/fontweak/img/icon-64.png");
+        ImageIcon appIcon64 = new ImageIcon(appIcon64URL);
+        appIconImages.add(appIcon64.getImage());
     }
 
     /**
@@ -151,6 +170,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Fontweak"); // NOI18N
+        setIconImages(appIconImages);
         setLocationByPlatform(true);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
@@ -495,11 +515,12 @@ public class MainWindow extends javax.swing.JFrame {
         appTitlePanel.setMaximumSize(new java.awt.Dimension(32767, 50));
 
         appNameLabel.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
+        appNameLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/me/guoyunhe/fontweak/img/icon-32.png"))); // NOI18N
         appNameLabel.setText("Fontweak"); // NOI18N
         appTitlePanel.add(appNameLabel);
 
         appVersionLabel.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
-        appVersionLabel.setText("0.3.0"); // NOI18N
+        appVersionLabel.setText("0.4.0"); // NOI18N
         appTitlePanel.add(appVersionLabel);
 
         aboutContentPanel.add(appTitlePanel);
@@ -520,7 +541,7 @@ public class MainWindow extends javax.swing.JFrame {
         appInfoPanel.add(authorLabel);
 
         homepageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        homepageLabel.setText("<html><a href=\"#\">https://github.com/guoyunhe/font-config-master</a></html>"); // NOI18N
+        homepageLabel.setText("<html><a href=\"#\">https://github.com/guoyunhe/fontweak</a></html>"); // NOI18N
         homepageLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         homepageLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -597,7 +618,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_subpixelTestButtonMouseClicked
 
     private void homepageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homepageLabelMouseClicked
-        String link = "https://github.com/guoyunhe/font-config-master";
+        String link = "https://github.com/guoyunhe/fontweak";
         try {
             Desktop.getDesktop().browse(new URI(link));
         } catch (IOException | URISyntaxException ex) {

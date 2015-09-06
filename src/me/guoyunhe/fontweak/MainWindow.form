@@ -46,6 +46,9 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="Fontweak" noResource="true"/>
+    <Property name="iconImages" type="java.util.List" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+      <Connection code="appIconImages" type="code"/>
+    </Property>
     <Property name="locationByPlatform" type="boolean" value="true"/>
   </Properties>
   <SyntheticProperties>
@@ -2736,6 +2739,9 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Serif" size="18" style="1"/>
                         </Property>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/me/guoyunhe/fontweak/img/icon-32.png"/>
+                        </Property>
                         <Property name="text" type="java.lang.String" value="Fontweak" noResource="true"/>
                       </Properties>
                     </Component>
@@ -2744,7 +2750,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Serif" size="18" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="0.3.0" noResource="true"/>
+                        <Property name="text" type="java.lang.String" value="0.4.0" noResource="true"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -2789,7 +2795,7 @@
                     <Component class="javax.swing.JLabel" name="homepageLabel">
                       <Properties>
                         <Property name="horizontalAlignment" type="int" value="0"/>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a href=&quot;#&quot;&gt;https://github.com/guoyunhe/font-config-master&lt;/a&gt;&lt;/html&gt;" noResource="true"/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a href=&quot;#&quot;&gt;https://github.com/guoyunhe/fontweak&lt;/a&gt;&lt;/html&gt;" noResource="true"/>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                           <Color id="&#x624b;&#x578b;&#x5149;&#x6807;"/>
                         </Property>
