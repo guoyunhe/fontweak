@@ -1,4 +1,4 @@
-# font-config-master
+# Fontweak
 
 A front-end for fontconfig. Setup perfect font effects, fast and easily.
 
@@ -6,7 +6,7 @@ A front-end for fontconfig. Setup perfect font effects, fast and easily.
 
 **Choose fonts by font family and language**
 
-![Choose fonts](http://i.imgur.com/qEAo2Hc.png)
+![Choose fonts](http://i.imgur.com/QdXgnUD.png)
 
 **Combine English font and Chinese font**
 
@@ -14,19 +14,27 @@ A front-end for fontconfig. Setup perfect font effects, fast and easily.
 
 **Setup font render options**, including hinting, antialias, subpixel rendering
 
-![Font render options](http://i.imgur.com/yn6zWD0.png)
+![Font render options](http://i.imgur.com/QeaRVnd.png)
 
 **Font replacement**. Use installed fonts render missing fonts.
 
-![Font replacement](http://i.imgur.com/2I1UDro.png)
+![Font replacement](http://i.imgur.com/n8sqNJb.png)
+
+**Scheme management**, **1-click setup** and **Reset system default** functions.
+
+![Scheme management](http://i.imgur.com/PNj8ygT.png)
 
 ## Download
 
-<https://github.com/guoyunhe/font-config-master/releases>
+<https://github.com/guoyunhe/fontweak/releases>
 
 ## Get Help and Report problems
 
-<https://github.com/guoyunhe/font-config-master/issues>
+<https://github.com/guoyunhe/fontweak/issues>
+
+## Document and Tips
+
+<https://github.com/guoyunhe/fontweak/wiki>
 
 ## License
 
