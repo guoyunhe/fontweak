@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.guoyunhe.fcm;
+package me.guoyunhe.fontweak;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -128,14 +128,14 @@ public class MainWindow extends javax.swing.JFrame {
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("me/guoyunhe/fcm/i18n/translation"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation"); // NOI18N
         subpixelTestDialog.setTitle(bundle.getString("SUBPIXEL RENDER: TEST YOUR SCREEN")); // NOI18N
         subpixelTestDialog.setMinimumSize(new java.awt.Dimension(600, 450));
         subpixelTestDialog.setType(java.awt.Window.Type.UTILITY);
         subpixelTestDialog.getContentPane().setLayout(new javax.swing.BoxLayout(subpixelTestDialog.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/me/guoyunhe/fcm/img/subpixel.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/me/guoyunhe/fontweak/img/subpixel.png"))); // NOI18N
         subpixelTestDialog.getContentPane().add(jLabel1);
 
         jLabel2.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
@@ -144,7 +144,7 @@ public class MainWindow extends javax.swing.JFrame {
         subpixelTestDialog.getContentPane().add(jLabel2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(bundle.getString("FONT CONFIG MASTER")); // NOI18N
+        setTitle("Fontweak"); // NOI18N
         setLocationByPlatform(true);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
@@ -489,7 +489,7 @@ public class MainWindow extends javax.swing.JFrame {
         appTitlePanel.setMaximumSize(new java.awt.Dimension(32767, 50));
 
         appNameLabel.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
-        appNameLabel.setText(bundle.getString("FONT CONFIG MASTER")); // NOI18N
+        appNameLabel.setText("Fontweak"); // NOI18N
         appTitlePanel.add(appNameLabel);
 
         appVersionLabel.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
@@ -632,8 +632,8 @@ public class MainWindow extends javax.swing.JFrame {
         // Show dialog to create new scheme and save the configuration file
         String scheme = (String) JOptionPane.showInputDialog(
                 this,
-                java.util.ResourceBundle.getBundle("me/guoyunhe/fcm/i18n/translation").getString("NAME OF NEW SCHEME"),
-                java.util.ResourceBundle.getBundle("me/guoyunhe/fcm/i18n/translation").getString("RENAME SCHEME"), // Title of dialog
+                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("NAME OF NEW SCHEME"),
+                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("RENAME SCHEME"), // Title of dialog
                 JOptionPane.PLAIN_MESSAGE);
         // If users clicked "Cancel" button of dialog, it will return null.
         if (scheme != null) {
@@ -653,8 +653,8 @@ public class MainWindow extends javax.swing.JFrame {
         // Get input value from dialog
         String newName = (String) JOptionPane.showInputDialog(
                 this,
-                java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("me/guoyunhe/fcm/i18n/translation").getString("NEW NAME OF SCHEME {0}"), new Object[] {oldName}),
-                java.util.ResourceBundle.getBundle("me/guoyunhe/fcm/i18n/translation").getString("CREATE NEW SCHEME"), // Title of dialog
+                java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("NEW NAME OF SCHEME {0}"), new Object[] {oldName}),
+                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("CREATE NEW SCHEME"), // Title of dialog
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 null,
@@ -845,7 +845,7 @@ public class MainWindow extends javax.swing.JFrame {
         aliasTableModel = new javax.swing.table.DefaultTableModel(
                 new String[][]{}, // TODO: Read from fontconfig
                 new String[]{
-                    java.util.ResourceBundle.getBundle("me/guoyunhe/fcm/i18n/translation").getString("ORIGINAL FONT"), java.util.ResourceBundle.getBundle("me/guoyunhe/fcm/i18n/translation").getString("FONT ALIAS")
+                    java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("ORIGINAL FONT"), java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("FONT ALIAS")
                 }
         ) {
             Class[] types = new Class[]{
@@ -868,7 +868,7 @@ public class MainWindow extends javax.swing.JFrame {
         // Load scheme list
         String[] schemeList = schemeManager.getSchemeList();
         if (schemeList == null) {
-            schemeList = new String[]{java.util.ResourceBundle.getBundle("me/guoyunhe/fcm/i18n/translation").getString("DEFAULT")};
+            schemeList = new String[]{java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("DEFAULT")};
         }
         schemeComboBoxModel = new DefaultComboBoxModel(schemeList);
         schemeComboBox.setModel(schemeComboBoxModel);

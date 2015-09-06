@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.guoyunhe.fcm;
+package me.guoyunhe.fontweak;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,14 +36,14 @@ import java.util.logging.Logger;
  */
 public class SchemeManager {
     
-    private final String appConfigDir; // ~/.config/font-config-master/
-    private final String schemeDir; // ~/.config/font-config-master/schemes/
-    private final File appConfigFile; // ~/.config/font-config-master/config.properties
-    private Properties configProp;
+    private final String appConfigDir;
+    private final String schemeDir;
+    private final File appConfigFile;
+    private final Properties configProp;
     
     public SchemeManager () {
         String userhome = System.getProperty("user.home");
-        appConfigDir = userhome + "/.config/font-config-master";
+        appConfigDir = userhome + "/.config/fontweak";
         schemeDir = appConfigDir + "/scheme";
         appConfigFile = new File(appConfigDir + "/config.properties");
         
