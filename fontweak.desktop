@@ -1,0 +1,20 @@
+[Desktop Entry]
+Categories=System;SystemSetup;
+Comment[zh_CN]=Configure font family and render effects
+Comment=Configure font family and render effects
+Exec=fontweak
+GenericName[zh_CN]=Font Configuration
+GenericName=Font Configuration
+Icon=fontweak
+MimeType=
+Name[zh_CN]=Fontweak
+Name=Fontweak
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=none
+X-KDE-SubstituteUID=false
+X-KDE-Username=
