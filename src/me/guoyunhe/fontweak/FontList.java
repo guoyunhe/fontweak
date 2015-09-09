@@ -42,7 +42,7 @@ public class FontList {
         // Return English names of fonts, easier for match
         Locale en = new Locale("en", "US");
         String[] originalList = env.getAvailableFontFamilyNames(en);
-        list = new ArrayList<>();
+        list = new ArrayList();
         list.add("");
         for (String font : originalList) {
             font = removeFontWeight(font);
@@ -75,7 +75,7 @@ public class FontList {
     }
     
     private void buildIgnoreList() {
-        ignoreList = new ArrayList<>();
+        ignoreList = new ArrayList();
         ignoreList.add("Sans Serif");
         ignoreList.add("SansSerif");
         ignoreList.add("Serif");

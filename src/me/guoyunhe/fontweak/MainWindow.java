@@ -30,7 +30,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -39,7 +41,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainWindow extends javax.swing.JFrame {
     
-    private ArrayList<Image> appIconImages;
+    private List<Image> appIconImages;
+    private JComboBox[][] fontSelectArray;
     private FontConfigXML fontconfig;
     private DefaultTableModel aliasTableModel;
     private SchemeManager schemeManager;
@@ -58,7 +61,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
     
     private void initResources() {
-        appIconImages = new ArrayList<>();
+        appIconImages = new ArrayList();
         URL appIcon16URL = getClass().getResource("/me/guoyunhe/fontweak/img/icon-16.png");
         ImageIcon appIcon16 = new ImageIcon(appIcon16URL);
         appIconImages.add(appIcon16.getImage());
@@ -112,6 +115,14 @@ public class MainWindow extends javax.swing.JFrame {
         koSansComboBox = new javax.swing.JComboBox();
         koSerifComboBox = new javax.swing.JComboBox();
         koMonoComboBox = new javax.swing.JComboBox();
+        zhCNLabel = new javax.swing.JLabel();
+        zhTWLabel = new javax.swing.JLabel();
+        zhCNSansComboBox = new javax.swing.JComboBox();
+        zhCNSerifComboBox = new javax.swing.JComboBox();
+        zhCNMonoComboBox = new javax.swing.JComboBox();
+        zhTWMonoComboBox = new javax.swing.JComboBox();
+        zhTWSerifComboBox = new javax.swing.JComboBox();
+        zhTWSansComboBox = new javax.swing.JComboBox();
         fontRenderPanel = new javax.swing.JScrollPane();
         fontRenderContentPanel = new javax.swing.JPanel();
         antialiasLabel = new javax.swing.JLabel();
@@ -218,7 +229,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         java.awt.GridBagLayout fontTypeContentPanelLayout = new java.awt.GridBagLayout();
         fontTypeContentPanelLayout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0};
-        fontTypeContentPanelLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0};
+        fontTypeContentPanelLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
         fontTypeContentPanel.setLayout(fontTypeContentPanelLayout);
 
         sansLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -307,7 +318,7 @@ public class MainWindow extends javax.swing.JFrame {
         jaLabel.setText(bundle.getString("JAPANESE FONTS")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontTypeContentPanel.add(jaLabel, gridBagConstraints);
 
@@ -315,51 +326,103 @@ public class MainWindow extends javax.swing.JFrame {
         koLabel.setText(bundle.getString("KOREAN FONTS")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontTypeContentPanel.add(koLabel, gridBagConstraints);
 
         jaSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(jaSansComboBox, gridBagConstraints);
 
         jaSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(jaSerifComboBox, gridBagConstraints);
 
         jaMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(jaMonoComboBox, gridBagConstraints);
 
         koSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(koSansComboBox, gridBagConstraints);
 
         koSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(koSerifComboBox, gridBagConstraints);
 
         koMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(koMonoComboBox, gridBagConstraints);
+
+        zhCNLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        zhCNLabel.setText(bundle.getString("MainWindow.zhCNLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        fontTypeContentPanel.add(zhCNLabel, gridBagConstraints);
+
+        zhTWLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        zhTWLabel.setText(bundle.getString("MainWindow.zhTWLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        fontTypeContentPanel.add(zhTWLabel, gridBagConstraints);
+
+        zhCNSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 6;
+        fontTypeContentPanel.add(zhCNSansComboBox, gridBagConstraints);
+
+        zhCNSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 6;
+        fontTypeContentPanel.add(zhCNSerifComboBox, gridBagConstraints);
+
+        zhCNMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 6;
+        fontTypeContentPanel.add(zhCNMonoComboBox, gridBagConstraints);
+
+        zhTWMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 8;
+        fontTypeContentPanel.add(zhTWMonoComboBox, gridBagConstraints);
+
+        zhTWSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 8;
+        fontTypeContentPanel.add(zhTWSerifComboBox, gridBagConstraints);
+
+        zhTWSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 8;
+        fontTypeContentPanel.add(zhTWSansComboBox, gridBagConstraints);
 
         fontFamilyPanel.setViewportView(fontTypeContentPanel);
 
@@ -621,7 +684,9 @@ public class MainWindow extends javax.swing.JFrame {
         String link = "https://github.com/guoyunhe/fontweak";
         try {
             Desktop.getDesktop().browse(new URI(link));
-        } catch (IOException | URISyntaxException ex) {
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_homepageLabelMouseClicked
@@ -795,17 +860,24 @@ public class MainWindow extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         
-        //</editor-fold>
-
+        MainWindow mw;
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            MainWindow mw = new MainWindow();
-            mw.setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                MainWindow mw = new MainWindow();
+                mw.setVisible(true);
+            }
         });
 
     }
@@ -814,6 +886,14 @@ public class MainWindow extends javax.swing.JFrame {
         // Initialize objects
         fontconfig = new FontConfigXML();
         schemeManager = new SchemeManager();
+        fontSelectArray = new JComboBox[][]{
+            {sansComboBox, serifComboBox, monoComboBox},
+            {zhSansComboBox, zhSerifComboBox, zhMonoComboBox},
+            {zhCNSansComboBox, zhCNSerifComboBox, zhCNMonoComboBox},
+            {zhTWSansComboBox, zhTWSerifComboBox, zhTWMonoComboBox},
+            {jaSansComboBox, jaSerifComboBox, jaMonoComboBox},
+            {koSansComboBox, koSerifComboBox, koMonoComboBox}
+        };
 
         // Read data from fontconfig XML file
         fontconfig.readConfig();
@@ -828,19 +908,12 @@ public class MainWindow extends javax.swing.JFrame {
     private void loadFontList() {
         FontList fontlist = new FontList();
         String[] list = fontlist.get();
-        sansComboBox.setModel(new DefaultComboBoxModel(list));
-        serifComboBox.setModel(new DefaultComboBoxModel(list));
-        monoComboBox.setModel(new DefaultComboBoxModel(list));
-        zhSansComboBox.setModel(new DefaultComboBoxModel(list));
-        zhSerifComboBox.setModel(new DefaultComboBoxModel(list));
-        zhMonoComboBox.setModel(new DefaultComboBoxModel(list));
-        jaSansComboBox.setModel(new DefaultComboBoxModel(list));
-        jaSerifComboBox.setModel(new DefaultComboBoxModel(list));
-        jaMonoComboBox.setModel(new DefaultComboBoxModel(list));
-        koSansComboBox.setModel(new DefaultComboBoxModel(list));
-        koSerifComboBox.setModel(new DefaultComboBoxModel(list));
-        koMonoComboBox.setModel(new DefaultComboBoxModel(list));
         fontAliasComboBox.setModel(new DefaultComboBoxModel(list));
+        for (JComboBox[] fontSelectRow : fontSelectArray) {
+            for (JComboBox fontSelect : fontSelectRow) {
+                fontSelect.setModel(new DefaultComboBoxModel(list));
+            }
+        }
     }
     
     /**
@@ -848,18 +921,12 @@ public class MainWindow extends javax.swing.JFrame {
      */
     private void loadConfig() {
         // Set UI components to configuration data
-        sansComboBox.setSelectedItem(fontconfig.getSans());
-        serifComboBox.setSelectedItem(fontconfig.getSerif());
-        monoComboBox.setSelectedItem(fontconfig.getMono());
-        zhSansComboBox.setSelectedItem(fontconfig.getZhSans());
-        zhSerifComboBox.setSelectedItem(fontconfig.getZhSerif());
-        zhMonoComboBox.setSelectedItem(fontconfig.getZhMono());
-        jaSansComboBox.setSelectedItem(fontconfig.getJaSans());
-        jaSerifComboBox.setSelectedItem(fontconfig.getJaSerif());
-        jaMonoComboBox.setSelectedItem(fontconfig.getJaMono());
-        koSansComboBox.setSelectedItem(fontconfig.getKoSans());
-        koSerifComboBox.setSelectedItem(fontconfig.getKoSerif());
-        koMonoComboBox.setSelectedItem(fontconfig.getKoMono());
+        for (int i = 0; i < fontSelectArray.length; i++) {
+            for (int j = 0; j < 3; j++) {
+                String font = fontconfig.getFontFamily(i, j);
+                fontSelectArray[i][j].setSelectedItem(font);
+            }
+        }
 
         antialiasCheckBox.setSelected(fontconfig.getAntiAlias());
         hintingCheckBox.setSelected(fontconfig.getHinting());
@@ -882,9 +949,9 @@ public class MainWindow extends javax.swing.JFrame {
             }
         };
         List<String[]> aliasList = fontconfig.getAliasList();
-        aliasList.stream().forEach((alias) -> {
+        for( String[] alias : aliasList) {
             aliasTableModel.addRow(alias);
-        });
+        }
         aliasTable.setModel(aliasTableModel);
     }
     
@@ -914,18 +981,12 @@ public class MainWindow extends javax.swing.JFrame {
      */
     private void saveConfig() {
         // TODO: write configuration from UI components
-        fontconfig.setSans((String)sansComboBox.getSelectedItem());
-        fontconfig.setSerif((String)serifComboBox.getSelectedItem());
-        fontconfig.setMono((String)monoComboBox.getSelectedItem());
-        fontconfig.setZhSans((String)zhSansComboBox.getSelectedItem());
-        fontconfig.setZhSerif((String)zhSerifComboBox.getSelectedItem());
-        fontconfig.setZhMono((String)zhMonoComboBox.getSelectedItem());
-        fontconfig.setJaSans((String)jaSansComboBox.getSelectedItem());
-        fontconfig.setJaSerif((String)jaSerifComboBox.getSelectedItem());
-        fontconfig.setJaMono((String)jaMonoComboBox.getSelectedItem());
-        fontconfig.setKoSans((String)koSansComboBox.getSelectedItem());
-        fontconfig.setKoSerif((String)koSerifComboBox.getSelectedItem());
-        fontconfig.setKoMono((String)koMonoComboBox.getSelectedItem());
+        for (int i = 0; i < fontSelectArray.length; i++) {
+            for (int j = 0; j < 3; j++) {
+                String font = (String)fontSelectArray[i][j].getSelectedItem();
+                fontconfig.setFontFamily(i, j, font);
+            }
+        }
         
         ArrayList<String[]> aliasList = new ArrayList();
         for(int i=0; i < this.aliasTableModel.getRowCount(); i++) {
@@ -1011,9 +1072,17 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JDialog subpixelTestDialog;
     private javax.swing.JTabbedPane tabbedPanel;
     private javax.swing.JLabel westLabel;
+    private javax.swing.JLabel zhCNLabel;
+    private javax.swing.JComboBox zhCNMonoComboBox;
+    private javax.swing.JComboBox zhCNSansComboBox;
+    private javax.swing.JComboBox zhCNSerifComboBox;
     private javax.swing.JLabel zhLabel;
     private javax.swing.JComboBox zhMonoComboBox;
     private javax.swing.JComboBox zhSansComboBox;
     private javax.swing.JComboBox zhSerifComboBox;
+    private javax.swing.JLabel zhTWLabel;
+    private javax.swing.JComboBox zhTWMonoComboBox;
+    private javax.swing.JComboBox zhTWSansComboBox;
+    private javax.swing.JComboBox zhTWSerifComboBox;
     // End of variables declaration//GEN-END:variables
 }

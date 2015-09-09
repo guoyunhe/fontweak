@@ -38,6 +38,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -46,59 +47,69 @@ import org.xml.sax.SAXException;
  * @author Guo Yunhe <guoyunhebrave@gmail.com>
  */
 public class FontConfigXML {
+    // XML
     private DocumentBuilderFactory factory;
     private DocumentBuilder builder;
     private File configFile;
     private Document doc;
     private Node root;
     
+    // fontconfig options
     private boolean antialias = false;
     private boolean hinting = false;
-    private String hintstyle = "hintnone";
-    private String rgba = "none";
     
-    private String sans;
-    private String serif;
-    private String mono;
-    private String zhSans;
-    private String zhSerif;
-    private String zhMono;
-    private String jaSans;
-    private String jaSerif;
-    private String jaMono;
-    private String koSans;
-    private String koSerif;
-    private String koMono;
-    
-    private ArrayList<String[]> aliasList;
-    
-    public static final int HINT_NONE = 0;
+    public static final int HINT_NONE   = 0;
     public static final int HINT_SLIGHT = 1;
     public static final int HINT_MEDIUM = 2;
-    public static final int HINT_FULL = 3;
-
+    public static final int HINT_FULL   = 3;
+    private static final String[] hintstyleOptions = {"hintnone", "hintslight", "hintmedium", "hintfull"};
+    private int hintstyle = HINT_NONE;
+    
     public static final int RGBA_NONE = 0;
-    public static final int RGBA_RGB = 1;
-    public static final int RGBA_BGR = 2;
+    public static final int RGBA_RGB  = 1;
+    public static final int RGBA_BGR  = 2;
     public static final int RGBA_VRGB = 3;
     public static final int RGBA_VBGR = 4;
+    private static final String[] rgbaOptions = {"none", "rgb", "bgr", "vrgb", "vbgr"};
+    private int rgba = RGBA_NONE;
+    
+    private static final String[] langOptions = {"en", "zh", "zh-cn", "zh-tw", "ja", "ko"};
+    public static final int EN    = 0;
+    public static final int ZH    = 1;
+    public static final int ZH_CN = 2;
+    public static final int ZH_TW = 3;
+    public static final int JA    = 4;
+    public static final int KO    = 5;
+    
+    private static final String[] familyOptions = {"sans-serif", "serif", "monospace"};
+    public static final int SANS  = 0;
+    public static final int SERIF = 0;
+    public static final int MONO  = 0;
+    
+    private final String[][] fontArray;
+    
+    private ArrayList<String[]> aliasList; // <alias>
 
     public FontConfigXML() {
         factory = DocumentBuilderFactory.newInstance();
         try {
             builder = factory.newDocumentBuilder();
             // Empty DTD reference, since it is missing in most system
-            builder.setEntityResolver((String publicId, String systemId) -> {
-                if (systemId.contains("fonts.dtd")) {
-                    return new InputSource(new StringReader(""));
-                } else {
-                    return null;
+            builder.setEntityResolver(new EntityResolver() {
+                @Override
+                public InputSource resolveEntity(String publicId, String systemId) {
+                    if (systemId.contains("fonts.dtd")) {
+                        return new InputSource(new StringReader(""));
+                    } else {
+                        return null;
+                    }
                 }
             });
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        fontArray = new String[langOptions.length][familyOptions.length];
         aliasList = new ArrayList();
         
         cleanConfigFiles();
@@ -131,7 +142,9 @@ public class FontConfigXML {
         // Parse DOM from XML
         try {
             doc = builder.parse(xml);
-        } catch (SAXException | IOException ex) {
+        } catch (SAXException ex) {
+            Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(FontConfigXML.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -170,19 +183,15 @@ public class FontConfigXML {
         }
         Element element = (Element)node;
         Element edit = (Element)element.getElementsByTagName("edit").item(0);
-        switch (edit.getAttribute("name")) {
-            case "rgba":
-                rgba = parseConst(edit);
-                break;
-            case "hinting":
-                hinting = parseBool(edit);
-                break;
-            case "hintstyle":
-                hintstyle = parseConst(edit);
-                break;
-            case "antialias":
-                antialias = parseBool(edit);
-                break;
+        String name = edit.getAttribute("name");
+        if (name.equals("rgba")) {
+            rgba = rgbaDecode(parseConst(edit));
+        } else if (name.equals("hinting")) {
+            hinting = parseBool(edit);
+        } else if (name.equals("hintstyle")) {
+            hintstyle = hintstyleDecode(parseConst(edit));
+        } else if (name.equals("antialias")) {
+            antialias = parseBool(edit);
         }
     }
     
@@ -191,92 +200,29 @@ public class FontConfigXML {
      * @param node The "match" XML element to be analyzed.
      */
     private void findPattern(Node node) {
-        String testFamily = "";
-        String testLanguage = "";
+        int testFamily = SANS;
+        int testLanguage = EN;
         String editFamily = "";
         
         NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             if (children.item(i).hasAttributes()) {
                 Element child = (Element) children.item(i);
-                switch (child.getNodeName()) {
-                    case "test":
-                        switch (child.getAttribute("name")) {
-                            case "family":
-                                testFamily = parseString(child);
-                                break;
-                            case "lang":
-                                testLanguage = parseString(child);
-                                break;
-                        }
-                        break;
-                    case "edit":
-                        if (child.getAttribute("name").equals("family")) {
-                            editFamily = parseString(child);
-                        }
-                        break;
+                String nodeName = child.getNodeName();
+                String name = child.getAttribute("name");
+                if (nodeName.equals("test")) {
+                    if (name.equals("family")) {
+                        testFamily = familyDecode(parseString(child));
+                    } else if (name.equals("lang")) {
+                        testLanguage = langDecode(parseString(child));
+                    }
+                } else if (nodeName.equals("edit")) {
+                    editFamily = parseString(child);
                 }
             }
         }
         
-        switch (testFamily) {
-            case "sans-serif":
-            case "sans":
-                switch (testLanguage) {
-                    case "zh":
-                    case "zh-cn":
-                    case "zh-tw":
-                        zhSans = editFamily;
-                        break;
-                    case "ja":
-                        jaSans = editFamily;
-                        break;
-                    case "ko":
-                        koSans = editFamily;
-                        break;
-                    default:
-                        sans = editFamily;
-                        break;
-                }
-                break;
-            case "serif":
-                switch (testLanguage) {
-                    case "zh":
-                    case "zh-cn":
-                    case "zh-tw":
-                        zhSerif = editFamily;
-                        break;
-                    case "ja":
-                        jaSerif = editFamily;
-                        break;
-                    case "ko":
-                        koSerif = editFamily;
-                        break;
-                    default:
-                        serif = editFamily;
-                        break;
-                }
-                break;
-            case "mono":
-            case "monospace":
-                switch (testLanguage) {
-                    case "zh":
-                    case "zh-cn":
-                    case "zh-tw":
-                        zhMono = editFamily;
-                        break;
-                    case "ja":
-                        jaMono = editFamily;
-                        break;
-                    case "ko":
-                        koMono = editFamily;
-                        break;
-                    default:
-                        mono = editFamily;
-                        break;
-                }
-                break;
-        }
+        fontArray[testLanguage][testFamily] = editFamily;
     }
     
     private void findAlias(Node node) {
@@ -285,19 +231,17 @@ public class FontConfigXML {
         String preferFont = null;
         for(int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
-            switch (child.getNodeName()) {
-                case "family":
-                    originalFont = child.getTextContent().trim();
-                    break;
-                case "prefer":
-                    NodeList grandChildren = child.getChildNodes();
-                    for (int j = 0; j < grandChildren.getLength(); j++) {
-                        Node grandChild = grandChildren.item(j);
-                        if (grandChild.getNodeName().equals("family")) {
-                            preferFont = grandChild.getTextContent().trim();
-                        }
+            String name = child.getNodeName();
+            if (name.equals("family")) {
+                originalFont = child.getTextContent().trim();
+            } else if (name.equals("prefer")) {
+                NodeList grandChildren = child.getChildNodes();
+                for (int j = 0; j < grandChildren.getLength(); j++) {
+                    Node grandChild = grandChildren.item(j);
+                    if (grandChild.getNodeName().equals("family")) {
+                        preferFont = grandChild.getTextContent().trim();
                     }
-                    break;
+                }
             }
         }
         if (originalFont != null && preferFont != null) {
@@ -377,41 +321,15 @@ public class FontConfigXML {
         }
 
         // Save option values to document elements
-        if (validFont(zhSans)) {
-            root.appendChild(makeFontFamilyMatch("sans-serif", "zh", zhSans));
-        }
-        if (validFont(zhSerif)) {
-            root.appendChild(makeFontFamilyMatch("serif", "zh", zhSerif));
-        }
-        if (validFont(zhMono)) {
-            root.appendChild(makeFontFamilyMatch("monospace", "zh", zhMono));
-        }
-        if (validFont(jaSans)) {
-            root.appendChild(makeFontFamilyMatch("sans-serif", "ja", jaSans));
-        }
-        if (validFont(jaSerif)) {
-            root.appendChild(makeFontFamilyMatch("serif", "ja", jaSerif));
-        }
-        if (validFont(jaMono)) {
-            root.appendChild(makeFontFamilyMatch("monospace", "ja", jaMono));
-        }
-        if (validFont(koSans)) {
-            root.appendChild(makeFontFamilyMatch("sans-serif", "ko", koSans));
-        }
-        if (validFont(koSerif)) {
-            root.appendChild(makeFontFamilyMatch("serif", "ko", koSerif));
-        }
-        if (validFont(koMono)) {
-            root.appendChild(makeFontFamilyMatch("monospace", "ko", koMono));
-        }
-        if (validFont(sans)) {
-            root.appendChild(makeFontFamilyMatch("sans-serif", null, sans));
-        }
-        if (validFont(serif)) {
-            root.appendChild(makeFontFamilyMatch("serif", null, serif));
-        }
-        if (validFont(mono)) {
-            root.appendChild(makeFontFamilyMatch("monospace", null, mono));
+        for (int i = 0; i < langOptions.length; i++) {
+            for (int j = 0; j < familyOptions.length; j++) {
+                String font = fontArray[i][j];
+                if (validFont(font)) {
+                    String lang = langEncode(i);
+                    String family = familyEncode(j);
+                    root.appendChild(makeFontFamilyMatch(family, lang, font));
+                }
+            }
         }
         
         for (String[] aliasPair : aliasList) {
@@ -420,8 +338,8 @@ public class FontConfigXML {
         
         root.appendChild(makeFontRenderMatch("antialias", "bool", Boolean.toString(antialias)));
         root.appendChild(makeFontRenderMatch("hinting", "bool", Boolean.toString(hinting)));
-        root.appendChild(makeFontRenderMatch("hintstyle", "const", hintstyle));
-        root.appendChild(makeFontRenderMatch("rgba", "const", rgba));
+        root.appendChild(makeFontRenderMatch("hintstyle", "const", hintstyleEncode(hintstyle)));
+        root.appendChild(makeFontRenderMatch("rgba", "const", rgbaEncode(rgba)));
 
         // Write document object to XML file.
         try {
@@ -449,7 +367,7 @@ public class FontConfigXML {
     private Element makeFontFamilyMatch(String family, String lang, String font) {
         Element match = doc.createElement("match");
         match.appendChild(makeTestElement("family", "string", family, null));
-        if (lang != null && !lang.isEmpty()) {
+        if (lang != null && !lang.isEmpty() && !lang.equals("en")) {
             match.appendChild(makeTestElement("lang", "string", lang, "contains"));
             match.appendChild(makeEditElement("family", "string", font, "prepend", null));
         } else {
@@ -512,100 +430,72 @@ public class FontConfigXML {
         return aliasElement;
     }
     
-    public void setSans(String font) {
-        sans = font;
+    private int rgbaDecode(String str) {
+        for (int i = 0; i < rgbaOptions.length; i++) {
+            if (rgbaOptions[i].equals(str)) {
+                return i;
+            }
+        }
+        return RGBA_NONE;
     }
     
-    public void setSerif(String font) {
-        serif = font;
+    private String rgbaEncode(int num) {
+        num = num % rgbaOptions.length;
+        String str = rgbaOptions[num];
+        return str;
     }
     
-    public void setMono(String font) {
-        mono = font;
+    private int hintstyleDecode(String str) {
+        for (int i = 0; i < hintstyleOptions.length; i++) {
+            if (hintstyleOptions[i].equals(str)) {
+                return i;
+            }
+        }
+        return RGBA_NONE;
     }
     
-    public void setZhSans(String font) {
-        zhSans = font;
+    private String hintstyleEncode(int num) {
+        num = num % hintstyleOptions.length;
+        String str = hintstyleOptions[num];
+        return str;
     }
     
-    public void setZhSerif(String font) {
-        zhSerif = font;
+    private int langDecode(String str) {
+        for (int i = 0; i < langOptions.length; i++) {
+            if (langOptions[i].equals(str)) {
+                return i;
+            }
+        }
+        return EN;
     }
     
-    public void setZhMono(String font) {
-        zhMono = font;
+    private String langEncode(int num) {
+        num = num % langOptions.length;
+        String str = langOptions[num];
+        return str;
     }
     
-    public void setJaSans(String font) {
-        jaSans = font;
+    private int familyDecode(String str) {
+        for (int i = 0; i < familyOptions.length; i++) {
+            if (familyOptions[i].equals(str)) {
+                return i;
+            }
+        }
+        return SANS;
     }
     
-    public void setJaSerif(String font) {
-        jaSerif = font;
+    private String familyEncode(int num) {
+        num = num % familyOptions.length;
+        String str = familyOptions[num];
+        return str;
     }
     
-    public void setJaMono(String font) {
-        jaMono = font;
+    public void setFontFamily(int lang, int family, String font) {
+        fontArray[lang][family] = font;
     }
     
-    public void setKoSans(String font) {
-        koSans = font;
-    }
-    
-    public void setKoSerif(String font) {
-        koSerif = font;
-    }
-    
-    public void setKoMono(String font) {
-        koMono = font;
-    }
-    
-    public String getSans() {
-        return sans;
-    }
-    
-    public String getSerif() {
-        return serif;
-    }
-    
-    public String getMono() {
-        return mono;
-    }
-    
-    public String getZhSans() {
-        return zhSans;
-    }
-    
-    public String getZhSerif() {
-        return zhSerif;
-    }
-    
-    public String getZhMono() {
-        return zhMono;
-    }
-    
-    public String getJaSans() {
-        return jaSans;
-    }
-    
-    public String getJaSerif() {
-        return jaSerif;
-    }
-    
-    public String getJaMono() {
-        return jaMono;
-    }
-    
-    public String getKoSans() {
-        return koSans;
-    }
-    
-    public String getKoSerif() {
-        return koSerif;
-    }
-    
-    public String getKoMono() {
-        return koMono;
+    public String getFontFamily(int lang, int family) {
+        return fontArray[lang][family];
     }
     
     public void setAntiAlias(boolean antialias) {
@@ -625,78 +515,19 @@ public class FontConfigXML {
     }
     
     public void setHintStyle(int style) {
-        switch (style) {
-            case HINT_NONE:
-                hintstyle = "hintnone";
-                break;
-            case HINT_SLIGHT:
-                hintstyle = "hintslight";
-                break;
-            case HINT_MEDIUM:
-                hintstyle = "hintmedium";
-                break;
-            case HINT_FULL:
-                hintstyle = "hintfull";
-                break;
-            default:
-                hintstyle = "hintnone";
-                break;
-        }
+        hintstyle = style;
     }
     
     public int getHintStyle() {
-        switch (hintstyle) {
-            case "hintnone":
-                return HINT_NONE;
-            case "hintslight":
-                return HINT_SLIGHT;
-            case "hintmedium":
-                return HINT_MEDIUM;
-            case "hintfull":
-                return HINT_FULL;
-            default:
-                return HINT_NONE;
-        }
+        return hintstyle;
     }
     
-    public void setSubpixel(int rgba) {
-        switch (rgba) {
-            case RGBA_NONE:
-                this.rgba = "none";
-                break;
-            case RGBA_RGB:
-                this.rgba = "rgb";
-                break;
-            case RGBA_BGR:
-                this.rgba = "bgr";
-                break;
-            case RGBA_VRGB:
-                this.rgba = "vrgb";
-                break;
-            case RGBA_VBGR:
-                this.rgba = "vbgr";
-                break;
-            default:
-                this.rgba = "none";
-                break;
-        }
+    public void setSubpixel(int subpixel) {
+        rgba = subpixel;
     }
     
     public int getSubpixel() {
-        switch (rgba) {
-            case "none":
-                return RGBA_NONE;
-            case "rgb":
-                return RGBA_RGB;
-            case "bgr":
-                return RGBA_BGR;
-            case "vrgb":
-                return RGBA_VRGB;
-            case "vbgr":
-                return RGBA_VBGR;
-            default:
-                return RGBA_NONE;
-        }
+        return rgba;
     }
     
     public ArrayList<String[]> getAliasList () {
