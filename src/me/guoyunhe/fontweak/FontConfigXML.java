@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -83,8 +85,8 @@ public class FontConfigXML {
     
     private static final String[] familyOptions = {"sans-serif", "serif", "monospace"};
     public static final int SANS  = 0;
-    public static final int SERIF = 0;
-    public static final int MONO  = 0;
+    public static final int SERIF = 1;
+    public static final int MONO  = 2;
     
     private final String[][] fontArray;
     
@@ -490,12 +492,121 @@ public class FontConfigXML {
         return str;
     }
     
+    public String fontFallback(String[] fonts, List<String> list) {
+        for (String font : fonts) {
+            if (list.contains(font)) {
+                return font;
+            }
+        }
+        return null;
+    }
+    
     public void setFontFamily(int lang, int family, String font) {
         fontArray[lang][family] = font;
     }
     
     public String getFontFamily(int lang, int family) {
         return fontArray[lang][family];
+    }
+    
+    public String[][] getDefaultFontFamilyArray(String[] list) {
+        String[][] defaultFontArray = new String[langOptions.length][familyOptions.length];
+        List fontList = Arrays.asList(list);
+
+        defaultFontArray[EN][SANS] = fontFallback(new String[]{
+            "Ubuntu", // Ubuntu pre-install
+            "Nimbus Sans L",
+            "DejaVu Sans",
+            "Liberation Sans",
+            "Droid Sans"
+        }, fontList);
+        
+        defaultFontArray[EN][SERIF] = fontFallback(new String[]{
+            "Nimbus Roman No9 L",
+            "DejaVu Serif",
+            "Liberation Serif",
+            "Droid Serif"
+        }, fontList);
+        
+        defaultFontArray[EN][MONO] = fontFallback(new String[]{
+            "Ubuntu Mono", // Ubuntu pre-install
+            "DejaVu Sans Mono",
+            "Libration Mono",
+            "Droid Sans Mono",
+        }, fontList);
+        
+        defaultFontArray[ZH][SANS] = fontFallback(new String[]{
+            "WenQuanYi Micro Hei",
+            "Droid Sans Fallback",
+            "WenQuanYi Zen Hei"
+        }, fontList);
+        
+        defaultFontArray[ZH][SERIF] = fontFallback(new String[]{
+            "AR PL UMing CN"
+        }, fontList);
+        
+        defaultFontArray[ZH][MONO] = fontFallback(new String[]{
+            "WenQuanYi Micro Hei Mono",
+        }, fontList);
+        
+        defaultFontArray[ZH_CN][SANS] = fontFallback(new String[]{
+            "WenQuanYi Micro Hei",
+            "Droid Sans Fallback",
+            "WenQuanYi Zen Hei"
+        }, fontList);
+        
+        defaultFontArray[ZH_CN][SERIF] = fontFallback(new String[]{
+            "AR PL UMing CN"
+        }, fontList);
+        
+        defaultFontArray[ZH_CN][MONO] = fontFallback(new String[]{
+            "WenQuanYi Micro Hei Mono",
+        }, fontList);
+        
+        defaultFontArray[ZH_TW][SANS] = fontFallback(new String[]{
+            "WenQuanYi Micro Hei",
+            "Droid Sans Fallback",
+            "WenQuanYi Zen Hei"
+        }, fontList);
+        
+        defaultFontArray[ZH_TW][SERIF] = fontFallback(new String[]{
+            "AR PL UMing TW"
+        }, fontList);
+        
+        defaultFontArray[ZH_TW][MONO] = fontFallback(new String[]{
+            "WenQuanYi Micro Hei Mono",
+        }, fontList);
+        
+        defaultFontArray[JA][SANS] = fontFallback(new String[]{
+            "Droid Sans Japanese",
+            "WenQuanYi Micro Hei",
+            "WenQuanYi Zen Hei"
+        }, fontList);
+        
+        defaultFontArray[JA][SERIF] = fontFallback(new String[]{
+            "AR PL UMing TW"
+        }, fontList);
+        
+        defaultFontArray[JA][MONO] = fontFallback(new String[]{
+            "Droid Sans Japanese",
+            "WenQuanYi Micro Hei Mono"
+        }, fontList);
+        
+        defaultFontArray[KO][SANS] = fontFallback(new String[]{
+            "WenQuanYi Micro Hei",
+            "Droid Sans Fallback",
+            "WenQuanYi Zen Hei"
+        }, fontList);
+        
+        defaultFontArray[KO][SERIF] = fontFallback(new String[]{
+            "AR PL UMing TW"
+        }, fontList);
+        
+        defaultFontArray[KO][MONO] = fontFallback(new String[]{
+            "WenQuanYi Micro Hei Mono"
+        }, fontList);
+        
+        return defaultFontArray;
     }
     
     public void setAntiAlias(boolean antialias) {

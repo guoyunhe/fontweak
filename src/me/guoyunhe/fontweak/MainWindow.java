@@ -44,6 +44,7 @@ public class MainWindow extends javax.swing.JFrame {
     private List<Image> appIconImages;
     private JComboBox[][] fontSelectArray;
     private FontConfigXML fontconfig;
+    private FontList fontlist;
     private DefaultTableModel aliasTableModel;
     private SchemeManager schemeManager;
     private DefaultComboBoxModel schemeComboBoxModel;
@@ -99,7 +100,7 @@ public class MainWindow extends javax.swing.JFrame {
         sansLabel = new javax.swing.JLabel();
         serifLabel = new javax.swing.JLabel();
         monoLabel = new javax.swing.JLabel();
-        westLabel = new javax.swing.JLabel();
+        enLabel = new javax.swing.JLabel();
         sansComboBox = new javax.swing.JComboBox();
         serifComboBox = new javax.swing.JComboBox();
         monoComboBox = new javax.swing.JComboBox();
@@ -256,13 +257,13 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(monoLabel, gridBagConstraints);
 
-        westLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        westLabel.setText(bundle.getString("WESTERN FONTS")); // NOI18N
+        enLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        enLabel.setText(bundle.getString("ENGLISH DEFAULT")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontTypeContentPanel.add(westLabel, gridBagConstraints);
+        fontTypeContentPanel.add(enLabel, gridBagConstraints);
 
         sansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -286,7 +287,7 @@ public class MainWindow extends javax.swing.JFrame {
         fontTypeContentPanel.add(monoComboBox, gridBagConstraints);
 
         zhLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        zhLabel.setText(bundle.getString("CHINESE FONTS")); // NOI18N
+        zhLabel.setText(bundle.getString("CHINESE")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -315,7 +316,7 @@ public class MainWindow extends javax.swing.JFrame {
         fontTypeContentPanel.add(zhMonoComboBox, gridBagConstraints);
 
         jaLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jaLabel.setText(bundle.getString("JAPANESE FONTS")); // NOI18N
+        jaLabel.setText(bundle.getString("JAPANESE")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 10;
@@ -323,7 +324,7 @@ public class MainWindow extends javax.swing.JFrame {
         fontTypeContentPanel.add(jaLabel, gridBagConstraints);
 
         koLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        koLabel.setText(bundle.getString("KOREAN FONTS")); // NOI18N
+        koLabel.setText(bundle.getString("KOREAN")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 12;
@@ -373,7 +374,7 @@ public class MainWindow extends javax.swing.JFrame {
         fontTypeContentPanel.add(koMonoComboBox, gridBagConstraints);
 
         zhCNLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        zhCNLabel.setText(bundle.getString("MainWindow.zhCNLabel.text")); // NOI18N
+        zhCNLabel.setText(bundle.getString("CHINESE CHINA")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
@@ -381,7 +382,7 @@ public class MainWindow extends javax.swing.JFrame {
         fontTypeContentPanel.add(zhCNLabel, gridBagConstraints);
 
         zhTWLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        zhTWLabel.setText(bundle.getString("MainWindow.zhTWLabel.text")); // NOI18N
+        zhTWLabel.setText(bundle.getString("CHINESE TAIWAN")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
@@ -788,19 +789,13 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void oneClickButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneClickButtonActionPerformed
         // Font family
-        FontList fontlist = new FontList();
-        sansComboBox.setSelectedItem(fontlist.sansFallback());
-        serifComboBox.setSelectedItem(fontlist.serifFallback());
-        monoComboBox.setSelectedItem(fontlist.monoFallback());
-        zhSansComboBox.setSelectedItem(fontlist.zhCNSansFallback());
-        zhSerifComboBox.setSelectedItem(fontlist.zhCNSerifFallback());
-        zhMonoComboBox.setSelectedItem("");
-        jaSansComboBox.setSelectedItem(fontlist.jaSansFallback());
-        jaSerifComboBox.setSelectedItem(fontlist.jaSerifFallback());
-        jaMonoComboBox.setSelectedItem("");
-        koSansComboBox.setSelectedItem(fontlist.koSansFallback());
-        koSerifComboBox.setSelectedItem(fontlist.koSerifFallback());
-        koMonoComboBox.setSelectedItem("");
+        String[][] defaultFontArray = fontconfig.getDefaultFontFamilyArray(fontlist.get());
+        for (int i = 0; i < defaultFontArray.length; i++) {
+            for (int j = 0; j < 3; j++) {
+                String font = defaultFontArray[i][j];
+                fontSelectArray[i][j].setSelectedItem(font);
+            }
+        }
         // Render options
         antialiasCheckBox.setSelected(true);
         hintingCheckBox.setSelected(true);
@@ -814,6 +809,7 @@ public class MainWindow extends javax.swing.JFrame {
         aliasTableModel.addRow(new String[]{"Helvetica Neue", "Nimbus Sans L"});
         aliasTableModel.addRow(new String[]{"Arial", "Nimbus Sans L"});
         aliasTableModel.addRow(new String[]{"Times New Roman", "Nimbus Roman No9 L"});
+        aliasTableModel.addRow(new String[]{"Microsoft YaHei", "WenQuanYi Micro Hei"});
         aliasTableModel.addRow(new String[]{"SimSun", "AR PL UMing CN"});
         aliasTableModel.addRow(new String[]{"SimHei", "WenQuanYi Zen Hei"});
     }//GEN-LAST:event_oneClickButtonActionPerformed
@@ -821,18 +817,11 @@ public class MainWindow extends javax.swing.JFrame {
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
         // Clear all selection from views, except schemes ComboBox
         // Font family
-        sansComboBox.setSelectedIndex(0);
-        serifComboBox.setSelectedIndex(0);
-        monoComboBox.setSelectedIndex(0);
-        zhSansComboBox.setSelectedIndex(0);
-        zhSerifComboBox.setSelectedIndex(0);
-        zhMonoComboBox.setSelectedIndex(0);
-        jaSansComboBox.setSelectedIndex(0);
-        jaSerifComboBox.setSelectedIndex(0);
-        jaMonoComboBox.setSelectedIndex(0);
-        koSansComboBox.setSelectedIndex(0);
-        koSerifComboBox.setSelectedIndex(0);
-        koMonoComboBox.setSelectedIndex(0);
+        for (JComboBox[] fontSelectRow : fontSelectArray) {
+            for (JComboBox fontSelect : fontSelectRow) {
+                fontSelect.setSelectedIndex(0);
+            }
+        }
         // Render options
         antialiasCheckBox.setSelected(false);
         hintingCheckBox.setSelected(false);
@@ -886,6 +875,8 @@ public class MainWindow extends javax.swing.JFrame {
         // Initialize objects
         fontconfig = new FontConfigXML();
         schemeManager = new SchemeManager();
+        fontlist = new FontList();
+        
         fontSelectArray = new JComboBox[][]{
             {sansComboBox, serifComboBox, monoComboBox},
             {zhSansComboBox, zhSerifComboBox, zhMonoComboBox},
@@ -906,7 +897,6 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void loadFontList() {
-        FontList fontlist = new FontList();
         String[] list = fontlist.get();
         fontAliasComboBox.setModel(new DefaultComboBoxModel(list));
         for (JComboBox[] fontSelectRow : fontSelectArray) {
@@ -1020,6 +1010,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteAliasButton;
     private javax.swing.JButton deleteSchemeButton;
+    private javax.swing.JLabel enLabel;
     private javax.swing.JPanel fontAliasActionPanel;
     private javax.swing.JComboBox fontAliasComboBox;
     private javax.swing.JPanel fontAliasContentPanel;
@@ -1071,7 +1062,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton subpixelTestButton;
     private javax.swing.JDialog subpixelTestDialog;
     private javax.swing.JTabbedPane tabbedPanel;
-    private javax.swing.JLabel westLabel;
     private javax.swing.JLabel zhCNLabel;
     private javax.swing.JComboBox zhCNMonoComboBox;
     private javax.swing.JComboBox zhCNSansComboBox;
