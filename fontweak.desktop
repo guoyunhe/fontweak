@@ -1,9 +1,9 @@
 [Desktop Entry]
 Categories=System;SystemSetup;
-Comment[zh_CN]=Configure font family and render effects
+Comment[zh_CN]=选择字体并设置字体效果
 Comment=Configure font family and render effects
 Exec=fontweak
-GenericName[zh_CN]=Font Configuration
+GenericName[zh_CN]=字体配置
 GenericName=Font Configuration
 Icon=fontweak
 MimeType=
