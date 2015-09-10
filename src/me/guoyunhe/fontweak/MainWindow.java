@@ -104,10 +104,10 @@ public class MainWindow extends javax.swing.JFrame {
         sansComboBox = new javax.swing.JComboBox();
         serifComboBox = new javax.swing.JComboBox();
         monoComboBox = new javax.swing.JComboBox();
-        zhLabel = new javax.swing.JLabel();
-        zhSansComboBox = new javax.swing.JComboBox();
-        zhSerifComboBox = new javax.swing.JComboBox();
-        zhMonoComboBox = new javax.swing.JComboBox();
+        zhHKLabel = new javax.swing.JLabel();
+        zhHKSansComboBox = new javax.swing.JComboBox();
+        zhHKSerifComboBox = new javax.swing.JComboBox();
+        zhHKMonoComboBox = new javax.swing.JComboBox();
         jaLabel = new javax.swing.JLabel();
         koLabel = new javax.swing.JLabel();
         jaSansComboBox = new javax.swing.JComboBox();
@@ -286,34 +286,34 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         fontTypeContentPanel.add(monoComboBox, gridBagConstraints);
 
-        zhLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        zhLabel.setText(bundle.getString("CHINESE")); // NOI18N
+        zhHKLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        zhHKLabel.setText(bundle.getString("CHINESE HONGKONG")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontTypeContentPanel.add(zhLabel, gridBagConstraints);
+        fontTypeContentPanel.add(zhHKLabel, gridBagConstraints);
 
-        zhSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
+        zhHKSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(zhSansComboBox, gridBagConstraints);
+        fontTypeContentPanel.add(zhHKSansComboBox, gridBagConstraints);
 
-        zhSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
+        zhHKSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(zhSerifComboBox, gridBagConstraints);
+        fontTypeContentPanel.add(zhHKSerifComboBox, gridBagConstraints);
 
-        zhMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
+        zhHKMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(zhMonoComboBox, gridBagConstraints);
+        fontTypeContentPanel.add(zhHKMonoComboBox, gridBagConstraints);
 
         jaLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jaLabel.setText(bundle.getString("JAPANESE")); // NOI18N
@@ -377,7 +377,7 @@ public class MainWindow extends javax.swing.JFrame {
         zhCNLabel.setText(bundle.getString("CHINESE CHINA")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontTypeContentPanel.add(zhCNLabel, gridBagConstraints);
 
@@ -385,44 +385,44 @@ public class MainWindow extends javax.swing.JFrame {
         zhTWLabel.setText(bundle.getString("CHINESE TAIWAN")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         fontTypeContentPanel.add(zhTWLabel, gridBagConstraints);
 
         zhCNSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 4;
         fontTypeContentPanel.add(zhCNSansComboBox, gridBagConstraints);
 
         zhCNSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 4;
         fontTypeContentPanel.add(zhCNSerifComboBox, gridBagConstraints);
 
         zhCNMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 4;
         fontTypeContentPanel.add(zhCNMonoComboBox, gridBagConstraints);
 
         zhTWMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 6;
         fontTypeContentPanel.add(zhTWMonoComboBox, gridBagConstraints);
 
         zhTWSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 6;
         fontTypeContentPanel.add(zhTWSerifComboBox, gridBagConstraints);
 
         zhTWSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 6;
         fontTypeContentPanel.add(zhTWSansComboBox, gridBagConstraints);
 
         fontFamilyPanel.setViewportView(fontTypeContentPanel);
@@ -879,9 +879,9 @@ public class MainWindow extends javax.swing.JFrame {
         
         fontSelectArray = new JComboBox[][]{
             {sansComboBox, serifComboBox, monoComboBox},
-            {zhSansComboBox, zhSerifComboBox, zhMonoComboBox},
             {zhCNSansComboBox, zhCNSerifComboBox, zhCNMonoComboBox},
             {zhTWSansComboBox, zhTWSerifComboBox, zhTWMonoComboBox},
+            {zhHKSansComboBox, zhHKSerifComboBox, zhHKMonoComboBox},
             {jaSansComboBox, jaSerifComboBox, jaMonoComboBox},
             {koSansComboBox, koSerifComboBox, koMonoComboBox}
         };
@@ -1066,10 +1066,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox zhCNMonoComboBox;
     private javax.swing.JComboBox zhCNSansComboBox;
     private javax.swing.JComboBox zhCNSerifComboBox;
-    private javax.swing.JLabel zhLabel;
-    private javax.swing.JComboBox zhMonoComboBox;
-    private javax.swing.JComboBox zhSansComboBox;
-    private javax.swing.JComboBox zhSerifComboBox;
+    private javax.swing.JLabel zhHKLabel;
+    private javax.swing.JComboBox zhHKMonoComboBox;
+    private javax.swing.JComboBox zhHKSansComboBox;
+    private javax.swing.JComboBox zhHKSerifComboBox;
     private javax.swing.JLabel zhTWLabel;
     private javax.swing.JComboBox zhTWMonoComboBox;
     private javax.swing.JComboBox zhTWSansComboBox;

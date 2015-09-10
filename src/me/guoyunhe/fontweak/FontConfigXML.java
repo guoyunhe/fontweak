@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -75,11 +76,11 @@ public class FontConfigXML {
     private static final String[] rgbaOptions = {"none", "rgb", "bgr", "vrgb", "vbgr"};
     private int rgba = RGBA_NONE;
     
-    private static final String[] langOptions = {"en", "zh", "zh-cn", "zh-tw", "ja", "ko"};
+    private static final String[] langOptions = {"en", "zh-cn", "zh-tw", "zh-hk", "ja", "ko"};
     public static final int EN    = 0;
-    public static final int ZH    = 1;
-    public static final int ZH_CN = 2;
-    public static final int ZH_TW = 3;
+    public static final int ZH_CN = 1;
+    public static final int ZH_TW = 2;
+    public static final int ZH_HK = 3;
     public static final int JA    = 4;
     public static final int KO    = 5;
     
@@ -91,6 +92,9 @@ public class FontConfigXML {
     private final String[][] fontArray;
     
     private ArrayList<String[]> aliasList; // <alias>
+    
+    // System locale
+    private Locale sysLocale;
 
     public FontConfigXML() {
         factory = DocumentBuilderFactory.newInstance();
@@ -115,6 +119,8 @@ public class FontConfigXML {
         aliasList = new ArrayList();
         
         cleanConfigFiles();
+        
+        sysLocale = Locale.getDefault();
     }
     
     /**
@@ -367,14 +373,27 @@ public class FontConfigXML {
     }
     
     private Element makeFontFamilyMatch(String family, String lang, String font) {
+        // Lower priority of current locale, see #20
+        String binding = null;
+        Locale locale;
+        if (lang.length() > 2) {
+            locale = new Locale(lang.substring(0, 2), lang.substring(3));
+            if (!sysLocale.getLanguage().equals(locale.getLanguage()) || !sysLocale.getCountry().equals(locale.getCountry())) {
+                binding = "strong";
+            }
+        } else {
+            locale = new Locale(lang);
+            if (!sysLocale.getLanguage().equals(locale.getLanguage())) {
+                binding = "strong";
+            }
+        }
+        
         Element match = doc.createElement("match");
         match.appendChild(makeTestElement("family", "string", family, null));
-        if (lang != null && !lang.isEmpty() && !lang.equals("en")) {
+        if (!lang.equals("en")) {
             match.appendChild(makeTestElement("lang", "string", lang, "contains"));
-            match.appendChild(makeEditElement("family", "string", font, "prepend", null));
-        } else {
-            match.appendChild(makeEditElement("family", "string", font, "prepend", "strong"));
         }
+        match.appendChild(makeEditElement("family", "string", font, "prepend", binding));
         return match;
     }
     
@@ -535,17 +554,17 @@ public class FontConfigXML {
             "Droid Sans Mono",
         }, fontList);
         
-        defaultFontArray[ZH][SANS] = fontFallback(new String[]{
+        defaultFontArray[ZH_HK][SANS] = fontFallback(new String[]{
             "WenQuanYi Micro Hei",
             "Droid Sans Fallback",
             "WenQuanYi Zen Hei"
         }, fontList);
         
-        defaultFontArray[ZH][SERIF] = fontFallback(new String[]{
-            "AR PL UMing CN"
+        defaultFontArray[ZH_HK][SERIF] = fontFallback(new String[]{
+            "AR PL UMing HK"
         }, fontList);
         
-        defaultFontArray[ZH][MONO] = fontFallback(new String[]{
+        defaultFontArray[ZH_HK][MONO] = fontFallback(new String[]{
             "WenQuanYi Micro Hei Mono",
         }, fontList);
         
