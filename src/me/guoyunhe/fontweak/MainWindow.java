@@ -584,7 +584,7 @@ public class MainWindow extends javax.swing.JFrame {
         appTitlePanel.add(appNameLabel);
 
         appVersionLabel.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
-        appVersionLabel.setText("0.4.0"); // NOI18N
+        appVersionLabel.setText("0.6.1"); // NOI18N
         appTitlePanel.add(appVersionLabel);
 
         aboutContentPanel.add(appTitlePanel);
