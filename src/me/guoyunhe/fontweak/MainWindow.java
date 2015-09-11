@@ -730,7 +730,7 @@ public class MainWindow extends javax.swing.JFrame {
         String scheme = (String) JOptionPane.showInputDialog(
                 this,
                 java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("NAME OF NEW SCHEME"),
-                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("RENAME SCHEME"), // Title of dialog
+                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("CREATE NEW SCHEME"), // Title of dialog
                 JOptionPane.PLAIN_MESSAGE);
         // If users clicked "Cancel" button of dialog, it will return null.
         if (scheme != null) {
@@ -751,7 +751,7 @@ public class MainWindow extends javax.swing.JFrame {
         String newName = (String) JOptionPane.showInputDialog(
                 this,
                 java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("NEW NAME OF SCHEME {0}"), new Object[] {oldName}),
-                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("CREATE NEW SCHEME"), // Title of dialog
+                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("RENAME"), // Title of dialog
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 null,
