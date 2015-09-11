@@ -376,7 +376,9 @@ public class FontConfigXML {
         // Lower priority of current locale, see #20
         String binding = null;
         Locale locale;
-        if (lang.length() > 2) {
+        if (lang.equals("en")) {
+            binding = "strong";
+        } else if (lang.length() > 2) {
             locale = new Locale(lang.substring(0, 2), lang.substring(3));
             if (!sysLocale.getLanguage().equals(locale.getLanguage()) || !sysLocale.getCountry().equals(locale.getCountry())) {
                 binding = "strong";
