@@ -741,6 +741,7 @@ public class MainWindow extends javax.swing.JFrame {
             // Add and select new scheme item in ComboBox
             schemeComboBox.addItem(scheme);
             schemeComboBox.setSelectedItem(scheme);
+            deleteSchemeButton.setEnabled(true);
         }
     }//GEN-LAST:event_newSchemeButtonActionPerformed
 
@@ -779,6 +780,10 @@ public class MainWindow extends javax.swing.JFrame {
         schemeComboBox.removeItem(scheme);
         // This will trigger schemeComboBoxActionPerformed() function, and load
         // new scheme automatically
+        
+        if (schemeComboBox.getItemCount() == 1) {
+            deleteSchemeButton.setEnabled(false);
+        }
 
         // If deleted current scheme, set current scheme to new selected scheme
         if (schemeManager.getCurrentSchemeName().equals(scheme)) {
@@ -950,6 +955,9 @@ public class MainWindow extends javax.swing.JFrame {
         String[] schemeList = schemeManager.getSchemeList();
         if (schemeList == null) {
             schemeList = new String[]{java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("DEFAULT")};
+        }
+        if (schemeList.length == 1) {
+            this.deleteSchemeButton.setEnabled(false);
         }
         schemeComboBoxModel = new DefaultComboBoxModel(schemeList);
         schemeComboBox.setModel(schemeComboBoxModel);
