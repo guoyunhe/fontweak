@@ -48,7 +48,8 @@ public class MainWindow extends javax.swing.JFrame {
     private DefaultTableModel aliasTableModel;
     private SchemeManager schemeManager;
     private DefaultComboBoxModel schemeComboBoxModel;
-    private String currentScheme = null;
+    private boolean schemeLoaded = false; // Saved in config.properties
+    private String selectedScheme = null; // Scheme ComboBox value
 
     /**
      * Creates new form MainWindow
@@ -711,17 +712,25 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteAliasButtonActionPerformed
 
     private void schemeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_schemeComboBoxActionPerformed
-        if (currentScheme != null && currentScheme.isEmpty()) {
-            String scheme = (String) schemeComboBox.getSelectedItem();
-            if (!currentScheme.equals(scheme)) {
-                File schemeFile = schemeManager.getSchemeFile(scheme);
-                if (schemeFile.exists()) {
-                    fontconfig.readConfig(schemeFile);
-                } else {
-                    fontconfig.readConfig();
-                }
-                loadConfig();
+        if (!schemeLoaded) {
+            return;
+        }
+        String scheme = (String) schemeComboBox.getSelectedItem();
+        // If selected scheme changed, save previous scheme, and load next scheme
+        if (!scheme.equals(selectedScheme)) {
+            // Save previous scheme
+            this.saveConfig();
+            File selectedSchemeFile = schemeManager.getSchemeFile(selectedScheme);
+            fontconfig.writeConfig(selectedSchemeFile);
+            // Load next scheme
+            selectedScheme = scheme;
+            selectedSchemeFile = schemeManager.getSchemeFile(selectedScheme);
+            if (selectedSchemeFile.exists()) {
+                fontconfig.readConfig(selectedSchemeFile);
+            } else {
+                fontconfig.readConfig();
             }
+            loadConfig();
         }
     }//GEN-LAST:event_schemeComboBoxActionPerformed
 
@@ -961,17 +970,18 @@ public class MainWindow extends javax.swing.JFrame {
         }
         schemeComboBoxModel = new DefaultComboBoxModel(schemeList);
         schemeComboBox.setModel(schemeComboBoxModel);
-        // Set current scheme
-        currentScheme = schemeManager.getCurrentSchemeName();
-        if (currentScheme != null) {
-            schemeComboBox.setSelectedItem(currentScheme);
+        // Set selected scheme
+        selectedScheme = schemeManager.getCurrentSchemeName();
+        if (selectedScheme != null) {
+            schemeComboBox.setSelectedItem(selectedScheme);
         } else {
             schemeComboBox.setSelectedIndex(0);
-            currentScheme = (String) schemeComboBox.getSelectedItem();
-            schemeManager.setCurrentSchemeName(currentScheme);
+            selectedScheme = (String) schemeComboBox.getSelectedItem();
+            schemeManager.setCurrentSchemeName(selectedScheme);
         }
         // Sync from fontconfig to current scheme file
-        fontconfig.writeConfig(schemeManager.getSchemeFile(currentScheme));
+        fontconfig.writeConfig(schemeManager.getSchemeFile(selectedScheme));
+        schemeLoaded = true;
     }
 
     /**
