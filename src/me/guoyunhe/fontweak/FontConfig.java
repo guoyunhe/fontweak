@@ -105,7 +105,7 @@ public class FontConfig {
             legacyConfigFile.renameTo(file); // Migrate legacy
         } else if (!file.exists() && !legacyConfigFile.exists()) {
             // Create default if no config file found
-            InputStream in = getClass().getResourceAsStream("me/guoyunhe/fontweak/config/default.conf");
+            InputStream in = getClass().getResourceAsStream("/me/guoyunhe/fontweak/config/default.conf");
             try {
                 Files.copy(in, file.toPath());
             } catch (IOException ex) {

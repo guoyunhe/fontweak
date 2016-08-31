@@ -46,7 +46,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
-        appIcon = new ImageIcon(getClass().getResource("img/icon-256.png"));
+        appIcon = new ImageIcon(getClass().getResource("/me/guoyunhe/fontweak/img/icon-256.png"));
         sysfonts = new SystemFontList();
         fontconfig = new FontConfig();
         matchListModel = new DefaultListModel<>();
