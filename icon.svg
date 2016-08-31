@@ -16,9 +16,9 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="icon.svg"
-   inkscape:export-filename="/home/sign/git/fontweak/src/me/guoyunhe/fontweak/img/icon-64.png"
-   inkscape:export-xdpi="180"
-   inkscape:export-ydpi="180">
+   inkscape:export-filename="/home/sign/git/fontweak/src/me/guoyunhe/fontweak/img/icon-256.png"
+   inkscape:export-xdpi="720"
+   inkscape:export-ydpi="720">
   <defs
      id="defs4">
     <inkscape:perspective
@@ -37,16 +37,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="13.96875"
-     inkscape:cx="16.507082"
+     inkscape:cx="3.5853818"
      inkscape:cy="21.661513"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      units="px"
      inkscape:window-width="1920"
-     inkscape:window-height="1025"
-     inkscape:window-x="1918"
-     inkscape:window-y="-3"
+     inkscape:window-height="1017"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:snap-global="false"
      inkscape:snap-object-midpoints="true"
@@ -63,7 +63,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
@@ -32,6 +33,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainWindow extends javax.swing.JFrame {
 
+    private final ImageIcon appIcon;
     private final FontConfig fontconfig;
     private final SystemFontList sysfonts;
     private final DefaultListModel<String> matchListModel;
@@ -44,6 +46,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
+        appIcon = new ImageIcon(getClass().getResource("img/icon-256.png"));
         sysfonts = new SystemFontList();
         fontconfig = new FontConfig();
         matchListModel = new DefaultListModel<>();
@@ -290,6 +293,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Fontweak");
+        setIconImage(appIcon.getImage());
         setLocationByPlatform(true);
 
         tabs.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 5, 5, 5));
