@@ -133,6 +133,12 @@ public class MainWindow extends javax.swing.JFrame {
         fontconfig.matchList.get(selected).familyEdit = fonts;
     }
 
+    private void openURL(String url) {
+        try {
+            Desktop.getDesktop().browse(new URL(url).toURI());
+        } catch (URISyntaxException | IOException e) {}
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -143,9 +149,6 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        aboutDialog = new javax.swing.JDialog();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
         createMatchDialog = new javax.swing.JDialog();
         createMatchDialogOptionPanel = new javax.swing.JPanel();
         createMatchDialogFamilyLabel = new javax.swing.JLabel();
@@ -204,23 +207,6 @@ public class MainWindow extends javax.swing.JFrame {
         okButton = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main"); // NOI18N
-        aboutDialog.setTitle(bundle.getString("ABOUT")); // NOI18N
-        aboutDialog.setIconImage(appIcon.getImage()
-        );
-        aboutDialog.setLocationByPlatform(true);
-        aboutDialog.setMinimumSize(new java.awt.Dimension(400, 300));
-        aboutDialog.setModal(true);
-        aboutDialog.getContentPane().setLayout(new javax.swing.BoxLayout(aboutDialog.getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
-
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        jTextPane1.setEditable(false);
-        jTextPane1.setContentType("text/html"); // NOI18N
-        jTextPane1.setText(bundle.getString("ABOUT HTML")); // NOI18N
-        jScrollPane1.setViewportView(jTextPane1);
-
-        aboutDialog.getContentPane().add(jScrollPane1);
-
         createMatchDialog.setTitle(bundle.getString("CREATE FONT MATCH")); // NOI18N
         createMatchDialog.setIconImage(appIcon.getImage());
         createMatchDialog.setLocationByPlatform(true);
@@ -582,7 +568,7 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void aboutButtonListener(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutButtonListener
-        this.aboutDialog.setVisible(true);
+        openURL("https://github.com/guoyunhe/fontweak");
     }//GEN-LAST:event_aboutButtonListener
 
     private void fontAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontAddButtonActionPerformed
@@ -717,9 +703,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_aliasRemoveButtonActionPerformed
 
     private void helpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpButtonActionPerformed
-        try {
-            Desktop.getDesktop().browse(new URL("https://github.com/guoyunhe/fontweak/wiki").toURI());
-        } catch (URISyntaxException | IOException e) {}
+        openURL("https://github.com/guoyunhe/fontweak/wiki");
     }//GEN-LAST:event_helpButtonActionPerformed
 
     /**
@@ -755,7 +739,6 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
-    private javax.swing.JDialog aboutDialog;
     private javax.swing.JButton aliasAddButton;
     private javax.swing.JPanel aliasButtonPanel;
     private javax.swing.JComboBox<String> aliasComboBox;
@@ -793,9 +776,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextPane jTextPane1;
     private javax.swing.JButton matchCreateButton;
     private javax.swing.JButton matchDeleteButton;
     private javax.swing.JPanel matchFontListPanel;
