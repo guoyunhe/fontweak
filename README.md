@@ -8,7 +8,9 @@ A front-end for fontconfig. Setup perfect font effects, fast and easily.
 
 - [CentOS, Fedora, openSUSE, RHEL, SUSE](https://software.opensuse.org/download.html?project=home%3Aguoyunhebrave&package=fontweak)
 
-- [Debian & Ubuntu](https://software.opensuse.org/download.html?project=home%3Aguoyunhebrave&package=fontweak)
+- [Debian, Ubuntu, Linux mint](https://software.opensuse.org/download.html?project=home%3Aguoyunhebrave&package=fontweak)
+
+- [Arch Linux](https://software.opensuse.org/download.html?project=home%3Aguoyunhebrave&package=fontweak)
 
 - [Other Linux distributions](https://github.com/guoyunhe/fontweak/releases)
 
