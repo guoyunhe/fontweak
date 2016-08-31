@@ -45,3 +45,7 @@ GNU GENERAL PUBLIC LICENSE version 3 or later.
 ## Author
 
 [Guo "IceRabbit" Yunhe](http://guoyunhe.me/)
+
+## FAQ
+
+Q: Why you use Java? Why you use Swing?

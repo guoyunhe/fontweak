@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Guo Yunhe <guoyunhebrave@gmail.com>
+ * Copyright (C) 2016 Guo Yunhe guoyunhebrave@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,62 +17,117 @@
 package me.guoyunhe.fontweak;
 
 import java.awt.Desktop;
-import java.awt.Image;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Guo Yunhe <guoyunhebrave@gmail.com>
+ * @author Guo Yunhe guoyunhebrave@gmail.com
  */
 public class MainWindow extends javax.swing.JFrame {
-    
-    private List<Image> appIconImages;
-    private JComboBox[][] fontSelectArray;
-    private FontConfigXML fontconfig;
-    private FontList fontlist;
-    private DefaultTableModel aliasTableModel;
-    private SchemeManager schemeManager;
-    private DefaultComboBoxModel schemeComboBoxModel;
-    private boolean schemeLoaded = false; // Saved in config.properties
-    private String selectedScheme = null; // Scheme ComboBox value
+
+    private final FontConfig fontconfig;
+    private final SystemFontList sysfonts;
+    private final DefaultListModel<String> matchListModel;
+    private final DefaultListModel<String> fontListModel;
+    private final DefaultTableModel aliasTableModel;
+    private final DefaultComboBoxModel<String> hintstyleComboBoxModel;
+    private final DefaultComboBoxModel<String> rgbaComboBoxModel;
 
     /**
      * Creates new form MainWindow
      */
     public MainWindow() {
-        initResources();
-        
+        sysfonts = new SystemFontList();
+        fontconfig = new FontConfig();
+        matchListModel = new DefaultListModel<>();
+        fontListModel = new DefaultListModel<>();
+        aliasTableModel = new DefaultTableModel(
+                new String[][]{},
+                new String[]{
+                    java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main").getString("ORIGINAL FONT"), java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main").getString("PREFERED FONT")
+                }
+        ) {
+            Class[] types = new Class[]{
+                java.lang.String.class, java.lang.String.class
+            };
+
+            @Override
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+        };
+        hintstyleComboBoxModel = new DefaultComboBoxModel<>(FontConfig.HINTSTYLE_OPTIONS);
+        rgbaComboBoxModel = new DefaultComboBoxModel<>(FontConfig.RGBA_OPTIONS);
+
         initComponents();
-        
-        initApplication();
+        loadConfig();
     }
-    
-    private void initResources() {
-        appIconImages = new ArrayList();
-        URL appIcon16URL = getClass().getResource("/me/guoyunhe/fontweak/img/icon-16.png");
-        ImageIcon appIcon16 = new ImageIcon(appIcon16URL);
-        appIconImages.add(appIcon16.getImage());
-        URL appIcon32URL = getClass().getResource("/me/guoyunhe/fontweak/img/icon-32.png");
-        ImageIcon appIcon32 = new ImageIcon(appIcon32URL);
-        appIconImages.add(appIcon32.getImage());
-        URL appIcon64URL = getClass().getResource("/me/guoyunhe/fontweak/img/icon-64.png");
-        ImageIcon appIcon64 = new ImageIcon(appIcon64URL);
-        appIconImages.add(appIcon64.getImage());
+
+    private void loadConfig() {
+        fontconfig.readConfig();
+
+        if (fontconfig.matchList != null && !fontconfig.matchList.isEmpty()) {
+            for (FontMatch match : fontconfig.matchList) {
+                if (match.langTest != null) {
+                    matchListModel.addElement(match.familyTest + " [" + match.langTest + "]");
+                } else {
+                    matchListModel.addElement(match.familyTest);
+                }
+            }
+
+            matchList.setSelectedIndex(0);
+        }
+
+        if (fontconfig.aliasList != null && !fontconfig.aliasList.isEmpty()) {
+            for (FontAlias alias : fontconfig.aliasList) {
+                aliasTableModel.addRow(new String[]{alias.family, alias.prefer});
+            }
+        }
+
+        // Options
+        this.antialiasCheckBox.setSelected(fontconfig.antialias);
+        this.hintingCheckBox.setSelected(fontconfig.hinting);
+        this.hintstyleComboBoxModel.setSelectedItem(fontconfig.hintstyle);
+        this.rgbaComboBoxModel.setSelectedItem(fontconfig.rgba);
+    }
+
+    private void saveConfig() {
+
+        // Options
+        fontconfig.antialias = this.antialiasCheckBox.isSelected();
+        fontconfig.hinting = this.hintingCheckBox.isSelected();
+        fontconfig.hintstyle = (String) this.hintstyleComboBoxModel.getSelectedItem();
+        fontconfig.rgba = (String) this.rgbaComboBoxModel.getSelectedItem();
+
+        fontconfig.writeConfig();
+    }
+
+    private void selectMatch() {
+        fontListModel.removeAllElements();
+        int selected = matchList.getSelectedIndex();
+
+        if (selected >= 0) {
+            String[] fonts = fontconfig.matchList.get(selected).familyEdit;
+            if (fonts != null && fonts.length > 0) {
+                for (String font : fonts) {
+                    fontListModel.addElement(font);
+                }
+            }
+        }
+    }
+
+    private void saveFontList() {
+        int selected = matchList.getSelectedIndex();
+        String[] fonts = new String[fontListModel.getSize()];
+        fontListModel.copyInto(fonts);
+        fontconfig.matchList.get(selected).familyEdit = fonts;
     }
 
     /**
@@ -85,767 +140,580 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        subpixelTestDialog = new javax.swing.JDialog();
-        jLabel1 = new javax.swing.JLabel();
+        aboutDialog = new javax.swing.JDialog();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
+        createMatchDialog = new javax.swing.JDialog();
+        createMatchDialogOptionPanel = new javax.swing.JPanel();
+        createMatchDialogFamilyLabel = new javax.swing.JLabel();
+        createMatchDialogFamilyComboBox = new javax.swing.JComboBox<>();
+        createMatchDialogLanguageLabel = new javax.swing.JLabel();
+        createMatchDialogLanguageComboBox = new javax.swing.JComboBox<>();
+        createMatchDialogButtonPanel = new javax.swing.JPanel();
+        createMatchDialogCancelButton = new javax.swing.JButton();
+        createMatchDialogOkButton = new javax.swing.JButton();
+        tabs = new javax.swing.JTabbedPane();
+        matchPanel = new javax.swing.JPanel();
+        matchListPanel = new javax.swing.JPanel();
+        matchListScrollPane = new javax.swing.JScrollPane();
+        matchList = new javax.swing.JList<String>();
+        matchListButtonPanel = new javax.swing.JPanel();
+        matchCreateButton = new javax.swing.JButton();
+        matchDeleteButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        schemePanel = new javax.swing.JPanel();
-        schemeLabel = new javax.swing.JLabel();
-        schemeComboBox = new javax.swing.JComboBox();
-        newSchemeButton = new javax.swing.JButton();
-        renameSchemeButton = new javax.swing.JButton();
-        deleteSchemeButton = new javax.swing.JButton();
-        schemePanelFillSpace = new javax.swing.JPanel();
-        tabbedPanel = new javax.swing.JTabbedPane();
-        fontFamilyPanel = new javax.swing.JScrollPane();
-        fontTypeContentPanel = new javax.swing.JPanel();
-        sansLabel = new javax.swing.JLabel();
-        serifLabel = new javax.swing.JLabel();
-        monoLabel = new javax.swing.JLabel();
-        enLabel = new javax.swing.JLabel();
-        sansComboBox = new javax.swing.JComboBox();
-        serifComboBox = new javax.swing.JComboBox();
-        monoComboBox = new javax.swing.JComboBox();
-        zhHKLabel = new javax.swing.JLabel();
-        zhHKSansComboBox = new javax.swing.JComboBox();
-        zhHKSerifComboBox = new javax.swing.JComboBox();
-        zhHKMonoComboBox = new javax.swing.JComboBox();
-        jaLabel = new javax.swing.JLabel();
-        koLabel = new javax.swing.JLabel();
-        jaSansComboBox = new javax.swing.JComboBox();
-        jaSerifComboBox = new javax.swing.JComboBox();
-        jaMonoComboBox = new javax.swing.JComboBox();
-        koSansComboBox = new javax.swing.JComboBox();
-        koSerifComboBox = new javax.swing.JComboBox();
-        koMonoComboBox = new javax.swing.JComboBox();
-        zhCNLabel = new javax.swing.JLabel();
-        zhTWLabel = new javax.swing.JLabel();
-        zhCNSansComboBox = new javax.swing.JComboBox();
-        zhCNSerifComboBox = new javax.swing.JComboBox();
-        zhCNMonoComboBox = new javax.swing.JComboBox();
-        zhTWMonoComboBox = new javax.swing.JComboBox();
-        zhTWSerifComboBox = new javax.swing.JComboBox();
-        zhTWSansComboBox = new javax.swing.JComboBox();
-        fontRenderPanel = new javax.swing.JScrollPane();
-        fontRenderContentPanel = new javax.swing.JPanel();
+        matchFontListPanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        fontList = new javax.swing.JList<String>();
+        jPanel4 = new javax.swing.JPanel();
+        fontUpButton = new javax.swing.JButton();
+        fontDownButton = new javax.swing.JButton();
+        fontAddButton = new javax.swing.JButton();
+        fontRemoveButton = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        aliasPanel = new javax.swing.JPanel();
+        aliasScrollPane = new javax.swing.JScrollPane();
+        aliasTable = new javax.swing.JTable(){
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
+        aliasButtonPanel = new javax.swing.JPanel();
+        aliasTextField = new javax.swing.JTextField();
+        aliasComboBox = new javax.swing.JComboBox<String>();
+        aliasAddButton = new javax.swing.JButton();
+        aliasRemoveButton = new javax.swing.JButton();
+        optionPanel = new javax.swing.JPanel();
         antialiasLabel = new javax.swing.JLabel();
         antialiasCheckBox = new javax.swing.JCheckBox();
         hintingLabel = new javax.swing.JLabel();
-        subpixelComboBox = new javax.swing.JComboBox();
-        subpixelLabel = new javax.swing.JLabel();
         hintingCheckBox = new javax.swing.JCheckBox();
-        hintStyleLabel = new javax.swing.JLabel();
-        hintStyleComboBox = new javax.swing.JComboBox();
-        subpixelTestButton = new javax.swing.JButton();
-        fontAliasPanel = new javax.swing.JScrollPane();
-        fontAliasContentPanel = new javax.swing.JPanel();
-        aliasTableScrollPanel = new javax.swing.JScrollPane();
-        aliasTable = new javax.swing.JTable();
-        fontAliasActionPanel = new javax.swing.JPanel();
-        originalFontLabel = new javax.swing.JLabel();
-        originalFontTextField = new javax.swing.JTextField();
-        fontAliasLabel = new javax.swing.JLabel();
-        fontAliasComboBox = new javax.swing.JComboBox();
-        newAliasButton = new javax.swing.JButton();
-        deleteAliasButton = new javax.swing.JButton();
-        aboutPanel = new javax.swing.JScrollPane();
-        aboutContentPanel = new javax.swing.JPanel();
-        aboutPanelFillSpaceTop = new javax.swing.JPanel();
-        appTitlePanel = new javax.swing.JPanel();
-        appNameLabel = new javax.swing.JLabel();
-        appVersionLabel = new javax.swing.JLabel();
-        appInfoPanel = new javax.swing.JPanel();
-        freeSoftwareLabel = new javax.swing.JLabel();
-        licenseLabel = new javax.swing.JLabel();
-        authorLabel = new javax.swing.JLabel();
-        homepageLabel = new javax.swing.JLabel();
-        aboutPanelFillSpaceBottom = new javax.swing.JPanel();
-        saveButtonPanel = new javax.swing.JPanel();
-        oneClickButton = new javax.swing.JButton();
-        resetButton = new javax.swing.JButton();
-        savePanelFillSpace = new javax.swing.JPanel();
-        okButton = new javax.swing.JButton();
+        hintstyleLabel = new javax.swing.JLabel();
+        rgbaLabel = new javax.swing.JLabel();
+        hintstyleComboBox = new javax.swing.JComboBox<String>();
+        rgbaComboBox = new javax.swing.JComboBox<String>();
+        buttonPanel = new javax.swing.JPanel();
+        aboutButton = new javax.swing.JButton();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
+        helpButton = new javax.swing.JButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         cancelButton = new javax.swing.JButton();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
+        okButton = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation"); // NOI18N
-        subpixelTestDialog.setTitle(bundle.getString("SUBPIXEL RENDER: TEST YOUR SCREEN")); // NOI18N
-        subpixelTestDialog.setMinimumSize(new java.awt.Dimension(600, 450));
-        subpixelTestDialog.setType(java.awt.Window.Type.UTILITY);
-        subpixelTestDialog.getContentPane().setLayout(new javax.swing.BoxLayout(subpixelTestDialog.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main"); // NOI18N
+        aboutDialog.setTitle(bundle.getString("ABOUT")); // NOI18N
+        aboutDialog.setLocationByPlatform(true);
+        aboutDialog.setMinimumSize(new java.awt.Dimension(400, 300));
+        aboutDialog.setModal(true);
+        aboutDialog.getContentPane().setLayout(new javax.swing.BoxLayout(aboutDialog.getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/me/guoyunhe/fontweak/img/subpixel.png"))); // NOI18N
-        subpixelTestDialog.getContentPane().add(jLabel1);
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        jLabel2.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 51, 51));
-        jLabel2.setText(bundle.getString("PLEASE TAKE OFF YOUR GLASSES!")); // NOI18N
-        subpixelTestDialog.getContentPane().add(jLabel2);
+        jTextPane1.setEditable(false);
+        jTextPane1.setContentType("text/html"); // NOI18N
+        jTextPane1.setText(bundle.getString("ABOUT HTML")); // NOI18N
+        jScrollPane1.setViewportView(jTextPane1);
+
+        aboutDialog.getContentPane().add(jScrollPane1);
+
+        createMatchDialog.setTitle(bundle.getString("CREATE FONT MATCH")); // NOI18N
+        createMatchDialog.setLocationByPlatform(true);
+        createMatchDialog.setModal(true);
+        createMatchDialog.setSize(new java.awt.Dimension(300, 200));
+        createMatchDialog.getContentPane().setLayout(new javax.swing.BoxLayout(createMatchDialog.getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
+
+        java.awt.GridBagLayout createMatchDialogOptionPanelLayout = new java.awt.GridBagLayout();
+        createMatchDialogOptionPanelLayout.columnWidths = new int[] {0, 15, 0};
+        createMatchDialogOptionPanelLayout.rowHeights = new int[] {0, 15, 0};
+        createMatchDialogOptionPanel.setLayout(createMatchDialogOptionPanelLayout);
+
+        createMatchDialogFamilyLabel.setText(bundle.getString("FONT FAMILY")); // NOI18N
+        createMatchDialogFamilyLabel.setPreferredSize(new java.awt.Dimension(100, 18));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        createMatchDialogOptionPanel.add(createMatchDialogFamilyLabel, gridBagConstraints);
+
+        createMatchDialogFamilyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "sans-serif", "serif", "monospace" }));
+        createMatchDialogFamilyComboBox.setPreferredSize(new java.awt.Dimension(150, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        createMatchDialogOptionPanel.add(createMatchDialogFamilyComboBox, gridBagConstraints);
+
+        createMatchDialogLanguageLabel.setText(bundle.getString("LANGUAGE")); // NOI18N
+        createMatchDialogLanguageLabel.setPreferredSize(new java.awt.Dimension(100, 18));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        createMatchDialogOptionPanel.add(createMatchDialogLanguageLabel, gridBagConstraints);
+
+        createMatchDialogLanguageComboBox.setModel(new DefaultComboBoxModel(FontConfig.LANGUAGES));
+        createMatchDialogLanguageComboBox.setPreferredSize(new java.awt.Dimension(150, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        createMatchDialogOptionPanel.add(createMatchDialogLanguageComboBox, gridBagConstraints);
+
+        createMatchDialog.getContentPane().add(createMatchDialogOptionPanel);
+
+        createMatchDialogButtonPanel.setBorder(null);
+        createMatchDialogButtonPanel.setMaximumSize(new java.awt.Dimension(32767, 40));
+        createMatchDialogButtonPanel.setMinimumSize(new java.awt.Dimension(100, 40));
+        createMatchDialogButtonPanel.setPreferredSize(new java.awt.Dimension(400, 40));
+
+        createMatchDialogCancelButton.setText(bundle.getString("CANCEL")); // NOI18N
+        createMatchDialogCancelButton.setMinimumSize(new java.awt.Dimension(80, 0));
+        createMatchDialogCancelButton.setPreferredSize(new java.awt.Dimension(80, 30));
+        createMatchDialogCancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createMatchDialogCancelButtonActionPerformed(evt);
+            }
+        });
+        createMatchDialogButtonPanel.add(createMatchDialogCancelButton);
+
+        createMatchDialogOkButton.setText(bundle.getString("OK")); // NOI18N
+        createMatchDialogOkButton.setMinimumSize(new java.awt.Dimension(80, 0));
+        createMatchDialogOkButton.setPreferredSize(new java.awt.Dimension(80, 30));
+        createMatchDialogOkButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createMatchDialogOkButtonActionPerformed(evt);
+            }
+        });
+        createMatchDialogButtonPanel.add(createMatchDialogOkButton);
+
+        createMatchDialog.getContentPane().add(createMatchDialogButtonPanel);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Fontweak"); // NOI18N
-        setIconImages(appIconImages);
+        setTitle("Fontweak");
         setLocationByPlatform(true);
-        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
-        schemePanel.setMaximumSize(new java.awt.Dimension(32767, 28));
-        schemePanel.setLayout(new javax.swing.BoxLayout(schemePanel, javax.swing.BoxLayout.LINE_AXIS));
+        tabs.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 5, 5, 5));
+        tabs.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        schemeLabel.setText(bundle.getString("SCHEME")); // NOI18N
-        schemePanel.add(schemeLabel);
+        matchPanel.setLayout(new javax.swing.BoxLayout(matchPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        schemeComboBox.setMaximumSize(new java.awt.Dimension(200, 32767));
-        schemeComboBox.setPreferredSize(new java.awt.Dimension(100, 26));
-        schemeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                schemeComboBoxActionPerformed(evt);
+        matchListPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        matchListPanel.setLayout(new java.awt.BorderLayout());
+
+        matchListScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5));
+
+        matchList.setModel(matchListModel);
+        matchList.setSelectedIndex(0);
+        matchList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                matchListValueChanged(evt);
             }
         });
-        schemePanel.add(schemeComboBox);
+        matchListScrollPane.setViewportView(matchList);
 
-        newSchemeButton.setText(bundle.getString("NEW SCHEME")); // NOI18N
-        newSchemeButton.addActionListener(new java.awt.event.ActionListener() {
+        matchListPanel.add(matchListScrollPane, java.awt.BorderLayout.CENTER);
+
+        matchListButtonPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        matchListButtonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        matchCreateButton.setText(bundle.getString("CREATE")); // NOI18N
+        matchCreateButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        matchCreateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newSchemeButtonActionPerformed(evt);
+                matchCreateButtonActionPerformed(evt);
             }
         });
-        schemePanel.add(newSchemeButton);
+        matchListButtonPanel.add(matchCreateButton);
 
-        renameSchemeButton.setText(bundle.getString("RENAME")); // NOI18N
-        renameSchemeButton.addActionListener(new java.awt.event.ActionListener() {
+        matchDeleteButton.setText(bundle.getString("DELETE")); // NOI18N
+        matchDeleteButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        matchDeleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                renameSchemeButtonActionPerformed(evt);
+                matchDeleteButtonActionPerformed(evt);
             }
         });
-        schemePanel.add(renameSchemeButton);
+        matchListButtonPanel.add(matchDeleteButton);
 
-        deleteSchemeButton.setText(bundle.getString("DELETE")); // NOI18N
-        deleteSchemeButton.addActionListener(new java.awt.event.ActionListener() {
+        matchListPanel.add(matchListButtonPanel, java.awt.BorderLayout.PAGE_END);
+
+        jLabel2.setText("Match rules");
+        jLabel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        matchListPanel.add(jLabel2, java.awt.BorderLayout.PAGE_START);
+
+        matchPanel.add(matchListPanel);
+
+        matchFontListPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        matchFontListPanel.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5));
+
+        fontList.setModel(fontListModel);
+        jScrollPane2.setViewportView(fontList);
+
+        matchFontListPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        fontUpButton.setText(bundle.getString("MOVE UP")); // NOI18N
+        fontUpButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        fontUpButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteSchemeButtonActionPerformed(evt);
+                fontUpButtonActionPerformed(evt);
             }
         });
-        schemePanel.add(deleteSchemeButton);
-        schemePanel.add(schemePanelFillSpace);
+        jPanel4.add(fontUpButton);
 
-        getContentPane().add(schemePanel);
+        fontDownButton.setText(bundle.getString("MOVE DOWN")); // NOI18N
+        fontDownButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        fontDownButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fontDownButtonActionPerformed(evt);
+            }
+        });
+        jPanel4.add(fontDownButton);
 
-        java.awt.GridBagLayout fontTypeContentPanelLayout = new java.awt.GridBagLayout();
-        fontTypeContentPanelLayout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0};
-        fontTypeContentPanelLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
-        fontTypeContentPanel.setLayout(fontTypeContentPanelLayout);
+        fontAddButton.setText(bundle.getString("ADD")); // NOI18N
+        fontAddButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        fontAddButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fontAddButtonActionPerformed(evt);
+            }
+        });
+        jPanel4.add(fontAddButton);
 
-        sansLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        sansLabel.setText(bundle.getString("SANS SERIF")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(sansLabel, gridBagConstraints);
+        fontRemoveButton.setText(bundle.getString("REMOVE")); // NOI18N
+        fontRemoveButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        fontRemoveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fontRemoveButtonActionPerformed(evt);
+            }
+        });
+        jPanel4.add(fontRemoveButton);
 
-        serifLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        serifLabel.setText(bundle.getString("SERIF")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(serifLabel, gridBagConstraints);
+        matchFontListPanel.add(jPanel4, java.awt.BorderLayout.PAGE_END);
 
-        monoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        monoLabel.setText(bundle.getString("MONOSPACE")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(monoLabel, gridBagConstraints);
+        jLabel3.setText("Fonts");
+        jLabel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        matchFontListPanel.add(jLabel3, java.awt.BorderLayout.PAGE_START);
 
-        enLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        enLabel.setText(bundle.getString("ENGLISH DEFAULT")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontTypeContentPanel.add(enLabel, gridBagConstraints);
+        matchPanel.add(matchFontListPanel);
 
-        sansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(sansComboBox, gridBagConstraints);
+        tabs.addTab(bundle.getString("FONT MATCH"), matchPanel); // NOI18N
 
-        serifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(serifComboBox, gridBagConstraints);
+        aliasPanel.setLayout(new java.awt.BorderLayout());
 
-        monoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(monoComboBox, gridBagConstraints);
+        aliasScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        zhHKLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        zhHKLabel.setText(bundle.getString("CHINESE HONGKONG")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontTypeContentPanel.add(zhHKLabel, gridBagConstraints);
+        aliasTable.setModel(aliasTableModel);
+        aliasTable.setGridColor(new java.awt.Color(199, 199, 199));
+        aliasTable.setRowHeight(30);
+        aliasScrollPane.setViewportView(aliasTable);
 
-        zhHKSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(zhHKSansComboBox, gridBagConstraints);
+        aliasPanel.add(aliasScrollPane, java.awt.BorderLayout.CENTER);
 
-        zhHKSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(zhHKSerifComboBox, gridBagConstraints);
+        aliasButtonPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 5, 0));
+        aliasButtonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        zhHKMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(zhHKMonoComboBox, gridBagConstraints);
+        aliasTextField.setPreferredSize(new java.awt.Dimension(200, 28));
+        aliasTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aliasTextFieldActionPerformed(evt);
+            }
+        });
+        aliasButtonPanel.add(aliasTextField);
 
-        jaLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jaLabel.setText(bundle.getString("JAPANESE")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontTypeContentPanel.add(jaLabel, gridBagConstraints);
+        aliasComboBox.setModel(new DefaultComboBoxModel(sysfonts.get())
+        );
+        aliasComboBox.setMinimumSize(new java.awt.Dimension(100, 28));
+        aliasComboBox.setPreferredSize(new java.awt.Dimension(200, 28));
+        aliasComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aliasComboBoxActionPerformed(evt);
+            }
+        });
+        aliasButtonPanel.add(aliasComboBox);
 
-        koLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        koLabel.setText(bundle.getString("KOREAN")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 12;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontTypeContentPanel.add(koLabel, gridBagConstraints);
+        aliasAddButton.setText(bundle.getString("ADD")); // NOI18N
+        aliasAddButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        aliasAddButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aliasAddButtonActionPerformed(evt);
+            }
+        });
+        aliasButtonPanel.add(aliasAddButton);
 
-        jaSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 10;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(jaSansComboBox, gridBagConstraints);
+        aliasRemoveButton.setText(bundle.getString("REMOVE")); // NOI18N
+        aliasRemoveButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        aliasRemoveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aliasRemoveButtonActionPerformed(evt);
+            }
+        });
+        aliasButtonPanel.add(aliasRemoveButton);
 
-        jaSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 10;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(jaSerifComboBox, gridBagConstraints);
+        aliasPanel.add(aliasButtonPanel, java.awt.BorderLayout.PAGE_END);
 
-        jaMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 10;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(jaMonoComboBox, gridBagConstraints);
+        tabs.addTab(bundle.getString("FONT ALIAS"), aliasPanel); // NOI18N
 
-        koSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 12;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(koSansComboBox, gridBagConstraints);
-
-        koSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 12;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(koSerifComboBox, gridBagConstraints);
-
-        koMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 12;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontTypeContentPanel.add(koMonoComboBox, gridBagConstraints);
-
-        zhCNLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        zhCNLabel.setText(bundle.getString("CHINESE CHINA")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontTypeContentPanel.add(zhCNLabel, gridBagConstraints);
-
-        zhTWLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        zhTWLabel.setText(bundle.getString("CHINESE TAIWAN")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontTypeContentPanel.add(zhTWLabel, gridBagConstraints);
-
-        zhCNSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
-        fontTypeContentPanel.add(zhCNSansComboBox, gridBagConstraints);
-
-        zhCNSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 4;
-        fontTypeContentPanel.add(zhCNSerifComboBox, gridBagConstraints);
-
-        zhCNMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 4;
-        fontTypeContentPanel.add(zhCNMonoComboBox, gridBagConstraints);
-
-        zhTWMonoComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 6;
-        fontTypeContentPanel.add(zhTWMonoComboBox, gridBagConstraints);
-
-        zhTWSerifComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 6;
-        fontTypeContentPanel.add(zhTWSerifComboBox, gridBagConstraints);
-
-        zhTWSansComboBox.setPreferredSize(new java.awt.Dimension(200, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
-        fontTypeContentPanel.add(zhTWSansComboBox, gridBagConstraints);
-
-        fontFamilyPanel.setViewportView(fontTypeContentPanel);
-
-        tabbedPanel.addTab(bundle.getString("MainWindow.fontFamilyPanel.TabConstraints.tabTitle"), fontFamilyPanel); // NOI18N
-
-        java.awt.GridBagLayout fontRenderContentPanelLayout = new java.awt.GridBagLayout();
-        fontRenderContentPanelLayout.columnWidths = new int[] {0, 5, 0, 5, 0};
-        fontRenderContentPanelLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0};
-        fontRenderContentPanel.setLayout(fontRenderContentPanelLayout);
+        java.awt.GridBagLayout optionPanelLayout = new java.awt.GridBagLayout();
+        optionPanelLayout.columnWidths = new int[] {0, 20, 0};
+        optionPanelLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0};
+        optionPanel.setLayout(optionPanelLayout);
 
         antialiasLabel.setText(bundle.getString("ANTIALIAS")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontRenderContentPanel.add(antialiasLabel, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        optionPanel.add(antialiasLabel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontRenderContentPanel.add(antialiasCheckBox, gridBagConstraints);
+        optionPanel.add(antialiasCheckBox, gridBagConstraints);
 
         hintingLabel.setText(bundle.getString("HINTING")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontRenderContentPanel.add(hintingLabel, gridBagConstraints);
-
-        subpixelComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { bundle.getString("NONE"), "RGB", "BGR", bundle.getString("VRGB"), bundle.getString("VBGR") }));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontRenderContentPanel.add(subpixelComboBox, gridBagConstraints);
-
-        subpixelLabel.setText(bundle.getString("SUBPIXEL RENDER")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontRenderContentPanel.add(subpixelLabel, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        optionPanel.add(hintingLabel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontRenderContentPanel.add(hintingCheckBox, gridBagConstraints);
+        optionPanel.add(hintingCheckBox, gridBagConstraints);
 
-        hintStyleLabel.setText(bundle.getString("HINT STYLE")); // NOI18N
+        hintstyleLabel.setText(bundle.getString("HINT STYLE")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        fontRenderContentPanel.add(hintStyleLabel, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        optionPanel.add(hintstyleLabel, gridBagConstraints);
 
-        hintStyleComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { bundle.getString("NONE"), bundle.getString("SLIGHT"), bundle.getString("MEDIUM"), bundle.getString("FULL") }));
+        rgbaLabel.setText(bundle.getString("SUBPIXEL RENDER")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        optionPanel.add(rgbaLabel, gridBagConstraints);
+
+        hintstyleComboBox.setModel(hintstyleComboBoxModel);
+        hintstyleComboBox.setMinimumSize(new java.awt.Dimension(150, 28));
+        hintstyleComboBox.setPreferredSize(new java.awt.Dimension(150, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        fontRenderContentPanel.add(hintStyleComboBox, gridBagConstraints);
+        optionPanel.add(hintstyleComboBox, gridBagConstraints);
 
-        subpixelTestButton.setText(bundle.getString("TEST")); // NOI18N
-        subpixelTestButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                subpixelTestButtonMouseClicked(evt);
-            }
-        });
+        rgbaComboBox.setModel(rgbaComboBoxModel);
+        rgbaComboBox.setMinimumSize(new java.awt.Dimension(150, 28));
+        rgbaComboBox.setPreferredSize(new java.awt.Dimension(150, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 6;
-        fontRenderContentPanel.add(subpixelTestButton, gridBagConstraints);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        optionPanel.add(rgbaComboBox, gridBagConstraints);
 
-        fontRenderPanel.setViewportView(fontRenderContentPanel);
+        tabs.addTab(bundle.getString("FONT OPTION"), optionPanel); // NOI18N
 
-        tabbedPanel.addTab(bundle.getString("MainWindow.fontRenderPanel.TabConstraints.tabTitle"), fontRenderPanel); // NOI18N
+        getContentPane().add(tabs, java.awt.BorderLayout.CENTER);
 
-        fontAliasContentPanel.setLayout(new javax.swing.BoxLayout(fontAliasContentPanel, javax.swing.BoxLayout.Y_AXIS));
+        buttonPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        buttonPanel.setPreferredSize(new java.awt.Dimension(400, 44));
+        buttonPanel.setLayout(new javax.swing.BoxLayout(buttonPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        aliasTableScrollPanel.setPreferredSize(new java.awt.Dimension(456, 250));
-
-        aliasTable.setAutoCreateRowSorter(true);
-        aliasTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Original font", "Font alias"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        aliasTableScrollPanel.setViewportView(aliasTable);
-        if (aliasTable.getColumnModel().getColumnCount() > 0) {
-            aliasTable.getColumnModel().getColumn(0).setHeaderValue(bundle.getString("MainWindow.aliasTable.columnModel.title0")); // NOI18N
-            aliasTable.getColumnModel().getColumn(1).setHeaderValue(bundle.getString("MainWindow.aliasTable.columnModel.title1")); // NOI18N
-        }
-
-        fontAliasContentPanel.add(aliasTableScrollPanel);
-
-        fontAliasActionPanel.setMaximumSize(new java.awt.Dimension(32767, 30));
-        fontAliasActionPanel.setMinimumSize(new java.awt.Dimension(408, 30));
-        fontAliasActionPanel.setPreferredSize(new java.awt.Dimension(100, 38));
-
-        originalFontLabel.setText(bundle.getString("FONT")); // NOI18N
-        fontAliasActionPanel.add(originalFontLabel);
-
-        originalFontTextField.setAlignmentX(0.0F);
-        originalFontTextField.setPreferredSize(new java.awt.Dimension(136, 28));
-        fontAliasActionPanel.add(originalFontTextField);
-
-        fontAliasLabel.setText(bundle.getString("ALIAS")); // NOI18N
-        fontAliasActionPanel.add(fontAliasLabel);
-
-        fontAliasComboBox.setEditable(true);
-        fontAliasComboBox.setAlignmentX(0.0F);
-        fontAliasComboBox.setPreferredSize(new java.awt.Dimension(136, 28));
-        fontAliasActionPanel.add(fontAliasComboBox);
-
-        newAliasButton.setText(bundle.getString("NEW")); // NOI18N
-        newAliasButton.addActionListener(new java.awt.event.ActionListener() {
+        aboutButton.setText(bundle.getString("ABOUT")); // NOI18N
+        aboutButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        aboutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newAliasButtonActionPerformed(evt);
+                aboutButtonListener(evt);
             }
         });
-        fontAliasActionPanel.add(newAliasButton);
+        buttonPanel.add(aboutButton);
+        buttonPanel.add(filler3);
 
-        deleteAliasButton.setText(bundle.getString("DELETE")); // NOI18N
-        deleteAliasButton.addActionListener(new java.awt.event.ActionListener() {
+        helpButton.setText(bundle.getString("HELP")); // NOI18N
+        helpButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        helpButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteAliasButtonActionPerformed(evt);
+                helpButtonActionPerformed(evt);
             }
         });
-        fontAliasActionPanel.add(deleteAliasButton);
-
-        fontAliasContentPanel.add(fontAliasActionPanel);
-
-        fontAliasPanel.setViewportView(fontAliasContentPanel);
-
-        tabbedPanel.addTab(bundle.getString("MainWindow.fontAliasPanel.TabConstraints.tabTitle"), fontAliasPanel); // NOI18N
-
-        aboutContentPanel.setMinimumSize(new java.awt.Dimension(0, 0));
-        aboutContentPanel.setPreferredSize(new java.awt.Dimension(300, 300));
-        aboutContentPanel.setLayout(new javax.swing.BoxLayout(aboutContentPanel, javax.swing.BoxLayout.Y_AXIS));
-        aboutContentPanel.add(aboutPanelFillSpaceTop);
-
-        appTitlePanel.setMaximumSize(new java.awt.Dimension(32767, 50));
-
-        appNameLabel.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
-        appNameLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/me/guoyunhe/fontweak/img/icon-32.png"))); // NOI18N
-        appNameLabel.setText("Fontweak"); // NOI18N
-        appTitlePanel.add(appNameLabel);
-
-        appVersionLabel.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
-        appVersionLabel.setText("0.6.1"); // NOI18N
-        appTitlePanel.add(appVersionLabel);
-
-        aboutContentPanel.add(appTitlePanel);
-
-        appInfoPanel.setMaximumSize(new java.awt.Dimension(32767, 200));
-        appInfoPanel.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
-
-        freeSoftwareLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        freeSoftwareLabel.setText(bundle.getString("FREE AND OPEN SOURCE SOFTWARE")); // NOI18N
-        appInfoPanel.add(freeSoftwareLabel);
-
-        licenseLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        licenseLabel.setText(bundle.getString("GNU GPL VERSION 3 OR LATER")); // NOI18N
-        appInfoPanel.add(licenseLabel);
-
-        authorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        authorLabel.setText(bundle.getString("MainWindow.authorLabel.text")); // NOI18N
-        appInfoPanel.add(authorLabel);
-
-        homepageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        homepageLabel.setText("<html><a href=\"#\">https://github.com/guoyunhe/fontweak</a></html>"); // NOI18N
-        homepageLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        homepageLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                homepageLabelMouseClicked(evt);
-            }
-        });
-        appInfoPanel.add(homepageLabel);
-
-        aboutContentPanel.add(appInfoPanel);
-        aboutContentPanel.add(aboutPanelFillSpaceBottom);
-
-        aboutPanel.setViewportView(aboutContentPanel);
-
-        tabbedPanel.addTab(bundle.getString("MainWindow.aboutPanel.TabConstraints.tabTitle"), aboutPanel); // NOI18N
-
-        getContentPane().add(tabbedPanel);
-
-        saveButtonPanel.setMaximumSize(new java.awt.Dimension(33075, 28));
-        saveButtonPanel.setLayout(new javax.swing.BoxLayout(saveButtonPanel, javax.swing.BoxLayout.LINE_AXIS));
-
-        oneClickButton.setText(bundle.getString("MainWindow.oneClickButton.text")); // NOI18N
-        oneClickButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                oneClickButtonActionPerformed(evt);
-            }
-        });
-        saveButtonPanel.add(oneClickButton);
-
-        resetButton.setText(bundle.getString("MainWindow.resetButton.text")); // NOI18N
-        resetButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetButtonActionPerformed(evt);
-            }
-        });
-        saveButtonPanel.add(resetButton);
-        saveButtonPanel.add(savePanelFillSpace);
-
-        okButton.setText(bundle.getString("OK")); // NOI18N
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okButtonActionPerformed(evt);
-            }
-        });
-        saveButtonPanel.add(okButton);
+        buttonPanel.add(helpButton);
+        buttonPanel.add(filler1);
 
         cancelButton.setText(bundle.getString("CANCEL")); // NOI18N
+        cancelButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        cancelButton.setMinimumSize(new java.awt.Dimension(60, 30));
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
             }
         });
-        saveButtonPanel.add(cancelButton);
+        buttonPanel.add(cancelButton);
+        buttonPanel.add(filler2);
 
-        getContentPane().add(saveButtonPanel);
+        okButton.setText(bundle.getString("OK")); // NOI18N
+        okButton.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
+        buttonPanel.add(okButton);
+
+        getContentPane().add(buttonPanel, java.awt.BorderLayout.PAGE_END);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void aboutButtonListener(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutButtonListener
+        this.aboutDialog.setVisible(true);
+    }//GEN-LAST:event_aboutButtonListener
+
+    private void fontAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontAddButtonActionPerformed
+        String font = (String)JOptionPane.showInputDialog(this,
+                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main").getString("CHOOSE FONT"),
+                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main").getString("CHOOSE FONT"),
+                JOptionPane.PLAIN_MESSAGE, null, sysfonts.get(), null);
+        fontListModel.addElement(font);
+        saveFontList();
+
+        fontList.setSelectedIndex(fontListModel.getSize() - 1);
+    }//GEN-LAST:event_fontAddButtonActionPerformed
+
+    private void aliasComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aliasComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_aliasComboBoxActionPerformed
+
+    private void aliasTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aliasTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_aliasTextFieldActionPerformed
+
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        saveConfig();
+        System.exit(0);
+    }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         System.exit(0);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        saveConfig();
-        fontconfig.writeConfig();
-        String scheme = (String)schemeComboBox.getSelectedItem();
-        fontconfig.writeConfig(schemeManager.getSchemeFile(scheme));
-        schemeManager.setCurrentSchemeName(scheme);
-        System.exit(0);
-    }//GEN-LAST:event_okButtonActionPerformed
+    private void matchListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_matchListValueChanged
+        selectMatch();
+    }//GEN-LAST:event_matchListValueChanged
 
-    private void subpixelTestButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subpixelTestButtonMouseClicked
-        subpixelTestDialog.setVisible(true);
-    }//GEN-LAST:event_subpixelTestButtonMouseClicked
+    private void fontRemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontRemoveButtonActionPerformed
+        if (fontList.getSelectedIndex() >= 0) {
+            int index = fontList.getSelectedIndex();
+            fontListModel.remove(index);
 
-    private void homepageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homepageLabelMouseClicked
-        String link = "https://github.com/guoyunhe/fontweak";
+            saveFontList();
+
+            if (index > fontListModel.getSize() - 1) {
+                index = fontListModel.getSize() - 1;
+            }
+
+            if (index >= 0) {
+                fontList.setSelectedIndex(index);
+            }
+        }
+    }//GEN-LAST:event_fontRemoveButtonActionPerformed
+
+    private void fontDownButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontDownButtonActionPerformed
+        int index = fontList.getSelectedIndex();
+        if (index >= 0 && index < fontListModel.getSize() - 1) {
+            String current = fontListModel.get(index);
+            String next = fontListModel.get(index + 1);
+            fontListModel.set(index, next);
+            fontListModel.set(index + 1, current);
+
+            saveFontList();
+
+            fontList.setSelectedIndex(index + 1);
+        }
+    }//GEN-LAST:event_fontDownButtonActionPerformed
+
+    private void fontUpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontUpButtonActionPerformed
+        int index = fontList.getSelectedIndex();
+        if (index > 0 && index < fontListModel.getSize()) {
+            String current = fontListModel.get(index);
+            String previous = fontListModel.get(index - 1);
+            fontListModel.set(index, previous);
+            fontListModel.set(index - 1, current);
+
+            saveFontList();
+
+            fontList.setSelectedIndex(index - 1);
+        }
+    }//GEN-LAST:event_fontUpButtonActionPerformed
+
+    private void matchCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matchCreateButtonActionPerformed
+        createMatchDialog.setVisible(true);
+    }//GEN-LAST:event_matchCreateButtonActionPerformed
+
+    private void createMatchDialogCancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createMatchDialogCancelButtonActionPerformed
+        createMatchDialog.setVisible(false);
+    }//GEN-LAST:event_createMatchDialogCancelButtonActionPerformed
+
+    private void createMatchDialogOkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createMatchDialogOkButtonActionPerformed
+        FontMatch match = new FontMatch((String) createMatchDialogFamilyComboBox.getSelectedItem(),
+                (String) createMatchDialogLanguageComboBox.getSelectedItem(), null);
+        fontconfig.matchList.add(match);
+        matchListModel.addElement(match.familyTest + " [" + match.langTest + "]");
+        createMatchDialog.setVisible(false);
+    }//GEN-LAST:event_createMatchDialogOkButtonActionPerformed
+
+    private void matchDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matchDeleteButtonActionPerformed
+        int selected = matchList.getSelectedIndex();
+        if (selected >= 0) {
+            matchListModel.remove(selected);
+            fontconfig.matchList.remove(selected);
+            if (selected > matchListModel.getSize() - 1) {
+                selected = matchListModel.getSize() - 1;
+            }
+
+            if (selected >= 0) {
+                matchList.setSelectedIndex(selected);
+            }
+        }
+    }//GEN-LAST:event_matchDeleteButtonActionPerformed
+
+    private void aliasAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aliasAddButtonActionPerformed
+        FontAlias alias = new FontAlias(aliasTextField.getText(), (String)aliasComboBox.getSelectedItem());
+        fontconfig.aliasList.add(alias);
+        aliasTableModel.addRow(new String[]{alias.family, alias.prefer});
+        aliasTextField.setText("");
+    }//GEN-LAST:event_aliasAddButtonActionPerformed
+
+    private void aliasRemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aliasRemoveButtonActionPerformed
+        int selected = aliasTable.getSelectedRow();
+        if (selected > -1) {
+            fontconfig.aliasList.remove(selected);
+            aliasTableModel.removeRow(selected);
+
+            if (selected > aliasTableModel.getRowCount() - 1) {
+                selected = aliasTableModel.getRowCount() - 1;
+            }
+
+            if (selected >= 0) {
+                aliasTable.setRowSelectionInterval(selected, selected);
+            }
+        }
+    }//GEN-LAST:event_aliasRemoveButtonActionPerformed
+
+    private void helpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpButtonActionPerformed
         try {
-            Desktop.getDesktop().browse(new URI(link));
-        } catch (IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_homepageLabelMouseClicked
-
-    private void newAliasButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAliasButtonActionPerformed
-        String font = originalFontTextField.getText().trim();
-        String alias = ((String)fontAliasComboBox.getSelectedItem()).trim();
-        aliasTableModel.addRow(new String[]{font, alias});
-    }//GEN-LAST:event_newAliasButtonActionPerformed
-
-    private void deleteAliasButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAliasButtonActionPerformed
-        int[] selectedRowsOfView = this.aliasTable.getSelectedRows();
-        int[] selectedRowsOfModel = new int[selectedRowsOfView.length];
-        for (int i = 0; i < selectedRowsOfView.length; i++) {
-            selectedRowsOfModel[i] = aliasTable.convertRowIndexToModel(selectedRowsOfView[i]);
-        }
-        Arrays.sort(selectedRowsOfModel);
-        for (int i = selectedRowsOfModel.length - 1; i >= 0; i--) {
-            aliasTableModel.removeRow(selectedRowsOfModel[i]);
-        }
-    }//GEN-LAST:event_deleteAliasButtonActionPerformed
-
-    private void schemeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_schemeComboBoxActionPerformed
-        if (!schemeLoaded) {
-            return;
-        }
-        String scheme = (String) schemeComboBox.getSelectedItem();
-        // If selected scheme changed, save previous scheme, and load next scheme
-        if (!scheme.equals(selectedScheme)) {
-            // Save previous scheme
-            this.saveConfig();
-            File selectedSchemeFile = schemeManager.getSchemeFile(selectedScheme);
-            fontconfig.writeConfig(selectedSchemeFile);
-            // Load next scheme
-            selectedScheme = scheme;
-            selectedSchemeFile = schemeManager.getSchemeFile(selectedScheme);
-            if (selectedSchemeFile.exists()) {
-                fontconfig.readConfig(selectedSchemeFile);
-            } else {
-                fontconfig.readConfig();
-            }
-            loadConfig();
-        }
-    }//GEN-LAST:event_schemeComboBoxActionPerformed
-
-    private void newSchemeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newSchemeButtonActionPerformed
-        // Show dialog to create new scheme and save the configuration file
-        String scheme = (String) JOptionPane.showInputDialog(
-                this,
-                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("NAME OF NEW SCHEME"),
-                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("CREATE NEW SCHEME"), // Title of dialog
-                JOptionPane.PLAIN_MESSAGE);
-        // If users clicked "Cancel" button of dialog, it will return null.
-        if (scheme != null) {
-            // Save new scheme file of current options
-            saveConfig();
-            File schemeFile = schemeManager.getSchemeFile(scheme);
-            fontconfig.writeConfig(schemeFile);
-            // Add and select new scheme item in ComboBox
-            schemeComboBox.addItem(scheme);
-            schemeComboBox.setSelectedItem(scheme);
-            deleteSchemeButton.setEnabled(true);
-        }
-    }//GEN-LAST:event_newSchemeButtonActionPerformed
-
-    private void renameSchemeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameSchemeButtonActionPerformed
-        int selectedIndex = schemeComboBox.getSelectedIndex();
-        String oldName = (String)schemeComboBox.getSelectedItem();
-        // Get input value from dialog
-        String newName = (String) JOptionPane.showInputDialog(
-                this,
-                java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("NEW NAME OF SCHEME {0}"), new Object[] {oldName}),
-                java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("RENAME"), // Title of dialog
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                null,
-                oldName
-        );
-        // If users clicked "Cancel" button of dialog, it will return null.
-        if (newName != null) {
-            // Rename scheme file. Must be done before changing ComboBox, otherwise,
-            // it will read file not exist in schemeComboBoxActionPerformed()
-            schemeManager.renameScheme(oldName, newName);
-            // Change ComboBox
-            schemeComboBox.insertItemAt(newName, selectedIndex);
-            schemeComboBox.removeItemAt(selectedIndex + 1);
-            // This will tigger schemeComboBoxActionPerformed() function, and
-            // load renamed scheme file
-        }
-    }//GEN-LAST:event_renameSchemeButtonActionPerformed
-
-    private void deleteSchemeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSchemeButtonActionPerformed
-        // Delete scheme file
-        String scheme = (String) schemeComboBox.getSelectedItem();
-        schemeManager.deleteScheme(scheme);
-
-        // Remove item in ComboBox
-        schemeComboBox.removeItem(scheme);
-        // This will trigger schemeComboBoxActionPerformed() function, and load
-        // new scheme automatically
-        
-        if (schemeComboBox.getItemCount() == 1) {
-            deleteSchemeButton.setEnabled(false);
-        }
-
-        // If deleted current scheme, set current scheme to new selected scheme
-        if (schemeManager.getCurrentSchemeName().equals(scheme)) {
-            String fallbackScheme = (String) schemeComboBox.getSelectedItem();
-            schemeManager.setCurrentSchemeName(fallbackScheme);
-        }
-    }//GEN-LAST:event_deleteSchemeButtonActionPerformed
-
-    private void oneClickButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneClickButtonActionPerformed
-        // Font family
-        String[][] defaultFontArray = fontconfig.getDefaultFontFamilyArray(fontlist.get());
-        for (int i = 0; i < defaultFontArray.length; i++) {
-            for (int j = 0; j < 3; j++) {
-                String font = defaultFontArray[i][j];
-                fontSelectArray[i][j].setSelectedItem(font);
-            }
-        }
-        // Render options
-        antialiasCheckBox.setSelected(true);
-        hintingCheckBox.setSelected(true);
-        hintStyleComboBox.setSelectedIndex(FontConfigXML.HINT_FULL);
-        subpixelComboBox.setSelectedIndex(FontConfigXML.RGBA_NONE);
-        // Font alias
-        while(aliasTableModel.getRowCount() > 0) {
-            aliasTableModel.removeRow(0);
-        }
-        aliasTableModel.addRow(new String[]{"Helvetica", "Nimbus Sans L"});
-        aliasTableModel.addRow(new String[]{"Helvetica Neue", "Nimbus Sans L"});
-        aliasTableModel.addRow(new String[]{"Arial", "Nimbus Sans L"});
-        aliasTableModel.addRow(new String[]{"Times New Roman", "Nimbus Roman No9 L"});
-        aliasTableModel.addRow(new String[]{"Microsoft YaHei", "WenQuanYi Micro Hei"});
-        aliasTableModel.addRow(new String[]{"SimSun", "AR PL UMing CN"});
-        aliasTableModel.addRow(new String[]{"SimHei", "WenQuanYi Zen Hei"});
-    }//GEN-LAST:event_oneClickButtonActionPerformed
-
-    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-        // Clear all selection from views, except schemes ComboBox
-        // Font family
-        for (JComboBox[] fontSelectRow : fontSelectArray) {
-            for (JComboBox fontSelect : fontSelectRow) {
-                fontSelect.setSelectedIndex(0);
-            }
-        }
-        // Render options
-        antialiasCheckBox.setSelected(false);
-        hintingCheckBox.setSelected(false);
-        hintStyleComboBox.setSelectedIndex(0);
-        subpixelComboBox.setSelectedIndex(0);
-        // Font alias
-        while(aliasTableModel.getRowCount() > 0) {
-            aliasTableModel.removeRow(0);
-        }
-    }//GEN-LAST:event_resetButtonActionPerformed
+            Desktop.getDesktop().browse(new URL("https://github.com/guoyunhe/fontweak/wiki").toURI());
+        } catch (URISyntaxException | IOException e) {}
+    }//GEN-LAST:event_helpButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -854,243 +722,85 @@ public class MainWindow extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (UnsupportedLookAndFeelException ex) {
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
-        MainWindow mw;
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                MainWindow mw = new MainWindow();
-                mw.setVisible(true);
+                new MainWindow().setVisible(true);
             }
         });
-
     }
-    
-    private void initApplication() {
-        // Initialize objects
-        fontconfig = new FontConfigXML();
-        schemeManager = new SchemeManager();
-        fontlist = new FontList();
-        
-        fontSelectArray = new JComboBox[][]{
-            {sansComboBox, serifComboBox, monoComboBox},
-            {zhCNSansComboBox, zhCNSerifComboBox, zhCNMonoComboBox},
-            {zhTWSansComboBox, zhTWSerifComboBox, zhTWMonoComboBox},
-            {zhHKSansComboBox, zhHKSerifComboBox, zhHKMonoComboBox},
-            {jaSansComboBox, jaSerifComboBox, jaMonoComboBox},
-            {koSansComboBox, koSerifComboBox, koMonoComboBox}
-        };
-
-        // Read data from fontconfig XML file
-        fontconfig.readConfig();
-        
-        // Load system font list, fontconfig and application schemes to views
-        loadFontList();
-        
-        loadConfig();
-        loadSchemes();
-    }
-
-    private void loadFontList() {
-        String[] list = fontlist.get();
-        fontAliasComboBox.setModel(new DefaultComboBoxModel(list));
-        for (JComboBox[] fontSelectRow : fontSelectArray) {
-            for (JComboBox fontSelect : fontSelectRow) {
-                fontSelect.setModel(new DefaultComboBoxModel(list));
-            }
-        }
-    }
-    
-    /**
-     * Load fontconfig configuration file data to views.
-     */
-    private void loadConfig() {
-        // Set UI components to configuration data
-        for (int i = 0; i < fontSelectArray.length; i++) {
-            for (int j = 0; j < 3; j++) {
-                String font = fontconfig.getFontFamily(i, j);
-                fontSelectArray[i][j].setSelectedItem(font);
-            }
-        }
-
-        antialiasCheckBox.setSelected(fontconfig.getAntiAlias());
-        hintingCheckBox.setSelected(fontconfig.getHinting());
-        hintStyleComboBox.setSelectedIndex(fontconfig.getHintStyle());
-        subpixelComboBox.setSelectedIndex(fontconfig.getSubpixel());
-        
-        aliasTableModel = new javax.swing.table.DefaultTableModel(
-                new String[][]{}, // TODO: Read from fontconfig
-                new String[]{
-                    java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("ORIGINAL FONT"), java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("FONT ALIAS")
-                }
-        ) {
-            Class[] types = new Class[]{
-                java.lang.String.class, java.lang.String.class
-            };
-
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-        };
-        List<String[]> aliasList = fontconfig.getAliasList();
-        for( String[] alias : aliasList) {
-            aliasTableModel.addRow(alias);
-        }
-        aliasTable.setModel(aliasTableModel);
-    }
-    
-    private void loadSchemes() {
-        // Load scheme list
-        String[] schemeList = schemeManager.getSchemeList();
-        if (schemeList == null) {
-            schemeList = new String[]{java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/i18n/translation").getString("DEFAULT")};
-        }
-        if (schemeList.length == 1) {
-            this.deleteSchemeButton.setEnabled(false);
-        }
-        schemeComboBoxModel = new DefaultComboBoxModel(schemeList);
-        schemeComboBox.setModel(schemeComboBoxModel);
-        // Set selected scheme
-        selectedScheme = schemeManager.getCurrentSchemeName();
-        if (selectedScheme != null) {
-            schemeComboBox.setSelectedItem(selectedScheme);
-        } else {
-            schemeComboBox.setSelectedIndex(0);
-            selectedScheme = (String) schemeComboBox.getSelectedItem();
-            schemeManager.setCurrentSchemeName(selectedScheme);
-        }
-        // Sync from fontconfig to current scheme file
-        fontconfig.writeConfig(schemeManager.getSchemeFile(selectedScheme));
-        schemeLoaded = true;
-    }
-
-    /**
-     * Save options in views to fontconfig configuration and scheme.
-     */
-    private void saveConfig() {
-        // TODO: write configuration from UI components
-        for (int i = 0; i < fontSelectArray.length; i++) {
-            for (int j = 0; j < 3; j++) {
-                String font = (String)fontSelectArray[i][j].getSelectedItem();
-                fontconfig.setFontFamily(i, j, font);
-            }
-        }
-        
-        ArrayList<String[]> aliasList = new ArrayList();
-        for(int i=0; i < this.aliasTableModel.getRowCount(); i++) {
-            String font = (String)aliasTableModel.getValueAt(i, 0);
-            String alias = (String)aliasTableModel.getValueAt(i, 1);
-            aliasList.add(new String[]{font, alias});
-        }
-        fontconfig.setAliasList(aliasList);
-        
-        fontconfig.setAntiAlias(antialiasCheckBox.isSelected());
-        fontconfig.setHinting(hintingCheckBox.isSelected());
-        fontconfig.setHintStyle(hintStyleComboBox.getSelectedIndex());
-        fontconfig.setSubpixel(subpixelComboBox.getSelectedIndex());
-    }
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel aboutContentPanel;
-    private javax.swing.JScrollPane aboutPanel;
-    private javax.swing.JPanel aboutPanelFillSpaceBottom;
-    private javax.swing.JPanel aboutPanelFillSpaceTop;
+    private javax.swing.JButton aboutButton;
+    private javax.swing.JDialog aboutDialog;
+    private javax.swing.JButton aliasAddButton;
+    private javax.swing.JPanel aliasButtonPanel;
+    private javax.swing.JComboBox<String> aliasComboBox;
+    private javax.swing.JPanel aliasPanel;
+    private javax.swing.JButton aliasRemoveButton;
+    private javax.swing.JScrollPane aliasScrollPane;
     private javax.swing.JTable aliasTable;
-    private javax.swing.JScrollPane aliasTableScrollPanel;
+    private javax.swing.JTextField aliasTextField;
     private javax.swing.JCheckBox antialiasCheckBox;
     private javax.swing.JLabel antialiasLabel;
-    private javax.swing.JPanel appInfoPanel;
-    private javax.swing.JLabel appNameLabel;
-    private javax.swing.JPanel appTitlePanel;
-    private javax.swing.JLabel appVersionLabel;
-    private javax.swing.JLabel authorLabel;
+    private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton cancelButton;
-    private javax.swing.JButton deleteAliasButton;
-    private javax.swing.JButton deleteSchemeButton;
-    private javax.swing.JLabel enLabel;
-    private javax.swing.JPanel fontAliasActionPanel;
-    private javax.swing.JComboBox fontAliasComboBox;
-    private javax.swing.JPanel fontAliasContentPanel;
-    private javax.swing.JLabel fontAliasLabel;
-    private javax.swing.JScrollPane fontAliasPanel;
-    private javax.swing.JScrollPane fontFamilyPanel;
-    private javax.swing.JPanel fontRenderContentPanel;
-    private javax.swing.JScrollPane fontRenderPanel;
-    private javax.swing.JPanel fontTypeContentPanel;
-    private javax.swing.JLabel freeSoftwareLabel;
-    private javax.swing.JComboBox hintStyleComboBox;
-    private javax.swing.JLabel hintStyleLabel;
+    private javax.swing.JDialog createMatchDialog;
+    private javax.swing.JPanel createMatchDialogButtonPanel;
+    private javax.swing.JButton createMatchDialogCancelButton;
+    private javax.swing.JComboBox<String> createMatchDialogFamilyComboBox;
+    private javax.swing.JLabel createMatchDialogFamilyLabel;
+    private javax.swing.JComboBox<String> createMatchDialogLanguageComboBox;
+    private javax.swing.JLabel createMatchDialogLanguageLabel;
+    private javax.swing.JButton createMatchDialogOkButton;
+    private javax.swing.JPanel createMatchDialogOptionPanel;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.JButton fontAddButton;
+    private javax.swing.JButton fontDownButton;
+    private javax.swing.JList<String> fontList;
+    private javax.swing.JButton fontRemoveButton;
+    private javax.swing.JButton fontUpButton;
+    private javax.swing.JButton helpButton;
     private javax.swing.JCheckBox hintingCheckBox;
     private javax.swing.JLabel hintingLabel;
-    private javax.swing.JLabel homepageLabel;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox<String> hintstyleComboBox;
+    private javax.swing.JLabel hintstyleLabel;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jaLabel;
-    private javax.swing.JComboBox jaMonoComboBox;
-    private javax.swing.JComboBox jaSansComboBox;
-    private javax.swing.JComboBox jaSerifComboBox;
-    private javax.swing.JLabel koLabel;
-    private javax.swing.JComboBox koMonoComboBox;
-    private javax.swing.JComboBox koSansComboBox;
-    private javax.swing.JComboBox koSerifComboBox;
-    private javax.swing.JLabel licenseLabel;
-    private javax.swing.JComboBox monoComboBox;
-    private javax.swing.JLabel monoLabel;
-    private javax.swing.JButton newAliasButton;
-    private javax.swing.JButton newSchemeButton;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JButton matchCreateButton;
+    private javax.swing.JButton matchDeleteButton;
+    private javax.swing.JPanel matchFontListPanel;
+    private javax.swing.JList<String> matchList;
+    private javax.swing.JPanel matchListButtonPanel;
+    private javax.swing.JPanel matchListPanel;
+    private javax.swing.JScrollPane matchListScrollPane;
+    private javax.swing.JPanel matchPanel;
     private javax.swing.JButton okButton;
-    private javax.swing.JButton oneClickButton;
-    private javax.swing.JLabel originalFontLabel;
-    private javax.swing.JTextField originalFontTextField;
-    private javax.swing.JButton renameSchemeButton;
-    private javax.swing.JButton resetButton;
-    private javax.swing.JComboBox sansComboBox;
-    private javax.swing.JLabel sansLabel;
-    private javax.swing.JPanel saveButtonPanel;
-    private javax.swing.JPanel savePanelFillSpace;
-    private javax.swing.JComboBox schemeComboBox;
-    private javax.swing.JLabel schemeLabel;
-    private javax.swing.JPanel schemePanel;
-    private javax.swing.JPanel schemePanelFillSpace;
-    private javax.swing.JComboBox serifComboBox;
-    private javax.swing.JLabel serifLabel;
-    private javax.swing.JComboBox subpixelComboBox;
-    private javax.swing.JLabel subpixelLabel;
-    private javax.swing.JButton subpixelTestButton;
-    private javax.swing.JDialog subpixelTestDialog;
-    private javax.swing.JTabbedPane tabbedPanel;
-    private javax.swing.JLabel zhCNLabel;
-    private javax.swing.JComboBox zhCNMonoComboBox;
-    private javax.swing.JComboBox zhCNSansComboBox;
-    private javax.swing.JComboBox zhCNSerifComboBox;
-    private javax.swing.JLabel zhHKLabel;
-    private javax.swing.JComboBox zhHKMonoComboBox;
-    private javax.swing.JComboBox zhHKSansComboBox;
-    private javax.swing.JComboBox zhHKSerifComboBox;
-    private javax.swing.JLabel zhTWLabel;
-    private javax.swing.JComboBox zhTWMonoComboBox;
-    private javax.swing.JComboBox zhTWSansComboBox;
-    private javax.swing.JComboBox zhTWSerifComboBox;
+    private javax.swing.JPanel optionPanel;
+    private javax.swing.JComboBox<String> rgbaComboBox;
+    private javax.swing.JLabel rgbaLabel;
+    private javax.swing.JTabbedPane tabs;
     // End of variables declaration//GEN-END:variables
 }

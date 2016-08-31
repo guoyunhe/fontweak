@@ -19,31 +19,28 @@ package me.guoyunhe.fontweak;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  *
  * @author Guo Yunhe <guoyunhebrave@gmail.com>
  */
-public class FontList {
-    
+public class SystemFontList {
+
     private final GraphicsEnvironment env;
-    
+
     private List<String> list;
     private List<String> ignoreList;
 
-    public FontList() {
+    public SystemFontList() {
         env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         buildIgnoreList();
         updateList();
     }
-    
+
     private void updateList() {
         // Return English names of fonts, easier for match
-        Locale en = new Locale("en", "US");
-        String[] originalList = env.getAvailableFontFamilyNames(en);
+        String[] originalList = env.getAvailableFontFamilyNames();
         list = new ArrayList();
-        list.add("");
         for (String font : originalList) {
             font = removeFontWeight(font);
             if (!isIgnored(font) && !list.contains(font)) {
@@ -51,7 +48,7 @@ public class FontList {
             }
         }
     }
-    
+
     private String removeFontWeight(String font) {
         String fi = font.toLowerCase();
         String[] weights = {
@@ -73,7 +70,7 @@ public class FontList {
         }
         return font;
     }
-    
+
     private void buildIgnoreList() {
         ignoreList = new ArrayList();
         ignoreList.add("Sans Serif");
@@ -82,21 +79,21 @@ public class FontList {
         ignoreList.add("Monospace");
         ignoreList.add("Monospaced");
     }
-    
+
     private boolean isIgnored(String font) {
         return ignoreList.contains(font);
     }
-    
+
     public String[] get() {
         String[] array = new String[list.size()];
         list.toArray(array);
         return array;
     }
-    
+
     public void refresh() {
         updateList();
     }
-    
+
     public boolean contains(String font) {
         return list.contains(font);
     }
