@@ -2,6 +2,8 @@
 
 A front-end for fontconfig. Setup perfect font effects, fast and easily.
 
+![Screenshot](screenshot.png)
+
 ## Download
 
 - [CentOS, Fedora, openSUSE, RHEL, SUSE](https://software.opensuse.org/download.html?project=home%3Aguoyunhebrave&package=fontweak)
