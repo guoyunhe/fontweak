@@ -166,16 +166,16 @@ public class MainWindow extends javax.swing.JFrame {
         matchListButtonPanel = new javax.swing.JPanel();
         matchCreateButton = new javax.swing.JButton();
         matchDeleteButton = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        matchListLabel = new javax.swing.JLabel();
         matchFontListPanel = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        fontListScrollPane = new javax.swing.JScrollPane();
         fontList = new javax.swing.JList<String>();
         jPanel4 = new javax.swing.JPanel();
         fontUpButton = new javax.swing.JButton();
         fontDownButton = new javax.swing.JButton();
         fontAddButton = new javax.swing.JButton();
         fontRemoveButton = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
+        fontListLabel = new javax.swing.JLabel();
         aliasPanel = new javax.swing.JPanel();
         aliasScrollPane = new javax.swing.JScrollPane();
         aliasTable = new javax.swing.JTable(){
@@ -329,21 +329,21 @@ public class MainWindow extends javax.swing.JFrame {
 
         matchListPanel.add(matchListButtonPanel, java.awt.BorderLayout.PAGE_END);
 
-        jLabel2.setText("Match rules");
-        jLabel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        matchListPanel.add(jLabel2, java.awt.BorderLayout.PAGE_START);
+        matchListLabel.setText(bundle.getString("MATCH LIST")); // NOI18N
+        matchListLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        matchListPanel.add(matchListLabel, java.awt.BorderLayout.PAGE_START);
 
         matchPanel.add(matchListPanel);
 
         matchFontListPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 5, 0));
         matchFontListPanel.setLayout(new java.awt.BorderLayout());
 
-        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        fontListScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
         fontList.setModel(fontListModel);
-        jScrollPane2.setViewportView(fontList);
+        fontListScrollPane.setViewportView(fontList);
 
-        matchFontListPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+        matchFontListPanel.add(fontListScrollPane, java.awt.BorderLayout.CENTER);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 5, 0));
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -386,9 +386,9 @@ public class MainWindow extends javax.swing.JFrame {
 
         matchFontListPanel.add(jPanel4, java.awt.BorderLayout.PAGE_END);
 
-        jLabel3.setText("Fonts");
-        jLabel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        matchFontListPanel.add(jLabel3, java.awt.BorderLayout.PAGE_START);
+        fontListLabel.setText(bundle.getString("FONT LIST")); // NOI18N
+        fontListLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        matchFontListPanel.add(fontListLabel, java.awt.BorderLayout.PAGE_START);
 
         matchPanel.add(matchFontListPanel);
 
@@ -766,6 +766,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton fontAddButton;
     private javax.swing.JButton fontDownButton;
     private javax.swing.JList<String> fontList;
+    private javax.swing.JLabel fontListLabel;
+    private javax.swing.JScrollPane fontListScrollPane;
     private javax.swing.JButton fontRemoveButton;
     private javax.swing.JButton fontUpButton;
     private javax.swing.JButton helpButton;
@@ -773,15 +775,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel hintingLabel;
     private javax.swing.JComboBox<String> hintstyleComboBox;
     private javax.swing.JLabel hintstyleLabel;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton matchCreateButton;
     private javax.swing.JButton matchDeleteButton;
     private javax.swing.JPanel matchFontListPanel;
     private javax.swing.JList<String> matchList;
     private javax.swing.JPanel matchListButtonPanel;
+    private javax.swing.JLabel matchListLabel;
     private javax.swing.JPanel matchListPanel;
     private javax.swing.JScrollPane matchListScrollPane;
     private javax.swing.JPanel matchPanel;
