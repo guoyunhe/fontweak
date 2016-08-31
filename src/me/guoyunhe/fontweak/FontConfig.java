@@ -107,7 +107,8 @@ public class FontConfig {
             // Create default if no config file found
             InputStream in = getClass().getResourceAsStream("/me/guoyunhe/fontweak/config/default.conf");
             try {
-                Files.copy(in, file.toPath());
+                file.getParentFile().mkdirs(); // Make all parents folders if not exists
+                Files.copy(in, file.toPath()); // Copty default config file
             } catch (IOException ex) {
                 Logger.getLogger(FontConfig.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -127,6 +128,15 @@ public class FontConfig {
             doc = builder.parse(file);
         } catch (SAXException ex) {
             Logger.getLogger(FontConfig.class.getName()).log(Level.SEVERE, null, ex);
+            // Copy default config file if the XML file is invalid
+            InputStream in = getClass().getResourceAsStream("/me/guoyunhe/fontweak/config/default.conf");
+            try {
+                file.delete();
+                Files.copy(in, file.toPath()); // Copty default config file
+                doc = builder.parse(file);
+            } catch (IOException | SAXException ex1) {
+                Logger.getLogger(FontConfig.class.getName()).log(Level.SEVERE, null, ex1);
+            }
         } catch (IOException ex) {
             Logger.getLogger(FontConfig.class.getName()).log(Level.SEVERE, null, ex);
         }
