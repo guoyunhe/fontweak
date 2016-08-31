@@ -205,6 +205,8 @@ public class MainWindow extends javax.swing.JFrame {
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main"); // NOI18N
         aboutDialog.setTitle(bundle.getString("ABOUT")); // NOI18N
+        aboutDialog.setIconImage(appIcon.getImage()
+        );
         aboutDialog.setLocationByPlatform(true);
         aboutDialog.setMinimumSize(new java.awt.Dimension(400, 300));
         aboutDialog.setModal(true);
@@ -220,6 +222,7 @@ public class MainWindow extends javax.swing.JFrame {
         aboutDialog.getContentPane().add(jScrollPane1);
 
         createMatchDialog.setTitle(bundle.getString("CREATE FONT MATCH")); // NOI18N
+        createMatchDialog.setIconImage(appIcon.getImage());
         createMatchDialog.setLocationByPlatform(true);
         createMatchDialog.setModal(true);
         createMatchDialog.setSize(new java.awt.Dimension(300, 200));
@@ -586,7 +589,7 @@ public class MainWindow extends javax.swing.JFrame {
         String font = (String)JOptionPane.showInputDialog(this,
                 java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main").getString("CHOOSE FONT"),
                 java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main").getString("CHOOSE FONT"),
-                JOptionPane.PLAIN_MESSAGE, null, sysfonts.get(), null);
+                JOptionPane.PLAIN_MESSAGE, null, sysfonts.get(), appIcon.getImage());
         fontListModel.addElement(font);
         saveFontList();
 
