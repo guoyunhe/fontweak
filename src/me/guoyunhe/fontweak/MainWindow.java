@@ -39,8 +39,6 @@ public class MainWindow extends javax.swing.JFrame {
     private final DefaultListModel<String> matchListModel;
     private final DefaultListModel<String> fontListModel;
     private final DefaultTableModel aliasTableModel;
-    private final DefaultComboBoxModel<String> hintstyleComboBoxModel;
-    private final DefaultComboBoxModel<String> rgbaComboBoxModel;
 
     /**
      * Creates new form MainWindow
@@ -66,8 +64,6 @@ public class MainWindow extends javax.swing.JFrame {
                 return types[columnIndex];
             }
         };
-        hintstyleComboBoxModel = new DefaultComboBoxModel<>(FontConfig.HINTSTYLE_OPTIONS);
-        rgbaComboBoxModel = new DefaultComboBoxModel<>(FontConfig.RGBA_OPTIONS);
 
         initComponents();
         loadConfig();
@@ -97,8 +93,10 @@ public class MainWindow extends javax.swing.JFrame {
         // Options
         this.antialiasCheckBox.setSelected(fontconfig.antialias);
         this.hintingCheckBox.setSelected(fontconfig.hinting);
-        this.hintstyleComboBoxModel.setSelectedItem(fontconfig.hintstyle);
-        this.rgbaComboBoxModel.setSelectedItem(fontconfig.rgba);
+        this.hintstyleComboBox.setSelectedItem(fontconfig.hintstyle);
+        this.rgbaComboBox.setSelectedItem(fontconfig.rgba);
+        this.lcdfilterComboBox.setSelectedItem(fontconfig.lcdfilter);
+        this.embeddedbitmapCheckBox.setSelected(fontconfig.embeddedbitmap);
     }
 
     private void saveConfig() {
@@ -106,8 +104,10 @@ public class MainWindow extends javax.swing.JFrame {
         // Options
         fontconfig.antialias = this.antialiasCheckBox.isSelected();
         fontconfig.hinting = this.hintingCheckBox.isSelected();
-        fontconfig.hintstyle = (String) this.hintstyleComboBoxModel.getSelectedItem();
-        fontconfig.rgba = (String) this.rgbaComboBoxModel.getSelectedItem();
+        fontconfig.hintstyle = (String) this.hintstyleComboBox.getSelectedItem();
+        fontconfig.rgba = (String) this.rgbaComboBox.getSelectedItem();
+        fontconfig.lcdfilter = (String) this.lcdfilterComboBox.getSelectedItem();
+        fontconfig.embeddedbitmap = this.embeddedbitmapCheckBox.isSelected();
 
         fontconfig.writeConfig();
     }
@@ -197,6 +197,10 @@ public class MainWindow extends javax.swing.JFrame {
         rgbaLabel = new javax.swing.JLabel();
         hintstyleComboBox = new javax.swing.JComboBox<String>();
         rgbaComboBox = new javax.swing.JComboBox<String>();
+        lcdfilterLabel = new javax.swing.JLabel();
+        lcdfilterComboBox = new javax.swing.JComboBox<>();
+        embeddedbitmapLabel = new javax.swing.JLabel();
+        embeddedbitmapCheckBox = new javax.swing.JCheckBox();
         buttonPanel = new javax.swing.JPanel();
         aboutButton = new javax.swing.JButton();
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
@@ -441,7 +445,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         java.awt.GridBagLayout optionPanelLayout = new java.awt.GridBagLayout();
         optionPanelLayout.columnWidths = new int[] {0, 20, 0};
-        optionPanelLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0};
+        optionPanelLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
         optionPanel.setLayout(optionPanelLayout);
 
         antialiasLabel.setText(bundle.getString("ANTIALIAS")); // NOI18N
@@ -486,7 +490,7 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         optionPanel.add(rgbaLabel, gridBagConstraints);
 
-        hintstyleComboBox.setModel(hintstyleComboBoxModel);
+        hintstyleComboBox.setModel(new DefaultComboBoxModel(FontConfig.HINTSTYLE_OPTIONS));
         hintstyleComboBox.setMinimumSize(new java.awt.Dimension(150, 28));
         hintstyleComboBox.setPreferredSize(new java.awt.Dimension(150, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -495,7 +499,7 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         optionPanel.add(hintstyleComboBox, gridBagConstraints);
 
-        rgbaComboBox.setModel(rgbaComboBoxModel);
+        rgbaComboBox.setModel(new DefaultComboBoxModel(FontConfig.RGBA_OPTIONS));
         rgbaComboBox.setMinimumSize(new java.awt.Dimension(150, 28));
         rgbaComboBox.setPreferredSize(new java.awt.Dimension(150, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -503,6 +507,33 @@ public class MainWindow extends javax.swing.JFrame {
         gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         optionPanel.add(rgbaComboBox, gridBagConstraints);
+
+        lcdfilterLabel.setText(bundle.getString("LCD FILTER")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        optionPanel.add(lcdfilterLabel, gridBagConstraints);
+
+        lcdfilterComboBox.setModel(new DefaultComboBoxModel(FontConfig.LCDFILTER_OPTIONS));
+        lcdfilterComboBox.setPreferredSize(new java.awt.Dimension(150, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        optionPanel.add(lcdfilterComboBox, gridBagConstraints);
+
+        embeddedbitmapLabel.setText(bundle.getString("EMBEDDED BITMAP")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        optionPanel.add(embeddedbitmapLabel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        optionPanel.add(embeddedbitmapCheckBox, gridBagConstraints);
 
         tabs.addTab(bundle.getString("FONT OPTION"), optionPanel); // NOI18N
 
@@ -742,6 +773,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel createMatchDialogLanguageLabel;
     private javax.swing.JButton createMatchDialogOkButton;
     private javax.swing.JPanel createMatchDialogOptionPanel;
+    private javax.swing.JCheckBox embeddedbitmapCheckBox;
+    private javax.swing.JLabel embeddedbitmapLabel;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
@@ -758,6 +791,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> hintstyleComboBox;
     private javax.swing.JLabel hintstyleLabel;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JComboBox<String> lcdfilterComboBox;
+    private javax.swing.JLabel lcdfilterLabel;
     private javax.swing.JButton matchCreateButton;
     private javax.swing.JButton matchDeleteButton;
     private javax.swing.JPanel matchFontListPanel;

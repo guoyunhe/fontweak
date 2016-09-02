@@ -70,9 +70,12 @@ public class FontConfig {
     public boolean hinting = true;
     public String hintstyle = "hintfull";
     public String rgba = "none";
+    public String lcdfilter = "lcddefault";
+    public boolean embeddedbitmap = true;
 
     public static final String[] HINTSTYLE_OPTIONS = {"hintnone", "hintslight", "hintmedium", "hintfull"};
     public static final String[] RGBA_OPTIONS = {"none", "rgb", "bgr", "vrgb", "vbgr"};
+    public static final String[] LCDFILTER_OPTIONS = {"lcdnone", "lcddefault", "lcdlight", "lcdlegacy"};
     public static final String[] LANGUAGES = {
         "aa", "ab", "af", "ak", "am", "an", "ar", "as", "ast", "av", "ay", "az-az", "az-ir", "ba", "be", "ber-dz", "ber-ma", "bg", "bho", "bh", "bin", "bi", "bm", "bn", "bo", "br", "brx", "bs", "bua", "byn", "ca", "ce", "chm", "ch", "chr", "co", "crh", "csb", "cs", "cu", "cv", "cy", "da", "de", "doi", "dv", "dz", "ee", "el", "en", "eo", "es", "et", "eu", "fa", "fat", "ff", "fil", "fi", "fj", "fo", "fr", "fur", "fy", "ga", "gd", "gez", "gl", "gn", "gu", "gv", "ha", "haw", "he", "hi", "hne", "ho", "hr", "hsb", "ht", "hu", "hy", "hz", "ia", "id", "ie", "ig", "ii", "ik", "io", "is", "it", "iu", "ja", "jv", "kaa", "kab", "ka", "ki", "kj", "kk", "kl", "km", "kn", "kok", "ko", "kr", "ks", "ku-am", "ku-iq", "ku-ir", "kum", "ku-tr", "kv", "kwm", "kw", "ky", "lah", "la", "lb", "lez", "lg", "li", "ln", "lo", "lt", "lv", "mai", "mg", "mh", "mi", "mk", "ml", "mn-cn", "mni", "mn-mn", "mo", "mr", "ms", "mt", "my", "na", "nb", "nds", "ne", "ng", "nl", "nn", "no", "nqo", "nr", "nso", "nv", "ny", "oc", "om", "or", "os", "ota", "pa", "pap-an", "pap-aw", "pa-pk", "pl", "ps-af", "ps-pk", "pt", "qu", "quz", "rm", "rn", "ro", "ru", "rw", "sah", "sa", "sat", "sco", "sc", "sd", "sel", "se", "sg", "sh", "shs", "sid", "si", "sk", "sl", "sma", "smj", "smn", "sm", "sms", "sn", "so", "sq", "sr", "ss", "st", "su", "sv", "sw", "syr", "ta", "te", "tg", "th", "ti-er", "ti-et", "tig", "tk", "tl", "tn", "to", "tr", "ts", "tt", "tw", "ty", "tyv", "ug", "uk", "ur", "uz", "ve", "vi", "vo", "vot", "wal", "wa", "wen", "wo", "xh", "yap", "yi", "yo", "za", "zh-cn", "zh-hk", "zh-mo", "zh-sg", "zh-tw", "zu"
     };
@@ -153,6 +156,8 @@ public class FontConfig {
         hinting = true;
         hintstyle = "hintnone";
         rgba = "none";
+        lcdfilter = "lcddefault";
+        embeddedbitmap = true;
         matchList.clear();
         aliasList.clear();
 
@@ -164,7 +169,7 @@ public class FontConfig {
 
             element = (Element) matchElements.item(0);
 
-            if (element.hasAttribute("target")) {
+            if (element.hasAttribute("target") && element.getAttribute("target").equals("font")) {
                 parseOptionDOM(element);
             } else {
                 FontMatch match;
@@ -243,6 +248,8 @@ public class FontConfig {
         createOptionDOM("hinting", Boolean.toString(hinting), "bool");
         createOptionDOM("hintstyle", hintstyle, "const");
         createOptionDOM("rgba", rgba, "const");
+        createOptionDOM("lcdfilter", lcdfilter, "const");
+        createOptionDOM("embeddedbitmap", Boolean.toString(embeddedbitmap), "bool");
 
         // Write document object to XML file.
         try {
@@ -267,22 +274,33 @@ public class FontConfig {
         editElement = (Element) element.getElementsByTagName("edit").item(0);
         name = editElement.getAttribute("name");
 
-        if (name.equals("rgba")) {
-            if (editElement.getElementsByTagName("const").getLength() > 0) {
-                rgba = editElement.getElementsByTagName("const").item(0).getTextContent();
-            }
-        } else if (name.equals("hinting")) {
-            if (editElement.getElementsByTagName("bool").getLength() > 0) {
-                hinting = Boolean.valueOf(editElement.getElementsByTagName("bool").item(0).getTextContent());
-            }
-        } else if (name.equals("hintstyle")) {
-            if (editElement.getElementsByTagName("const").getLength() > 0) {
-                hintstyle = editElement.getElementsByTagName("const").item(0).getTextContent();
-            }
-        } else if (name.equals("antialias")) {
-            if (editElement.getElementsByTagName("bool").getLength() > 0) {
-                antialias = Boolean.valueOf(editElement.getElementsByTagName("bool").item(0).getTextContent());
-            }
+        switch (name) {
+            case "rgba":
+                if (editElement.getElementsByTagName("const").getLength() > 0) {
+                    rgba = editElement.getElementsByTagName("const").item(0).getTextContent();
+                }   break;
+            case "hinting":
+                if (editElement.getElementsByTagName("bool").getLength() > 0) {
+                    hinting = Boolean.valueOf(editElement.getElementsByTagName("bool").item(0).getTextContent());
+                }   break;
+            case "hintstyle":
+                if (editElement.getElementsByTagName("const").getLength() > 0) {
+                    hintstyle = editElement.getElementsByTagName("const").item(0).getTextContent();
+                }   break;
+            case "antialias":
+                if (editElement.getElementsByTagName("bool").getLength() > 0) {
+                    antialias = Boolean.valueOf(editElement.getElementsByTagName("bool").item(0).getTextContent());
+                }   break;
+            case "lcdfilter":
+                if (editElement.getElementsByTagName("const").getLength() > 0) {
+                    lcdfilter = editElement.getElementsByTagName("const").item(0).getTextContent();
+                }   break;
+            case "embeddedbitmap":
+                if (editElement.getElementsByTagName("bool").getLength() > 0) {
+                    embeddedbitmap = Boolean.valueOf(editElement.getElementsByTagName("bool").item(0).getTextContent());
+                }   break;
+            default:
+                break;
         }
 
         root.removeChild(element);
