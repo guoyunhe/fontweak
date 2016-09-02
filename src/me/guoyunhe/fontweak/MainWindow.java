@@ -409,22 +409,12 @@ public class MainWindow extends javax.swing.JFrame {
         aliasButtonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         aliasTextField.setPreferredSize(new java.awt.Dimension(200, 28));
-        aliasTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aliasTextFieldActionPerformed(evt);
-            }
-        });
         aliasButtonPanel.add(aliasTextField);
 
         aliasComboBox.setModel(new DefaultComboBoxModel(sysfonts.get())
         );
         aliasComboBox.setMinimumSize(new java.awt.Dimension(100, 28));
         aliasComboBox.setPreferredSize(new java.awt.Dimension(200, 28));
-        aliasComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aliasComboBoxActionPerformed(evt);
-            }
-        });
         aliasButtonPanel.add(aliasComboBox);
 
         aliasAddButton.setText(bundle.getString("ADD")); // NOI18N
@@ -581,14 +571,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         fontList.setSelectedIndex(fontListModel.getSize() - 1);
     }//GEN-LAST:event_fontAddButtonActionPerformed
-
-    private void aliasComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aliasComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_aliasComboBoxActionPerformed
-
-    private void aliasTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aliasTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_aliasTextFieldActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         saveConfig();
