@@ -17,8 +17,6 @@
 package me.guoyunhe.fontweak;
 
 import java.awt.GraphicsEnvironment;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -26,75 +24,14 @@ import java.util.List;
  */
 public class SystemFontList {
 
-    private final GraphicsEnvironment env;
-
-    private List<String> list;
-    private List<String> ignoreList;
+    private final String[] list;
 
     public SystemFontList() {
-        env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        buildIgnoreList();
-        updateList();
-    }
-
-    private void updateList() {
-        // Return English names of fonts, easier for match
-        String[] originalList = env.getAvailableFontFamilyNames();
-        list = new ArrayList();
-        for (String font : originalList) {
-            font = removeFontWeight(font);
-            if (!isIgnored(font) && !list.contains(font)) {
-                list.add(font);
-            }
-        }
-    }
-
-    private String removeFontWeight(String font) {
-        String fi = font.toLowerCase();
-        String[] weights = {
-            " demilight",
-            " light",
-            " thin",
-            " normal",
-            " regular",
-            " medium",
-            " semibold",
-            " bold",
-            " extrabold",
-            " black"
-        };
-        for(String weight: weights) {
-            if(fi.endsWith(weight)) {
-                font = font.substring(0, font.length() - weight.length());
-            }
-        }
-        return font;
-    }
-
-    private void buildIgnoreList() {
-        ignoreList = new ArrayList();
-        ignoreList.add("Sans Serif");
-        ignoreList.add("SansSerif");
-        ignoreList.add("Serif");
-        ignoreList.add("Monospace");
-        ignoreList.add("Monospaced");
-    }
-
-    private boolean isIgnored(String font) {
-        return ignoreList.contains(font);
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        list = env.getAvailableFontFamilyNames();
     }
 
     public String[] get() {
-        String[] array = new String[list.size()];
-        list.toArray(array);
-        return array;
-    }
-
-    public void refresh() {
-        updateList();
-    }
-
-    public boolean contains(String font) {
-        return list.contains(font);
+        return list;
     }
 }
