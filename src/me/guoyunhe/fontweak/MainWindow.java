@@ -597,10 +597,12 @@ public class MainWindow extends javax.swing.JFrame {
                 java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main").getString("CHOOSE FONT"),
                 java.util.ResourceBundle.getBundle("me/guoyunhe/fontweak/lang/main").getString("CHOOSE FONT"),
                 JOptionPane.PLAIN_MESSAGE, null, sysfonts.get(), appIcon.getImage());
-        fontListModel.addElement(font);
-        saveFontList();
+        if (font != null && !font.isEmpty()) {
+            fontListModel.addElement(font);
+            saveFontList();
 
-        fontList.setSelectedIndex(fontListModel.getSize() - 1);
+            fontList.setSelectedIndex(fontListModel.getSize() - 1);
+        }
     }//GEN-LAST:event_fontAddButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
